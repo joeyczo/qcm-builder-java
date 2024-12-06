@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 
-public class EliminationReponse {
+public class EliminationReponse implements Reponse {
 
     private ArrayList<EliminationReponseItem> reponses;
 
