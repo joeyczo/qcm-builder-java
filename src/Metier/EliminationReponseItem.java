@@ -1,3 +1,5 @@
+package Metier;
+
 public class EliminationReponseItem {
 	
 	private String texte;
@@ -21,7 +23,7 @@ public class EliminationReponseItem {
 	}
 
 	public void setOrdre(int ordre) {
-		this.ordre = ordre;
+		this.ordreSuppression = ordre;
 	}
 
 	public void setPtsSuppression(float ptsSuppression) {

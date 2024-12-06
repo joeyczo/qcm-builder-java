@@ -1,3 +1,5 @@
+package Metier;
+
 import java.util.ArrayList;
 
 public class EliminationReponse implements Reponse {
