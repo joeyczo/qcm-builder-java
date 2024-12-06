@@ -1,5 +1,5 @@
 package Metier;
 
-public class Reponse {
+public interface Reponse {
 	
 }
