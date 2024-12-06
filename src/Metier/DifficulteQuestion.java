@@ -7,7 +7,9 @@ public enum DifficulteQuestion
 	MOYEN	  ("#E6415B"),
 	DIFFICILE ("#827D7C");
 
-	private String libelle;
+	private String couleur;
 
-	DifficulteQuestion(String lib){this.libelle = lib;}
+	DifficulteQuestion(String c){this.couleur = c;}
+
+	public String getCouleur(){return this.couleur;}
 }
