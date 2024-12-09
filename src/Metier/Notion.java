@@ -5,5 +5,5 @@ public class Notion
 	private String nom;
 
 	public Notion(String nom){this.nom=nom;}
-	public String getNotion(){this.nom;    }
+	public String getNotion(){return this.nom;}
 }
