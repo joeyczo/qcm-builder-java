@@ -9,7 +9,7 @@ public class Ressource
 
 	public Ressource(String nom)
 	{
-		this.nom=nom;
+		this.nom      = nom;
 		this.alNotion = new ArrayList<Notion>();
 	}
 

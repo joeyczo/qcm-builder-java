@@ -2,49 +2,81 @@ package Vue;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.*;
 
-public class Accueil extends JFrame {
-	private JPanel pnlBtns;
+public class Accueil extends JFrame implements ActionListener
+{
+    private JPanel  pnlBtns;
 
-	private JButton btnCreerQuestion;
-	private JButton btnCreerEval;
-	private JButton btnParametres;
+    private JButton btnCreerQuestion;
+    private JButton btnCreerEval;
+    private JButton btnParametres;
 
-	private JLabel lblTitre;
+    private JLabel lblTitre;
 
-	public Accueil() {
-		this.setTitle("Accueil");
-		this.setSize(800, 600);
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.setLocationRelativeTo(null);
-		this.setResizable(false);
+    private FrameParametres frameParametres;
+    private FrameCreerQts   frameCreerQuestion;
+    private FrameCreerEval  frameCreerEval;
 
-		pnlBtns = new JPanel(new GridBagLayout());
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.insets = new Insets(10, 10, 10, 10);
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.gridx = 0;
-		gbc.gridy = GridBagConstraints.RELATIVE;
 
-		lblTitre = new JLabel("QCM Builder");
-		lblTitre.setFont(new Font("Arial", Font.BOLD, 30));
+    public Accueil()
+    {
+        this.setTitle("Accueil");
+        this.setSize(800, 600);
+        this.setLocationRelativeTo(null);
+        this.setResizable(false);
 
-		btnCreerQuestion = new JButton("Créer une question");
-		btnCreerEval = new JButton("Créer une évaluation");
-		btnParametres = new JButton("Paramètres");
+        this.pnlBtns           = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets             = new Insets(10, 10, 10, 10);
+        gbc.fill               = GridBagConstraints.HORIZONTAL;
+        gbc.gridx              = 0;
+        gbc.gridy              = GridBagConstraints.RELATIVE;
 
-		Dimension btnSize = new Dimension(200, 50);
-		btnCreerQuestion.setPreferredSize(btnSize);
-		btnCreerEval.setPreferredSize(btnSize);
-		btnParametres.setPreferredSize(btnSize);
+        this.lblTitre = new JLabel("QCM Builder");
+        this.lblTitre.setFont(new Font("Arial", Font.BOLD, 30));
 
-		pnlBtns.add(lblTitre);
-		pnlBtns.add(btnCreerQuestion, gbc);
-		pnlBtns.add(btnCreerEval, gbc);
-		pnlBtns.add(btnParametres, gbc);
+        this.btnCreerEval     = new JButton("Créer une évaluation");
+        this.btnCreerQuestion = new JButton("Créer une question");
+        this.btnParametres    = new JButton("Paramètres");
 
-		this.add(pnlBtns);
+        Dimension btnSize = new Dimension(200, 50);
+        this.btnCreerQuestion.setPreferredSize(btnSize);
+        this.btnCreerEval    .setPreferredSize(btnSize);
+        this.btnParametres   .setPreferredSize(btnSize);
 
-		this.setVisible(true);
-	}
+        this.btnCreerQuestion.addActionListener(this);
+        this.btnCreerEval    .addActionListener(this);
+        this.btnParametres   .addActionListener(this);
+
+        this.pnlBtns.add(lblTitre);
+        this.pnlBtns.add(btnCreerQuestion, gbc);
+        this.pnlBtns.add(btnCreerEval, gbc);
+        this.pnlBtns.add(btnParametres, gbc);
+
+        this.add(pnlBtns);
+
+        this.setVisible(true);
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    }
+
+
+    /*  -----------------  */
+    /*	 Autres méthodes   */
+    /*  -----------------  */
+
+    public void actionPerformed(ActionEvent e)
+    {
+        if(e.getSource() == this.btnParametres) {
+            this.frameParametres = new FrameParametres(this);
+        }
+
+        if(e.getSource() == this.btnCreerQuestion) {
+            this.frameCreerQuestion = new FrameCreerQts(this);
+        }
+
+        if(e.getSource() == this.btnCreerEval) {
+            this.frameCreerEval = new FrameCreerEval(this);
+        }
+    }
 }
