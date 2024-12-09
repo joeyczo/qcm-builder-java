@@ -1,4 +1,6 @@
-package Vue;
+package qcm.vue;
+
+import qcm.Controleur;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,9 +20,14 @@ public class Accueil extends JFrame implements ActionListener
     private FrameCreerQts   frameCreerQuestion;
     private FrameCreerEval  frameCreerEval;
 
+    private Controleur      ctrl;
 
-    public Accueil()
+
+    public Accueil(Controleur ctrl)
     {
+
+        this.ctrl = ctrl;
+
         this.setTitle("Accueil");
         this.setSize(800, 600);
         this.setLocationRelativeTo(null);
@@ -68,15 +75,15 @@ public class Accueil extends JFrame implements ActionListener
     public void actionPerformed(ActionEvent e)
     {
         if(e.getSource() == this.btnParametres) {
-            this.frameParametres = new FrameParametres(this);
+            this.frameParametres = new FrameParametres(this, this.ctrl);
         }
 
         if(e.getSource() == this.btnCreerQuestion) {
-            this.frameCreerQuestion = new FrameCreerQts(this);
+            this.frameCreerQuestion = new FrameCreerQts(this, this.ctrl);
         }
 
         if(e.getSource() == this.btnCreerEval) {
-            this.frameCreerEval = new FrameCreerEval(this);
+            this.frameCreerEval = new FrameCreerEval(this, this.ctrl);
         }
     }
 }

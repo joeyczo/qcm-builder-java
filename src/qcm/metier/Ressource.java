@@ -1,11 +1,12 @@
-package Metier;
+package qcm.metier;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Ressource 
 {
 	private String nom;
-	private ArrayList<Notion> alNotion;
+	private List<Notion> alNotion;
 
 	public Ressource(String nom)
 	{
@@ -17,5 +18,12 @@ public class Ressource
 
 	public void setNom(String nom) {this.nom = nom;}
 
-	public ArrayList<Notion> getAlNotion() {return alNotion;}
+	public List<Notion> getAlNotion() {return alNotion;}
+
+	public void ajouterNotion(Notion n) {
+
+		this.alNotion.add(n);
+
+	}
+
 }

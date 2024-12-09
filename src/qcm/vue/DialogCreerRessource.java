@@ -1,4 +1,4 @@
-package Vue;
+package qcm.vue;
 
 import javax.swing.*;
 import java.awt.*;

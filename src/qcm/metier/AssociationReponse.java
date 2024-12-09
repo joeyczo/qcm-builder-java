@@ -1,4 +1,4 @@
-package Metier;
+package qcm.metier;
 import java.util.*;
 public class AssociationReponse implements Reponse
 {

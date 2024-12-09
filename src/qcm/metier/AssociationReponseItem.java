@@ -1,4 +1,4 @@
-package Metier;
+package qcm.metier;
 
 public class AssociationReponseItem 
 {
