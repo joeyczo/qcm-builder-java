@@ -11,5 +11,9 @@ public enum DifficulteQuestion
 
 	DifficulteQuestion(String c){this.couleur = c;}
 
+	/**
+	 * Méthode pour obtenir la couleur de la difficulté.
+	 * @return la couleur de la difficulté en hexadécimal.
+	 */
 	public String getCouleur(){return this.couleur;}
 }
