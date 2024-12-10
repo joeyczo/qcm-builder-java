@@ -65,10 +65,12 @@ public class PanelParametre extends JPanel implements ActionListener
 
         if (e.getSource() == this.btnAjouterRessource)
         {
-            String nomRessource = JOptionPane.showInputDialog(this, "Entrez le nom de la ressource :", "Ajouter Ressource", JOptionPane.PLAIN_MESSAGE);
-            Ressource ressource = new Ressource(nomRessource);
+            String    nomRessource = JOptionPane.showInputDialog(this, "Entrez le nom de la ressource :", "Ajouter Ressource", JOptionPane.PLAIN_MESSAGE);
 
             if (nomRessource == null) return;
+            nomRessource = nomRessource.trim();
+
+            Ressource ressource    = new Ressource(nomRessource);
 
             // On vérifie si le nom n'existe pas dans la base de données des ressources
             if (this.ctrl.getRessource(ressource.getNom()) != null) {
@@ -77,7 +79,7 @@ public class PanelParametre extends JPanel implements ActionListener
             }
 
             // Permets de vérifier que les données sont ok
-            if (nomRessource.isEmpty() || nomRessource.trim().isEmpty()) {
+            if (nomRessource.isEmpty()) {
                 JOptionPane.showMessageDialog(this,  "Erreur : Nom de ressource vide", "Erreur lors de l'ajout de la ressource", JOptionPane.ERROR_MESSAGE);
                 return;
             }
@@ -93,11 +95,14 @@ public class PanelParametre extends JPanel implements ActionListener
         {
             if (this.ctrl.getNbRessource() != 0)
             {
-                String nomNotion    = JOptionPane.showInputDialog(this, "Entrez le nom de la notion :", "Ajouter Notion", JOptionPane.PLAIN_MESSAGE);
-                Notion notion       = new Notion(nomNotion);
-                Ressource ressource = this.ctrl.getRessource((String) this.lstDeroulante.getSelectedItem());
+                String    nomNotion = JOptionPane.showInputDialog(this, "Entrez le nom de la notion :", "Ajouter Notion", JOptionPane.PLAIN_MESSAGE);
 
                 if (nomNotion == null) return;
+                nomNotion = nomNotion.trim();
+
+                Notion    notion    = new Notion(nomNotion);
+                Ressource ressource = this.ctrl.getRessource((String) this.lstDeroulante.getSelectedItem());
+
 
                 // On vérifie si le nom n'existe pas dans la base de données des notions pour la ressource sélectionnée
                 if (this.ctrl.getNotion(ressource, notion.getNom()) != null) {
@@ -105,7 +110,7 @@ public class PanelParametre extends JPanel implements ActionListener
                     return;
                 }
 
-                if ( nomNotion.isEmpty() && nomNotion.trim().isEmpty() ) {
+                if ( nomNotion.isEmpty() || nomNotion.trim().isEmpty() ) {
                     JOptionPane.showMessageDialog(this,  "Erreur : Nom de notion vide", "Erreur lors de l'ajout de la notion", JOptionPane.ERROR_MESSAGE);
                     return;
                 }

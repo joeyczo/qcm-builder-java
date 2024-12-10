@@ -11,21 +11,21 @@ import java.util.ArrayList;
 
 public class PanelCreerQst extends JPanel implements ActionListener
 {
-    private FrameCreerQst frameParent;
-    private Controleur ctrl;
+    private FrameCreerQst           frameParent;
+    private Controleur              ctrl;
 
-    private JTextField txtNbPoints;
-    private JTextField txtTempsRep;
+    private JTextField              txtNbPoints;
+    private JTextField              txtTempsRep;
 
-    private JComboBox<String> cmbRessources;
-    private JComboBox<String> cmbNotions;
-    private JComboBox<String> cmbTypeQst;
+    private JComboBox<String>       cmbRessources;
+    private JComboBox<String>       cmbNotions;
+    private JComboBox<String>       cmbTypeQst;
 
-    private ArrayList<RoundButton> lstBtnDiff;
+    private ArrayList<RoundButton>  lstBtnDiff;
 
-    private JButton btnValider;
+    private JButton                 btnValider;
 
-    private JPanel pnlBoutons;
+    private JPanel                  pnlBoutons;
 
     public PanelCreerQst(FrameCreerQst parent, Controleur ctrl)
     {
@@ -133,8 +133,9 @@ public class PanelCreerQst extends JPanel implements ActionListener
         gbc.gridy = 3;
         this.add(this.btnValider, gbc);
 
-        this.cmbRessources  .addActionListener(this);
-        this.cmbNotions     .addActionListener(this);
+        this.cmbRessources.addActionListener(this);
+        this.cmbNotions.addActionListener(this);
+        this.cmbTypeQst.addActionListener(this);
 
         for(RoundButton btn : lstBtnDiff)
             btn.addActionListener(this);
@@ -179,7 +180,7 @@ public class PanelCreerQst extends JPanel implements ActionListener
 
         }
 
-        // Vérification et envoies des données
+        // Vérification et envoie des données
         if (e.getSource() == this.btnValider) {
 
             try {
@@ -189,7 +190,6 @@ public class PanelCreerQst extends JPanel implements ActionListener
                 String ressource        = (String) this.cmbRessources.getSelectedItem();
                 String notion           = (String) this.cmbNotions.getSelectedItem();
 
-                // TODO : Vérifier index
 
                 for (RoundButton btn : this.lstBtnDiff)
                     if (btn.isSelected()) diff = btn.getTexte();
@@ -209,10 +209,39 @@ public class PanelCreerQst extends JPanel implements ActionListener
                     return;
                 }
 
-                System.out.println(ressource);
-                System.out.println(notion);
+                if (this.cmbRessources.getSelectedIndex() == 0) {
+                    this.afficherMessageErreur("Veuillez sélectionner une ressource");
+                    return;
+                }
 
-                System.out.println("OK");
+                if (this.cmbTypeQst.getSelectedIndex() == 0) {
+                    this.afficherMessageErreur("Veuillez sélectionner un type de question");
+                    return;
+                }
+
+                Ressource rsc = this.ctrl.getRessource(ressource);
+                Notion    not = this.ctrl.getNotion(rsc, notion);
+
+                DifficulteQuestion difficulte = DifficulteQuestion.TRESFACILE;
+
+                switch (diff) {
+                    case "F"    -> difficulte = DifficulteQuestion.FACILE;
+                    case "M"    -> difficulte = DifficulteQuestion.MOYEN;
+                    case "D"    -> difficulte = DifficulteQuestion.DIFFICILE;
+                }
+
+                TypeQuestion type = TypeQuestion.QCM;
+
+                switch ((String) this.cmbTypeQst.getSelectedItem()) {
+                    case "ASSOCIATION"  -> type = TypeQuestion.ASSOCIATION;
+                    case "ELIMINATION"  -> type = TypeQuestion.ELIMINATION;
+                }
+
+                DonneesCreationQuestion data = new DonneesCreationQuestion(nbPoints, tempsReponse, rsc, not, difficulte, type);
+
+                System.out.println("C'EST BON ?!");
+                new FrameInfosQuestion(this.ctrl, data);
+                this.frameParent.fermerFenetre();
 
 
             } catch (NumberFormatException ne) {

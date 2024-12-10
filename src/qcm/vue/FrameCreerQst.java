@@ -25,4 +25,8 @@ public class FrameCreerQst extends JDialog
 
     }
 
+    public void fermerFenetre() {
+        this.dispose();
+    }
+
 }
