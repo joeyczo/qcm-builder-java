@@ -3,14 +3,11 @@ package qcm.vue;
 import qcm.Controleur;
 import qcm.metier.Ressource;
 import qcm.metier.Notion;
-import qcm.vue.Donnees.GrilleDonneesNotion;
+import qcm.vue.donnees.GrilleDonneesNotion;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class PanelParametre extends JPanel implements ActionListener
 {

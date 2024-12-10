@@ -4,12 +4,12 @@ import qcm.Controleur;
 
 import javax.swing.*;
 
-public class FrameCreerQts extends JDialog
+public class FrameCreerQst extends JDialog
 {
-    private PanelCreerQts pnlQuestions;
+    private PanelCreerQst pnlQuestions;
     private Controleur    ctrl;
 
-    public FrameCreerQts(JFrame parent, Controleur ctrl)
+    public FrameCreerQst(JFrame parent, Controleur ctrl)
     {
         super(parent, "Créer question", true);
         this.setSize(800, 600);
@@ -17,7 +17,7 @@ public class FrameCreerQts extends JDialog
 
         this.ctrl = ctrl;
 
-        this.pnlQuestions = new PanelCreerQts(this, ctrl);
+        this.pnlQuestions = new PanelCreerQst(this, ctrl);
 
         this.add(this.pnlQuestions);
 

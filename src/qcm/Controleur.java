@@ -3,6 +3,7 @@ package qcm;
 import qcm.metier.GestionDonnees;
 import qcm.metier.Notion;
 import qcm.metier.Ressource;
+import qcm.metier.TypeQuestion;
 import qcm.vue.*;
 
 public class Controleur {
@@ -15,11 +16,12 @@ public class Controleur {
 
 		this.accueil		= new Accueil(this);
 		this.gestionDonnees = new GestionDonnees(this);
-        this.ctrlDonnees    = new ControleurDonnees("LienFichier");
+        this.ctrlDonnees    = new ControleurDonnees("src/data/DonneesParam.csv", this);
+        this.ctrlDonnees.chargerDonnees();
 
         // TODO : A supprimer
 
-        Ressource dev = new Ressource("Dev");
+        /*Ressource dev = new Ressource("Dev");
         dev.ajouterNotion(new Notion("Tableaux"));
         dev.ajouterNotion(new Notion("Booléens"));
         dev.ajouterNotion(new Notion("Rien à foutre"));
@@ -36,7 +38,7 @@ public class Controleur {
         fat.ajouterNotion(new Notion("Ménage"));
         fat.ajouterNotion(new Notion("Gentil"));
 
-        this.gestionDonnees.ajouterRessource(fat);
+        this.gestionDonnees.ajouterRessource(fat);*/
 
 	}
 
@@ -48,7 +50,7 @@ public class Controleur {
     {
         if (this.gestionDonnees.ajouterRessource(ressource))
         {
-            this.ctrlDonnees.sauvegardeRessource(ressource.getNom());
+            this.ctrlDonnees.sauvegarder();
             return true;
         }
 
@@ -78,7 +80,7 @@ public class Controleur {
     public boolean ajouterNotion(Ressource ressource, Notion notion) {
         if (this.gestionDonnees.ajouterNotion(ressource, notion))
         {
-            this.ctrlDonnees.sauvegardeNotion(ressource.getNom(), notion.getNom());
+            this.ctrlDonnees.sauvegarder();
             return true;
         }
 

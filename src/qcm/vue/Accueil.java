@@ -17,7 +17,7 @@ public class Accueil extends JFrame implements ActionListener
     private JLabel lblTitre;
 
     private FrameParametres frameParametres;
-    private FrameCreerQts   frameCreerQuestion;
+    private FrameCreerQst frameCreerQuestion;
     private FrameCreerEval  frameCreerEval;
 
     private Controleur      ctrl;
@@ -79,7 +79,7 @@ public class Accueil extends JFrame implements ActionListener
         }
 
         if(e.getSource() == this.btnCreerQuestion) {
-            this.frameCreerQuestion = new FrameCreerQts(this, this.ctrl);
+            this.frameCreerQuestion = new FrameCreerQst(this, this.ctrl);
         }
 
         if(e.getSource() == this.btnCreerEval) {

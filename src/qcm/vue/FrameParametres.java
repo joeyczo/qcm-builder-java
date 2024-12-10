@@ -18,6 +18,7 @@ public class FrameParametres extends JDialog
         this.ctrl = ctrl;
         this.setSize(800, 600);
         this.setLocationRelativeTo(null);
+        this.setResizable(false);
 
         this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 

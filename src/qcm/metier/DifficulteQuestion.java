@@ -1,15 +1,19 @@
 package qcm.metier;
 
-public enum DifficulteQuestion 
+import java.awt.*;
+
+public enum DifficulteQuestion
 {
-	TRESFACILE("#82CE84"),
-	FACILE	  ("#737EC9"),
-	MOYEN	  ("#E6415B"),
-	DIFFICILE ("#827D7C");
+	TRESFACILE(new Color(130, 206, 132), "TF"),
+	FACILE	  (new Color(115, 126, 201), "F"),
+	MOYEN	  (new Color(230, 65, 91), "M"),
+	DIFFICILE (new Color(130, 125, 125), "D");
 
-	private String couleur;
+	private Color couleur;
+	private String texte;
 
-	DifficulteQuestion(String c){this.couleur = c;}
+	DifficulteQuestion (Color c, String t) {this.couleur = c;this.texte = t;}
 
-	public String getCouleur(){return this.couleur;}
+	public Color getCouleur()	{	return this.couleur;	}
+	public String getTexte  ()	{	return this.texte;  	}
 }

@@ -4,5 +4,5 @@ public enum TypeQuestion
 {
 	QCM			 (),
 	ASSOCIATION  (),
-	ELIMINATION  ();
+	ELIMINATION  ()
 }
