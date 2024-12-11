@@ -8,22 +8,32 @@ import java.util.ArrayList;
 public class PanelAssociation extends JPanel implements ActionListener
 {
     private JTextArea txtQuestion;
+    private JScrollPane scQuestion;
+
     private ArrayList<JTextField> lstTxtReponses;
     private ArrayList<JButton> lstBtnSupprimerGauche; // Boutons à gauche
     private ArrayList<JButton> lstBtnSupprimerDroite; // Boutons à droite
 
     private JButton btnAjouterReponse;
     private JButton btnValider;
+    private JButton btnExplication;
 
     public PanelAssociation()
     {
         this.txtQuestion = new JTextArea("Ajouter une question", 10, 20);
+        this.scQuestion = new JScrollPane(this.txtQuestion, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+
         this.lstTxtReponses = new ArrayList<>();
         this.lstBtnSupprimerGauche = new ArrayList<>();
         this.lstBtnSupprimerDroite = new ArrayList<>();
 
         this.btnAjouterReponse = new JButton("+");
         this.btnValider = new JButton("Valider");
+        this.btnExplication = new JButton("Explication");
+
+        Dimension buttonSize = new Dimension(80, 30); // Par exemple, 80x30
+        this.btnAjouterReponse.setPreferredSize(buttonSize);
+        this.btnExplication.setPreferredSize(buttonSize);
 
         // Ajouter deux réponses par défaut
         addReponse("Ajouter une définition/réponse");
@@ -34,6 +44,8 @@ public class PanelAssociation extends JPanel implements ActionListener
 
         // Activation des événements
         this.btnAjouterReponse.addActionListener(this);
+        this.btnExplication.addActionListener(this);
+        this.btnValider.addActionListener(this);
 
         // Afficher l'IHM
         majIHM();
@@ -57,6 +69,27 @@ public class PanelAssociation extends JPanel implements ActionListener
                     break;
                 }
             }
+        }
+
+        if(e.getSource() == this.btnExplication){
+            //JOptionPane.showInputDialog(this, "Entrez une explication à la réponse", "Ajouter explication", JOptionPane.PLAIN_MESSAGE);
+
+            JTextArea textArea = new JTextArea(10, 30);
+            JScrollPane scrollPane = new JScrollPane(textArea);
+
+            int result = JOptionPane.showConfirmDialog(
+                    this,
+                    scrollPane,
+                    "Ajouter explication",
+                    JOptionPane.OK_CANCEL_OPTION,
+                    JOptionPane.PLAIN_MESSAGE
+            );
+
+            if (result == JOptionPane.OK_OPTION) {
+                String explication = textArea.getText();
+                System.out.println("Explication entrée : " + explication);
+            }
+
         }
     }
 
@@ -90,15 +123,19 @@ public class PanelAssociation extends JPanel implements ActionListener
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.weightx = 1.0;
 
-        // Réafficher la question
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.gridwidth = 2; // La question prend toute la ligne
-        this.add(this.txtQuestion, gbc);
+        this.add(new JLabel("Question :"), gbc);
+
+        // Réafficher la question
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.gridwidth = 4; // La question prend toute la ligne
+        this.add(this.scQuestion, gbc);
 
         // Réafficher les réponses avec leurs boutons, 2 par ligne
         gbc.gridwidth = 1; // Réinitialiser gridwidth
-        int yIndex = 1;
+        int yIndex = 2;
         int xIndex = 0;
 
         for (int i = 0; i < this.lstTxtReponses.size(); i += 2) {
@@ -127,11 +164,17 @@ public class PanelAssociation extends JPanel implements ActionListener
         }
 
         // Ajouter le bouton "+" en bas à gauche
-        gbc.gridx = 0;
+        gbc.gridx = 1;
         gbc.gridy = yIndex;
-        gbc.gridwidth = 1;
+        //gbc.gridwidth = 1;
         gbc.anchor = GridBagConstraints.WEST;
         this.add(this.btnAjouterReponse, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = yIndex;
+        //gbc.gridwidth = 1;
+        gbc.anchor = GridBagConstraints.WEST;
+        this.add(this.btnExplication, gbc);
 
         // Redessiner et revalider l'IHM
         this.revalidate();

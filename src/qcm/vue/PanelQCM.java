@@ -34,7 +34,6 @@ public class PanelQCM extends JPanel implements ActionListener
         this.btnEnregistrer = new JButton   ("Enregistrer");
         this.panelAjouter   = new JPanel    ();
 
-        //this.btnAjouter.setIcon(new Icon());
 
 
         this.setLayout(new GridBagLayout());
@@ -47,30 +46,37 @@ public class PanelQCM extends JPanel implements ActionListener
         this.add(new JLabel("Question"), gbc);
 
         gbc.gridy     = 1;
-        gbc.gridwidth = 3;
+        gbc.gridwidth = 5;
         gbc.ipadx     = 600;
         gbc.ipady     = 50;
-        this.add(scrollPane, gbc);
+        this.add(this.scrollPane, gbc);
 
         gbc.gridwidth = 1;
         gbc.gridy     = 2;
         gbc.ipadx     = 0;
         gbc.ipady     = 0;
-
-        this.add(panelAjouter, gbc);
+        this.add(this.panelAjouter, gbc);
 
 
         gbc.gridy = 3;
-        this.add(btnAjouter, gbc);
+        this.btnAjouter.setOpaque(false);
+        this.btnAjouter.setContentAreaFilled(false);
+        this.btnAjouter.setBorderPainted(false);
+        this.btnAjouter.setIcon(new ImageIcon("src/data/img/add.png"));
+        this.add(this.btnAjouter, gbc);
 
 
         gbc.gridx = 1;
         gbc.gridy = 3;
-        this.add(btnInfoSupp, gbc);
+        this.btnInfoSupp.setOpaque(false);
+        this.btnInfoSupp.setContentAreaFilled(false);
+        this.btnInfoSupp.setBorderPainted(false);
+        this.btnInfoSupp.setIcon(new ImageIcon("src/data/img/edit.png"));
+        this.add(this.btnInfoSupp, gbc);
 
         gbc.gridx = 2;
         gbc.gridy = 3;
-        this.add(btnEnregistrer, gbc);
+        this.add(this.btnEnregistrer, gbc);
 
 
         this.btnAjouter    .addActionListener(this);
@@ -79,18 +85,14 @@ public class PanelQCM extends JPanel implements ActionListener
     }
 
 
-    /*
-        gbc.gridx = 0; // Représente l'indice de la colonne dans laquelle le composant sera placé.
-        gbc.gridy = 0; // Représente l'indice de la ligne dans laquelle le composant sera placé.
-        gbc.gridwidth = 1; // Détermine le nombre de colonnes que le composant occupera.
-        gbc.gridheight = 1; // Détermine le nombre de lignes que le composant occupera.
-        gbc.weightx = 1.0; // Détermine l'importance relative de l'espace horizontal que le composant doit occuper lorsqu'il y a de l'espace disponible.
-        gbc.weighty = 1.0; // Semblable à weightx, mais pour l'espace vertical.
-        gbc.fill = GridBagConstraints.BOTH; // remplissage
-     */
-
     public void actionPerformed(ActionEvent e)
     {
+
+        if ( e.getSource() == this.btnAjouter )
+        {
+
+        }
+
     }
 
 }

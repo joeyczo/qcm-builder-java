@@ -14,7 +14,7 @@ import javax.swing.*;
 public class PanelEval extends JPanel implements ActionListener
 {
     private JButton           btnSubmit;
-    private JComboBox<String> lstDeroulante;
+    private JComboBox<String> ddlstRessource;
     private JRadioButton      rbOui, rbNon;
 
     private FrameCreerEval frameParent;
@@ -37,7 +37,7 @@ public class PanelEval extends JPanel implements ActionListener
         Ressource premiereRessource = (this.ctrl.getNbRessource() == 0) ? null : this.ctrl.getRessource(0);
 
         this.pnl = new JPanel();
-        this.lstDeroulante    = new JComboBox<>(tabRessource);
+        this.ddlstRessource    = new JComboBox<>(tabRessource);
         this.tblGrilleDonnees = new JTable ( new GrilleDonneesEval(this.ctrl, premiereRessource) );
         this.tblGrilleDonnees.setFillsViewportHeight(true);
 
@@ -52,8 +52,8 @@ public class PanelEval extends JPanel implements ActionListener
 
         JScrollPane spGrilleDonnees = new JScrollPane( this.tblGrilleDonnees );
 
-        this.pnl.add(this.lstDeroulante);
-        //this.add(new JLabel(new ImageIcon("./Donnees/time.png")));
+        this.pnl.add(this.ddlstRessource);
+        this.pnl.add(new JLabel(new ImageIcon("src/data/img/time.png")));
         this.pnl.add(rbOui);
         this.pnl.add(rbNon);
 
@@ -63,15 +63,54 @@ public class PanelEval extends JPanel implements ActionListener
 
         this.rbOui.addActionListener(this);
         this.rbNon.addActionListener(this);
-        this.lstDeroulante.addActionListener(this);
+        this.ddlstRessource.addActionListener(this);
     }
 
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == this.lstDeroulante) {
-            Ressource ressource = this.ctrl.getRessource((String) this.lstDeroulante.getSelectedItem());
+
+
+        if (e.getSource() == this.ddlstRessource) {
+            Ressource ressource = this.ctrl.getRessource((String) this.ddlstRessource.getSelectedItem());
             this.tblGrilleDonnees.setModel(new GrilleDonneesEval(this.ctrl, ressource));
             this.tblGrilleDonnees.revalidate();
             this.tblGrilleDonnees.repaint();
         }
+
+        // Action lors de la création d'une évaluation
+        if (e.getSource() == this.btnSubmit) {
+
+            /*  ----------------------  */
+            /*	 Vérification données   */
+            /*  ----------------------  */
+
+            Ressource   rsc  = this.ctrl.getRessource((String) this.ddlstRessource.getSelectedItem());
+            boolean     time = this.rbOui.isSelected();
+
+            if (rsc == null) {
+                this.afficherMessageErreur("Impossible de récupérer la ressource !");
+                return;
+            }
+
+            if (!time && !this.rbNon.isSelected()) {
+                this.afficherMessageErreur("Veuillez sélectionner si l'évaluation est chronométré ou non");
+                return;
+            }
+
+            // TODO : Sauvegarde dans un fichier
+
+
+        }
+
+    }
+
+
+    /**
+     * Afficher un message d'erreur au client
+     * @param message Message à afficher
+     */
+    private void afficherMessageErreur(String message) {
+
+        JOptionPane.showMessageDialog(this, message, "Erreur lors de la validation des données", JOptionPane.ERROR_MESSAGE);
+
     }
 }
