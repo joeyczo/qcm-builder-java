@@ -26,4 +26,8 @@ public class Ressource
 
 	}
 
+
+	public boolean equals(Ressource r) {
+		return this.nom.equals(r.getNom());
+	}
 }

@@ -10,13 +10,18 @@ public class PanelAssociation extends JPanel implements ActionListener
     private JTextArea txtQuestion;
     private JScrollPane scQuestion;
 
-    private ArrayList<JTextField> lstTxtReponses;
+    private ArrayList<JTextArea> lstTxtReponses;
+    private ArrayList<JTextArea> lstTxtDefinitions;
     private ArrayList<JButton> lstBtnSupprimerGauche; // Boutons à gauche
     private ArrayList<JButton> lstBtnSupprimerDroite; // Boutons à droite
 
-    private JButton btnAjouterReponse;
-    private JButton btnValider;
+    private JButton btnAjouter;
+    private JButton btnRelier;
     private JButton btnExplication;
+
+    private JTextArea selectedDefinition;
+    private JTextArea selectedReponse;
+    private boolean relierMode;
 
     public PanelAssociation()
     {
@@ -24,28 +29,30 @@ public class PanelAssociation extends JPanel implements ActionListener
         this.scQuestion = new JScrollPane(this.txtQuestion, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
         this.lstTxtReponses = new ArrayList<>();
+        this.lstTxtDefinitions = new ArrayList<>();
         this.lstBtnSupprimerGauche = new ArrayList<>();
         this.lstBtnSupprimerDroite = new ArrayList<>();
 
-        this.btnAjouterReponse = new JButton("+");
-        this.btnValider = new JButton("Valider");
+        this.btnAjouter = new JButton("Ajouter");
+        this.btnRelier = new JButton("Relier");
         this.btnExplication = new JButton("Explication");
 
         Dimension buttonSize = new Dimension(80, 30); // Par exemple, 80x30
-        this.btnAjouterReponse.setPreferredSize(buttonSize);
+        this.btnAjouter.setPreferredSize(buttonSize);
+        this.btnRelier.setPreferredSize(buttonSize);
         this.btnExplication.setPreferredSize(buttonSize);
 
-        // Ajouter deux réponses par défaut
-        addReponse("Ajouter une définition/réponse");
-        addReponse("Ajouter une définition/réponse");
+        // Ajouter deux réponses et définitions par défaut
+        addDefinition("Ajouter une définition");
+        addReponse("Ajouter une réponse");
 
         // Layout
         this.setLayout(new GridBagLayout());
 
         // Activation des événements
-        this.btnAjouterReponse.addActionListener(this);
+        this.btnAjouter.addActionListener(this);
+        this.btnRelier.addActionListener(this);
         this.btnExplication.addActionListener(this);
-        this.btnValider.addActionListener(this);
 
         // Afficher l'IHM
         majIHM();
@@ -54,26 +61,40 @@ public class PanelAssociation extends JPanel implements ActionListener
     @Override
     public void actionPerformed(ActionEvent e)
     {
-        if (e.getSource() == this.btnAjouterReponse) {
-            // Ajouter une nouvelle réponse
-            addReponse("Ajouter une définition/réponse");
+        if (e.getSource() == this.btnAjouter) {
+            // Ajouter une nouvelle définition et une nouvelle réponse
+            addDefinition("Ajouter une définition");
+            addReponse("Ajouter une réponse");
             majIHM();
+        } else if (e.getSource() == this.btnRelier) {
+            // Activer le mode relier
+            this.relierMode = !this.relierMode;
+            if (relierMode) {
+                this.btnRelier.setText("Relier (actif)");
+            } else {
+                this.btnRelier.setText("Relier");
+                deselectionner();
+            }
         } else {
-            // Gestion de la suppression des réponses
-            for (int i = 0; i < this.lstBtnSupprimerGauche.size(); i++) {
-                if (e.getSource() == this.lstBtnSupprimerGauche.get(i) || e.getSource() == this.lstBtnSupprimerDroite.get(i)) {
-                    this.lstTxtReponses.remove(i);
-                    this.lstBtnSupprimerGauche.remove(i);
-                    this.lstBtnSupprimerDroite.remove(i);
-                    majIHM();
-                    break;
+            // Gestion de la sélection des définitions/réponses en mode relier
+            for (int i = 0; i < this.lstTxtDefinitions.size(); i++) {
+                if (e.getSource() == this.lstTxtDefinitions.get(i)) {
+                    if (relierMode) {
+                        selectDefinition(this.lstTxtDefinitions.get(i));
+                    }
+                }
+            }
+
+            for (int i = 0; i < this.lstTxtReponses.size(); i++) {
+                if (e.getSource() == this.lstTxtReponses.get(i)) {
+                    if (relierMode) {
+                        selectReponse(this.lstTxtReponses.get(i));
+                    }
                 }
             }
         }
 
         if(e.getSource() == this.btnExplication){
-            //JOptionPane.showInputDialog(this, "Entrez une explication à la réponse", "Ajouter explication", JOptionPane.PLAIN_MESSAGE);
-
             JTextArea textArea = new JTextArea(10, 30);
             JScrollPane scrollPane = new JScrollPane(textArea);
 
@@ -89,28 +110,97 @@ public class PanelAssociation extends JPanel implements ActionListener
                 String explication = textArea.getText();
                 System.out.println("Explication entrée : " + explication);
             }
-
         }
+    }
+
+    private void selectDefinition(JTextArea definition) {
+        if (this.selectedDefinition != null) {
+            this.selectedDefinition.setBackground(Color.WHITE); // Désélectionner la précédente
+        }
+        this.selectedDefinition = definition;
+        this.selectedDefinition.setBackground(Color.YELLOW); // Mettre en surbrillance
+        checkIfLinked();
+    }
+
+    private void selectReponse(JTextArea reponse) {
+        if (this.selectedReponse != null) {
+            this.selectedReponse.setBackground(Color.WHITE); // Désélectionner la précédente
+        }
+        this.selectedReponse = reponse;
+        this.selectedReponse.setBackground(Color.YELLOW); // Mettre en surbrillance
+        checkIfLinked();
+    }
+
+    private void checkIfLinked() {
+        if (this.selectedDefinition != null && this.selectedReponse != null) {
+            // Créer la liaison entre la définition et la réponse
+            System.out.println("Définition reliée à la réponse : " +
+                    this.selectedDefinition.getText() + " -> " + this.selectedReponse.getText());
+
+            // Réinitialiser la sélection
+            deselectionner();
+        }
+    }
+
+    private void deselectionner() {
+        if (this.selectedDefinition != null) {
+            this.selectedDefinition.setBackground(Color.WHITE);
+        }
+        if (this.selectedReponse != null) {
+            this.selectedReponse.setBackground(Color.WHITE);
+        }
+        this.selectedDefinition = null;
+        this.selectedReponse = null;
     }
 
     private void addReponse(String text)
     {
         // Ajouter une nouvelle réponse avec un bouton de suppression
-        JTextField newReponse = new JTextField(text, 20);
-        JButton btnSupprimerGauche = new JButton("X");
+        JTextArea newReponse = new JTextArea(text, 2, 20);
+        JScrollPane scReponse = new JScrollPane(newReponse, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        //newReponse.setEditable(false);
+
         JButton btnSupprimerDroite = new JButton("X");
 
         // Rendre les boutons plus petits (par exemple 20x20)
-        btnSupprimerGauche.setPreferredSize(new Dimension(20, 20));
         btnSupprimerDroite.setPreferredSize(new Dimension(20, 20));
 
-        // Ajouter les actions listeners pour les boutons
-        btnSupprimerGauche.addActionListener(this);
-        btnSupprimerDroite.addActionListener(this);
+        // Ajouter un action listener pour sélectionner en mode relier
+        newReponse.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                if (relierMode) {
+                    selectReponse(newReponse);
+                }
+            }
+        });
 
         this.lstTxtReponses.add(newReponse);
-        this.lstBtnSupprimerGauche.add(btnSupprimerGauche);
         this.lstBtnSupprimerDroite.add(btnSupprimerDroite);
+    }
+
+    private void addDefinition(String text)
+    {
+        // Ajouter une nouvelle définition avec un bouton de suppression
+        JTextArea newDefinition = new JTextArea(text, 2, 20);
+        JScrollPane scDefinition = new JScrollPane(newDefinition, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        //newDefinition.setEditable(false);
+
+        JButton btnSupprimerGauche = new JButton("X");
+
+        // Rendre les boutons plus petits (par exemple 20x20)
+        btnSupprimerGauche.setPreferredSize(new Dimension(20, 20));
+
+        // Ajouter un action listener pour sélectionner en mode relier
+        newDefinition.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                if (relierMode) {
+                    selectDefinition(newDefinition);
+                }
+            }
+        });
+
+        this.lstTxtDefinitions.add(newDefinition);
+        this.lstBtnSupprimerGauche.add(btnSupprimerGauche);
     }
 
     private void majIHM()
@@ -133,50 +223,44 @@ public class PanelAssociation extends JPanel implements ActionListener
         gbc.gridwidth = 4; // La question prend toute la ligne
         this.add(this.scQuestion, gbc);
 
-        // Réafficher les réponses avec leurs boutons, 2 par ligne
+        // Réafficher les définitions et réponses avec leurs boutons
         gbc.gridwidth = 1; // Réinitialiser gridwidth
         int yIndex = 2;
-        int xIndex = 0;
 
-        for (int i = 0; i < this.lstTxtReponses.size(); i += 2) {
-            // Bouton de suppression à gauche de la première réponse
+        for (int i = 0; i < this.lstTxtDefinitions.size(); i++) {
+            // Bouton de suppression à gauche de la définition
             gbc.gridx = 0;
             gbc.gridy = yIndex;
             this.add(this.lstBtnSupprimerGauche.get(i), gbc);
 
-            // Première réponse (colonne 1)
+            // Première définition (colonne 1)
             gbc.gridx = 1;
-            this.add(this.lstTxtReponses.get(i), gbc);
+            JScrollPane scDefinition = new JScrollPane(this.lstTxtDefinitions.get(i), JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+            this.add(scDefinition, gbc);
 
-            // Si une deuxième réponse existe dans cette paire
-            if (i + 1 < this.lstTxtReponses.size()) {
-                // Seconde réponse (colonne 2)
-                gbc.gridx = 2;
-                this.add(this.lstTxtReponses.get(i + 1), gbc);
+            // Bouton de suppression à droite de la réponse
+            gbc.gridx = 2;
+            this.add(this.lstBtnSupprimerDroite.get(i), gbc);
 
-                // Bouton de suppression à droite de la deuxième réponse
-                gbc.gridx = 3;
-                this.add(this.lstBtnSupprimerDroite.get(i + 1), gbc);
-            }
+            // Première réponse (colonne 3)
+            gbc.gridx = 3;
+            JScrollPane scReponse = new JScrollPane(this.lstTxtReponses.get(i), JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+            this.add(scReponse, gbc);
 
-            // Passer à la ligne suivante après deux réponses
             yIndex++;
         }
 
-        // Ajouter le bouton "+" en bas à gauche
-        gbc.gridx = 1;
-        gbc.gridy = yIndex;
-        //gbc.gridwidth = 1;
-        gbc.anchor = GridBagConstraints.WEST;
-        this.add(this.btnAjouterReponse, gbc);
-
+        // Ajouter le bouton "Ajouter" et "Relier"
         gbc.gridx = 0;
         gbc.gridy = yIndex;
-        //gbc.gridwidth = 1;
-        gbc.anchor = GridBagConstraints.WEST;
-        this.add(this.btnExplication, gbc);
+        gbc.gridwidth = 4;
+        JPanel pnlButtons = new JPanel();
+        pnlButtons.add(this.btnAjouter);
+        pnlButtons.add(this.btnRelier);
+        pnlButtons.add(this.btnExplication);
+        this.add(pnlButtons, gbc);
 
-        // Redessiner et revalider l'IHM
+        // Rafraîchir l'interface
         this.revalidate();
         this.repaint();
     }

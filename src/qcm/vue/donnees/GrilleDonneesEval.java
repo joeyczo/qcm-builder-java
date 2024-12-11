@@ -12,13 +12,16 @@ public class GrilleDonneesEval extends AbstractTableModel
 {
     private Controleur  ctrl;
 
+    private Ressource   rsc;
+
     private String[]    tabEntetes;
     private Object[][]  tabDonnees;
     private int         nbLigne;
 
     public GrilleDonneesEval (Controleur ctrl, Ressource r)
     {
-        this.ctrl = ctrl;
+        this.ctrl   = ctrl;
+        this.rsc    = r;
         Notion notion;
 
         List<Notion> lstNotions = new ArrayList<Notion>();
@@ -72,7 +75,13 @@ public class GrilleDonneesEval extends AbstractTableModel
             if (this.getValueAt(row, col) instanceof Boolean) {
                 this.tabDonnees[row][col] = value;
 
-                if (!(boolean) value) this.resetLigne(row);
+                // On ajoute à la liste la notion à générer
+                if (!(boolean) value) {
+                    this.resetLigne(row);
+                    this.ctrl.supprimerNotion(this.getNotionLigne(row));
+                } else {
+                    this.ctrl.ajouterNotion(this.getNotionLigne(row));
+                }
 
                 this.fireTableCellUpdated(row, col);
             }
@@ -86,6 +95,19 @@ public class GrilleDonneesEval extends AbstractTableModel
             }
 
         }
+    }
+
+    /**
+     * Récupérer la Notion associée à une ligne du tableau
+     * @param lig Index de la ligne du tableau
+     * @return La Notion si elle existe, sinon Null
+     */
+    private Notion getNotionLigne (int lig) {
+
+        if (lig < 0 || lig >= this.nbLigne) return null;
+
+        return this.ctrl.getNotion(this.rsc, (String) this.tabDonnees[lig][0]);
+
     }
 
     private void sommeLigne(int lig) {

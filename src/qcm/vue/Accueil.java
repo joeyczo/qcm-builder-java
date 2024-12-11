@@ -16,6 +16,8 @@ public class Accueil extends JFrame implements ActionListener
 
     private JLabel lblTitre;
 
+    private int caca;
+
     private FrameParametres frameParametres;
     private FrameCreerQst frameCreerQuestion;
     private FrameCreerEval  frameCreerEval;

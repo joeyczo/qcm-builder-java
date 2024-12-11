@@ -7,20 +7,19 @@ import qcm.vue.donnees.GrilleDonneesEval;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import java.util.*;
-import java.util.List;
+import java.io.File;
 import javax.swing.*;
 
 public class PanelEval extends JPanel implements ActionListener
 {
-    private JButton           btnSubmit;
-    private JComboBox<String> ddlstRessource;
-    private JRadioButton      rbOui, rbNon;
+    private JButton             btnSubmit;
+    private JComboBox<String>   ddlstRessource;
+    private JRadioButton        rbOui, rbNon;
 
-    private FrameCreerEval frameParent;
-    private JTable         tblGrilleDonnees;
-    private JPanel         pnl;
-    private String[]       tabLbl;
+    private FrameCreerEval      frameParent;
+    private JTable              tblGrilleDonnees;
+    private JPanel              panelHaut;
+    private String[]            tabLbl;
 
     private Controleur ctrl;
 
@@ -36,7 +35,7 @@ public class PanelEval extends JPanel implements ActionListener
 
         Ressource premiereRessource = (this.ctrl.getNbRessource() == 0) ? null : this.ctrl.getRessource(0);
 
-        this.pnl = new JPanel();
+        this.panelHaut = new JPanel();
         this.ddlstRessource    = new JComboBox<>(tabRessource);
         this.tblGrilleDonnees = new JTable ( new GrilleDonneesEval(this.ctrl, premiereRessource) );
         this.tblGrilleDonnees.setFillsViewportHeight(true);
@@ -52,18 +51,19 @@ public class PanelEval extends JPanel implements ActionListener
 
         JScrollPane spGrilleDonnees = new JScrollPane( this.tblGrilleDonnees );
 
-        this.pnl.add(this.ddlstRessource);
-        this.pnl.add(new JLabel(new ImageIcon("src/data/img/time.png")));
-        this.pnl.add(rbOui);
-        this.pnl.add(rbNon);
+        this.panelHaut.add(this.ddlstRessource);
+        this.panelHaut.add(new JLabel(new ImageIcon("src/data/img/time.png")));
+        this.panelHaut.add(rbOui);
+        this.panelHaut.add(rbNon);
 
-        this.add(this.pnl,        BorderLayout.NORTH );
+        this.add(this.panelHaut,        BorderLayout.NORTH );
         this.add(spGrilleDonnees, BorderLayout.CENTER);
         this.add(this.btnSubmit,  BorderLayout.SOUTH );
 
         this.rbOui.addActionListener(this);
         this.rbNon.addActionListener(this);
         this.ddlstRessource.addActionListener(this);
+        this.btnSubmit.addActionListener(this);
     }
 
     public void actionPerformed(ActionEvent e) {
@@ -85,6 +85,7 @@ public class PanelEval extends JPanel implements ActionListener
 
             Ressource   rsc  = this.ctrl.getRessource((String) this.ddlstRessource.getSelectedItem());
             boolean     time = this.rbOui.isSelected();
+            int         nbSe = this.ctrl.getNotionsSelected();
 
             if (rsc == null) {
                 this.afficherMessageErreur("Impossible de récupérer la ressource !");
@@ -96,7 +97,19 @@ public class PanelEval extends JPanel implements ActionListener
                 return;
             }
 
-            // TODO : Sauvegarde dans un fichier
+            if (nbSe <= 0) {
+                this.afficherMessageErreur("Veullez sélectionner au moins une ressource dans le tableau !");
+                return;
+            }
+
+            JFileChooser desti = new JFileChooser();
+            int returnValue = desti.showSaveDialog(this);
+            if (returnValue == JFileChooser.APPROVE_OPTION) {
+
+                File selectedFile = desti.getSelectedFile();
+                System.out.println(selectedFile.getPath());
+
+            }
 
 
         }
