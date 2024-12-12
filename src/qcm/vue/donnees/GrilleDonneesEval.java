@@ -90,6 +90,7 @@ public class GrilleDonneesEval extends AbstractTableModel
                 if ((boolean) this.getValueAt(row, 1)) {
                     this.tabDonnees[row][col] = value;
                     this.sommeLigne(row);
+                    this.ctrl.ajouterDifficulteQuestion(this.getNotionLigne(row), this.getDifficulteColonne(col), (Integer) value);
                     this.fireTableCellUpdated(row, col);
                 }
             }
@@ -107,6 +108,27 @@ public class GrilleDonneesEval extends AbstractTableModel
         if (lig < 0 || lig >= this.nbLigne) return null;
 
         return this.ctrl.getNotion(this.rsc, (String) this.tabDonnees[lig][0]);
+
+    }
+
+    /**
+     * Permets de récupérer la difficulté de la colonne sélectionnée
+     * @param col Index de la colonne
+     * @return La difficulté
+     */
+    private DifficulteQuestion getDifficulteColonne (int col) {
+
+        int i = 1;
+        DifficulteQuestion dif = DifficulteQuestion.FACILE;
+
+        for (DifficulteQuestion d : DifficulteQuestion.values())
+        {
+            i++;
+            dif = d;
+            if (i == col) break;
+        }
+
+        return dif;
 
     }
 

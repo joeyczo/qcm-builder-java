@@ -13,14 +13,14 @@ public class Accueil extends JFrame implements ActionListener
     private JButton btnCreerQuestion;
     private JButton btnCreerEval;
     private JButton btnParametres;
+    private JButton btnListeQst;
 
     private JLabel lblTitre;
 
-    private int caca;
-
     private FrameParametres frameParametres;
-    private FrameCreerQst frameCreerQuestion;
+    private FrameCreerQst   frameCreerQuestion;
     private FrameCreerEval  frameCreerEval;
+    private FrameListeQst   frameListeQst;
 
     private Controleur      ctrl;
 
@@ -47,20 +47,24 @@ public class Accueil extends JFrame implements ActionListener
 
         this.btnCreerEval     = new JButton("Créer une évaluation");
         this.btnCreerQuestion = new JButton("Créer une question");
+        this.btnListeQst      = new JButton("Liste des Questions");
         this.btnParametres    = new JButton("Paramètres");
 
         Dimension btnSize = new Dimension(200, 50);
         this.btnCreerQuestion.setPreferredSize(btnSize);
         this.btnCreerEval    .setPreferredSize(btnSize);
         this.btnParametres   .setPreferredSize(btnSize);
+        this.btnListeQst     .setPreferredSize(btnSize);
 
         this.btnCreerQuestion.addActionListener(this);
         this.btnCreerEval    .addActionListener(this);
         this.btnParametres   .addActionListener(this);
+        this.btnListeQst     .addActionListener(this);
 
         this.pnlBtns.add(lblTitre);
         this.pnlBtns.add(btnCreerQuestion, gbc);
         this.pnlBtns.add(btnCreerEval, gbc);
+        this.pnlBtns.add(btnListeQst, gbc);
         this.pnlBtns.add(btnParametres, gbc);
 
         this.add(pnlBtns);
@@ -86,6 +90,10 @@ public class Accueil extends JFrame implements ActionListener
 
         if(e.getSource() == this.btnCreerEval) {
             this.frameCreerEval = new FrameCreerEval(this, this.ctrl);
+        }
+
+        if(e.getSource() == this.btnListeQst){
+            this.frameListeQst = new FrameListeQst(this,this.ctrl);
         }
     }
 }

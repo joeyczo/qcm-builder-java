@@ -1,10 +1,7 @@
 package qcm.metier;
 
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class GenerationEvals {
 
@@ -67,13 +64,13 @@ public class GenerationEvals {
 
         if (!this.mapNotions.containsKey(n)) return false;
 
-        Map<DifficulteQuestion, Integer> newMap = new HashMap<>();
+        Map<DifficulteQuestion, Integer> mapNotion = this.mapNotions.get(n);
 
-        System.out.println("Ajout de la difficulté " + diff.getTexte() + " (" + num + ") pour la Notion " + n.getNom());
+        System.out.println("Ajout de la difficulté " + diff + " (" + num + ") pour la Notion " + n.getNom());
 
-        newMap.put(diff, num);
+        mapNotion.put(diff, num);
 
-        this.mapNotions.put(n, newMap);
+        this.mapNotions.put(n, mapNotion);
 
         return true;
     }
@@ -86,6 +83,34 @@ public class GenerationEvals {
     public int getNotionSelected () {
 
         return this.mapNotions.size();
+
+    }
+
+    /**
+     * Permets de connaître le nombre de questions qui seront générés
+     * @return Le nombre de questions généré dans l'évaluation, -1 si aucune
+     */
+    public int getNbQuestions() {
+
+        Integer nbQuestion = 0;
+
+        if (this.mapNotions.isEmpty()) return -1;
+
+        Set<Notion> ensNotions  = this.mapNotions.keySet();
+
+        for (Notion n : ensNotions) {
+
+            Set<DifficulteQuestion> ensDiff = this.mapNotions.get(n).keySet();
+
+            for (DifficulteQuestion d : ensDiff) {
+                nbQuestion += this.mapNotions.get(n).get(d);
+                System.out.println("Ajout de +" + this.mapNotions.get(n).get(d) + " pour : " + nbQuestion);
+            }
+
+
+        }
+
+        return nbQuestion;
 
     }
 

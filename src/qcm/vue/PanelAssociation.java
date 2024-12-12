@@ -15,6 +15,8 @@ public class PanelAssociation extends JPanel implements ActionListener
     private ArrayList<JButton> lstBtnSupprimerGauche; // Boutons à gauche
     private ArrayList<JButton> lstBtnSupprimerDroite; // Boutons à droite
 
+    private ArrayList<Point[]> lstAssociations;
+
     private JButton btnAjouter;
     private JButton btnRelier;
     private JButton btnExplication;
@@ -32,6 +34,7 @@ public class PanelAssociation extends JPanel implements ActionListener
         this.lstTxtDefinitions = new ArrayList<>();
         this.lstBtnSupprimerGauche = new ArrayList<>();
         this.lstBtnSupprimerDroite = new ArrayList<>();
+        this.lstAssociations = new ArrayList<>();
 
         this.btnAjouter = new JButton("Ajouter");
         this.btnRelier = new JButton("Relier");
@@ -137,8 +140,29 @@ public class PanelAssociation extends JPanel implements ActionListener
             System.out.println("Définition reliée à la réponse : " +
                     this.selectedDefinition.getText() + " -> " + this.selectedReponse.getText());
 
+            // Obtenir les positions des définitions et réponses
+            Point defLocation = this.selectedDefinition.getLocationOnScreen();
+            Point repLocation = this.selectedReponse.getLocationOnScreen();
+
+            // Convertir les points de l'écran en points relatifs au panel
+            SwingUtilities.convertPointFromScreen(defLocation, this);
+            SwingUtilities.convertPointFromScreen(repLocation, this);
+
+            // Ajuster les points pour partir du bord droit de la définition et arriver au bord gauche de la réponse
+            int defWidth = this.selectedDefinition.getWidth();
+            int repWidth = this.selectedReponse.getWidth();
+
+            // Ajuster les points (bord droit de la définition, bord gauche de la réponse)
+            Point start = new Point(defLocation.x + defWidth + 10, defLocation.y + this.selectedDefinition.getHeight() / 2);  // Ajouter un peu d'espace (10px) à droite de la définition
+            Point end = new Point(repLocation.x - 10, repLocation.y + this.selectedReponse.getHeight() / 2);  // Ajouter un peu d'espace (10px) à gauche de la réponse
+
+            // Ajouter cette association à la liste
+            this.lstAssociations.add(new Point[]{start, end});
+
             // Réinitialiser la sélection
             deselectionner();
+            // Mettre à jour l'IHM
+            repaint(); // Pour redessiner les lignes
         }
     }
 
@@ -178,17 +202,14 @@ public class PanelAssociation extends JPanel implements ActionListener
         this.lstBtnSupprimerDroite.add(btnSupprimerDroite);
     }
 
-    private void addDefinition(String text)
-    {
+    private void addDefinition(String text) {
         // Ajouter une nouvelle définition avec un bouton de suppression
         JTextArea newDefinition = new JTextArea(text, 2, 20);
+        newDefinition.setPreferredSize(new Dimension(200, 50)); // Définir une taille uniforme pour tous les JTextArea
         JScrollPane scDefinition = new JScrollPane(newDefinition, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        //newDefinition.setEditable(false);
 
         JButton btnSupprimerGauche = new JButton("X");
-
-        // Rendre les boutons plus petits (par exemple 20x20)
-        btnSupprimerGauche.setPreferredSize(new Dimension(20, 20));
+        btnSupprimerGauche.setPreferredSize(new Dimension(20, 20)); // Taille du bouton
 
         // Ajouter un action listener pour sélectionner en mode relier
         newDefinition.addMouseListener(new MouseAdapter() {
@@ -203,8 +224,7 @@ public class PanelAssociation extends JPanel implements ActionListener
         this.lstBtnSupprimerGauche.add(btnSupprimerGauche);
     }
 
-    private void majIHM()
-    {
+    private void majIHM() {
         // Effacer toutes les anciennes réponses
         this.removeAll();
 
@@ -233,18 +253,20 @@ public class PanelAssociation extends JPanel implements ActionListener
             gbc.gridy = yIndex;
             this.add(this.lstBtnSupprimerGauche.get(i), gbc);
 
-            // Première définition (colonne 1)
+            // Première définition (colonne 1) avec taille uniforme
             gbc.gridx = 1;
             JScrollPane scDefinition = new JScrollPane(this.lstTxtDefinitions.get(i), JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+            gbc.weightx = 1.0;
             this.add(scDefinition, gbc);
 
             // Bouton de suppression à droite de la réponse
             gbc.gridx = 2;
             this.add(this.lstBtnSupprimerDroite.get(i), gbc);
 
-            // Première réponse (colonne 3)
+            // Première réponse (colonne 3) avec taille uniforme
             gbc.gridx = 3;
             JScrollPane scReponse = new JScrollPane(this.lstTxtReponses.get(i), JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+            gbc.weightx = 1.0;
             this.add(scReponse, gbc);
 
             yIndex++;
@@ -263,5 +285,22 @@ public class PanelAssociation extends JPanel implements ActionListener
         // Rafraîchir l'interface
         this.revalidate();
         this.repaint();
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+
+        // Configurer le Graphics pour dessiner les traits
+        Graphics2D g2d = (Graphics2D) g;
+        g2d.setColor(Color.BLACK); // Couleur des lignes
+        g2d.setStroke(new BasicStroke(2)); // Épaisseur des lignes
+
+        // Parcourir toutes les associations et dessiner les lignes
+        for (Point[] association : lstAssociations) {
+            Point start = association[0]; // Bord droit de la définition
+            Point end = association[1];   // Bord gauche de la réponse
+            g2d.drawLine(start.x, start.y, end.x, end.y); // Tracer un trait entre la définition et la réponse
+        }
     }
 }

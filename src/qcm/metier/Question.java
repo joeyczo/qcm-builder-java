@@ -6,7 +6,7 @@ import java.util.List;
 public class Question
 {
 	private String texteQuestion;
-	private int    tempsReponse;
+	private String tempsReponse;
 
 	private TypeQuestion typeQuestion;
 	private Reponse reponse;
@@ -14,13 +14,15 @@ public class Question
 
 	private List<Fichier> fichiers;
 	
-	public Question(String texteQuestion, int tempsReponse, TypeQuestion typeQuestion, Reponse reponse, DifficulteQuestion difficulte) {
+	public Question(String texteQuestion, String tempsReponse, TypeQuestion typeQuestion, Reponse reponse, DifficulteQuestion difficulte) {
+
 		this.texteQuestion = texteQuestion;
 		this.tempsReponse = tempsReponse;
 		this.typeQuestion = typeQuestion;
 		this.reponse = reponse;
 		this.difficulte = difficulte;
 		this.fichiers = new ArrayList<Fichier>();
+
 	}
 
 	/* Getters */
@@ -29,7 +31,7 @@ public class Question
 		return this.texteQuestion;
 	}
 
-	public int getTempsReponse() {
+	public String getTempsReponse() {
 		return this.tempsReponse;
 	}
 
@@ -55,7 +57,7 @@ public class Question
 		this.texteQuestion = texteQuestion;
 	}
 
-	public void setTempsReponse(int tempsReponse) {
+	public void setTempsReponse(String tempsReponse) {
 		this.tempsReponse = tempsReponse;
 	}
 
@@ -76,4 +78,5 @@ public class Question
 	public boolean ajouterFichier(Fichier f){
 		return this.fichiers.add(f);
 	}
+
 }

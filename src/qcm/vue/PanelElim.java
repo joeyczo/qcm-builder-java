@@ -109,12 +109,8 @@ public class PanelElim extends JPanel implements ActionListener
             txtRep.setWrapStyleWord(true);
             reponsePanel.add(txtRep);
 
-            JScrollPane scrollTxtRep = new JScrollPane(txtQst);
-            // TODO : Corriger
-            /*scrollTxtRep.setVerticalScrollBar(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-            scrollTxtRep.setHorizontalScrollBar( JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);*/
-            scrollTxtRep.setPreferredSize(new Dimension(400, 100));
-            txtRep.add(scrollTxtRep);
+            JScrollPane scrollTxtRep = new JScrollPane(txtRep);
+            reponsePanel.add(scrollTxtRep);
 
             JPanel scorePanel = new JPanel();
             scorePanel.setLayout(new GridLayout(2, 1, 5, 5));

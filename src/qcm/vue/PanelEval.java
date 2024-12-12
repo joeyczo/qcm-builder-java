@@ -74,6 +74,7 @@ public class PanelEval extends JPanel implements ActionListener
             this.tblGrilleDonnees.setModel(new GrilleDonneesEval(this.ctrl, ressource));
             this.tblGrilleDonnees.revalidate();
             this.tblGrilleDonnees.repaint();
+            this.ctrl.resetGenerationEvals();
         }
 
         // Action lors de la création d'une évaluation
@@ -86,6 +87,7 @@ public class PanelEval extends JPanel implements ActionListener
             Ressource   rsc  = this.ctrl.getRessource((String) this.ddlstRessource.getSelectedItem());
             boolean     time = this.rbOui.isSelected();
             int         nbSe = this.ctrl.getNotionsSelected();
+            int         nbQs = this.ctrl.getNbQuestions();
 
             if (rsc == null) {
                 this.afficherMessageErreur("Impossible de récupérer la ressource !");
@@ -102,6 +104,13 @@ public class PanelEval extends JPanel implements ActionListener
                 return;
             }
 
+            if (nbQs <= 0) {
+                this.afficherMessageErreur("Le nombre de question généré doît être supérieur à 0 !");
+                return;
+            }
+            
+            System.out.println("QST : " + nbQs);
+            
             JFileChooser desti = new JFileChooser();
             int returnValue = desti.showSaveDialog(this);
             if (returnValue == JFileChooser.APPROVE_OPTION) {

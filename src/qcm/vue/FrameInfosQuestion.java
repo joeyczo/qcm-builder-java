@@ -4,12 +4,10 @@ import qcm.Controleur;
 import qcm.metier.*;
 
 import javax.swing.*;
-import java.nio.channels.DatagramChannel;
 
 public class FrameInfosQuestion extends JFrame {
 
     private Controleur ctrl;
-    private JScrollPane scrollPanelQCM;
 
 
     public FrameInfosQuestion(Controleur ctrl, DonneesCreationQuestion data) {
@@ -22,16 +20,17 @@ public class FrameInfosQuestion extends JFrame {
         this.setResizable(false);
 
         if (data.type() == TypeQuestion.QCM) {
-            PanelQCM panelQCM = new PanelQCM(this, ctrl);
-            this.scrollPanelQCM = new JScrollPane(panelQCM, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-            this.add(scrollPanelQCM);
-
+            PanelQCM panelQCM       = new PanelQCM(data, ctrl);
+            JScrollPane scrollPanel = new JScrollPane(panelQCM, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+            this.add(scrollPanel);
         } else if (data.type() == TypeQuestion.ASSOCIATION) {
             PanelAssociation panelAssociation = new PanelAssociation();
-            this.add(panelAssociation);
+            JScrollPane scrollPanel           = new JScrollPane(panelAssociation, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+            this.add(scrollPanel);
         } else if(data.type() == TypeQuestion.ELIMINATION) {
-            PanelElim panelElim = new PanelElim(this, ctrl);
-            this.add(panelElim);
+            PanelElim panelElim     = new PanelElim(this, ctrl);
+            JScrollPane scrollPanel = new JScrollPane(panelElim, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+            this.add(scrollPanel);
         }
 
 

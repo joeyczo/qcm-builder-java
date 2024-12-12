@@ -1,9 +1,6 @@
 package qcm;
 
-import qcm.metier.GenerationEvals;
-import qcm.metier.GestionDonnees;
-import qcm.metier.Notion;
-import qcm.metier.Ressource;
+import qcm.metier.*;
 import qcm.vue.*;
 
 public class Controleur {
@@ -93,6 +90,14 @@ public class Controleur {
 
     public int getNotionsSelected () {
         return this.generationEvals.getNotionSelected();
+    }
+
+    public boolean ajouterDifficulteQuestion (Notion n, DifficulteQuestion d, Integer i) {
+        return this.generationEvals.ajouterDifficulteQuestion(n, d, i);
+    }
+
+    public int getNbQuestions() {
+        return this.generationEvals.getNbQuestions();
     }
 
 
