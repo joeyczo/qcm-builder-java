@@ -5,11 +5,13 @@ import java.util.List;
 
 public class Notion
 {
-    private String nom;
+    private String          nom;
     private List<Question>	alQuestions;
+    private Ressource       ressource;
 
-    public Notion	(String nom) {
-        this.nom=nom;
+    public Notion	(String nom, Ressource r) {
+        this.nom         = nom;
+        this.ressource   = r;
         this.alQuestions = new ArrayList<>();
     }
 
@@ -22,12 +24,34 @@ public class Notion
     /*    Gestion des Questions     */
     /*  --------------------------  */
 
-    // TODO : Récupérer le nombre de questions en fonction de la difficulté
+    /**
+     * Récupérer la ressource parent
+     * @return La ressource parent à la Notion
+     */
+    public Ressource getRessource() {
+        return ressource;
+    }
+
+    /**
+     * Permets de récupérer le nombre de question d'une notion en fonction de sa difficulté
+     * @param diff Difficulté à récupérer
+     * @return Le nombre de questions
+     */
+    public int getNbQuestions ( DifficulteQuestion diff ) {
+
+        int nbQst = 0;
+
+        for (Question q : this.alQuestions)
+            if (q.getDifficulte() == diff) nbQst++;
+
+        return nbQst;
+
+    }
 
     /**
      * Permets de récupérer le nombre de questions pour la Notion
-     * * @return Le nombre de questions disponible
-     * */
+     * @return Le nombre de questions disponible
+     */
     public int getNbQuestions() {
         return this.alQuestions.size();
     }

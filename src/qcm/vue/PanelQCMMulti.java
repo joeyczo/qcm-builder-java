@@ -10,7 +10,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 
-public class PanelQCM extends JPanel implements ActionListener
+public class PanelQCMMulti extends JPanel implements ActionListener
 {
 
     private ArrayList<JButton>     lstBtnSupp;
@@ -19,16 +19,18 @@ public class PanelQCM extends JPanel implements ActionListener
     private ArrayList<JScrollPane> lstScrollTexte;
 
     private JTextArea               txtQst;
+    private JTextArea               txtInfoSupp;
     private JButton                 btnAjouter;
     private JButton                 btnInfoSupp;
     private JButton                 btnEnregistrer;
     private JScrollPane             scrollTexte;
     private Controleur              ctrl;
     private DonneesCreationQuestion data;
+    private FrameInfosQuestion      frameParent;
 
 
 
-    public PanelQCM ( DonneesCreationQuestion data, Controleur ctrl )
+    public PanelQCMMulti(DonneesCreationQuestion data, Controleur ctrl, FrameInfosQuestion frameParent )
     {
 
         this.lstBtnSupp          = new ArrayList<JButton>();
@@ -37,12 +39,14 @@ public class PanelQCM extends JPanel implements ActionListener
         this.lstScrollTexte      = new ArrayList<JScrollPane>();
 
         this.txtQst           = new JTextArea (5, 1);
+        this.txtInfoSupp      = new JTextArea (2, 1);
         this.btnAjouter       = new JButton   ();
         this.btnInfoSupp      = new JButton   ();
         this.btnEnregistrer   = new JButton   ("Enregistrer");
         this.scrollTexte      = new JScrollPane(this.txtQst, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         this.data             = data;
         this.ctrl             = ctrl;
+        this.frameParent      = frameParent;
 
 
 
@@ -168,22 +172,15 @@ public class PanelQCM extends JPanel implements ActionListener
 
         if(e.getSource() == this.btnInfoSupp)
         {
-            JTextArea   zoneTexte  = new JTextArea(10, 30);
-            JScrollPane scrollPane = new JScrollPane(zoneTexte);
+            JScrollPane scrollPane = new JScrollPane(this.txtInfoSupp);
 
-            int result = JOptionPane.showConfirmDialog(
+            int resultat = JOptionPane.showConfirmDialog(
                     this,
                     scrollPane,
                     "Ajouter explication",
                     JOptionPane.OK_CANCEL_OPTION,
                     JOptionPane.PLAIN_MESSAGE
             );
-
-            if (result == JOptionPane.OK_OPTION)
-            {
-                String explication = zoneTexte.getText();
-                System.out.println("Explication entrée : " + explication);
-            }
 
             return;
         }
@@ -193,58 +190,67 @@ public class PanelQCM extends JPanel implements ActionListener
 
             if ( this.txtQst.getText().isEmpty() || this.txtQst.getText().trim().isEmpty() )
             {
-                JOptionPane.showMessageDialog(this,  "Erreur : Aucun texte n'est entré pour la question", "Impossible de sauvegarder la réponse", JOptionPane.ERROR_MESSAGE);
+                this.afficherMessageErreur("Erreur : Aucun texte n'est entré pour la question");
                 return;
             }
 
 
-            for ( int cpt = 0; cpt < this.lstTxtReponses.size(); cpt ++)
-                if ( this.lstTxtReponses.get(cpt).getText().isEmpty() || this.lstTxtReponses.get(cpt).getText().trim().isEmpty() )
-                {
-                    JOptionPane.showMessageDialog(this,  "Erreur : Aucun texte n'est entré pour l'une des réponse", "Impossible de sauvegarder la réponse", JOptionPane.ERROR_MESSAGE);
+            for (JTextArea lstTxtReponse : this.lstTxtReponses)
+                if (lstTxtReponse.getText().isEmpty() || lstTxtReponse.getText().trim().isEmpty()) {
+                    this.afficherMessageErreur("Erreur : Aucun texte n'est entré pour l'une des réponse");
                     return;
                 }
 
 
-            // todo réparer
             int cptBoutonValide = 0;
-            for ( int cpt = 0; cpt < this.lstBtnValideReponse.size(); cpt ++)
-                if ( this.lstBtnValideReponse.get(cpt).isValid() )
-                    cptBoutonValide ++;
+            for (JCheckBox jCheckBox : this.lstBtnValideReponse)
+                if (jCheckBox.isSelected())
+                    cptBoutonValide++;
 
             if ( cptBoutonValide == 0 )
             {
-                JOptionPane.showMessageDialog(this,  "Erreur : Il faut au moins sélectionner un réponse valide", "Impossible de sauvegarder la réponse", JOptionPane.ERROR_MESSAGE);
+                this.afficherMessageErreur("Erreur : Il faut au moins sélectionner un réponse valide");
                 return;
             }
 
-
             QCMReponse qcmReponse = new QCMReponse();
 
+
             for ( int cpt = 0; cpt < this.lstTxtReponses.size(); cpt ++)
-            {
                 qcmReponse.ajouterItem(new QCMReponseItem(this.lstTxtReponses.get(cpt).getText(), this.lstBtnValideReponse.get(cpt).isValid()));
+
+            if ( !this.txtInfoSupp.getText().isEmpty() && !this.txtInfoSupp.getText().trim().isEmpty())
+                qcmReponse.ajouterTexteExplication(this.txtInfoSupp.getText());
+
+            Question nouvelleQst = new Question(this.txtQst.getText(), this.data.tempsReponse(), this.data.type(), qcmReponse, this.data.diff(), this.data.notion());
+
+            this.data.notion().ajouterQuestion(nouvelleQst);
+
+            if (!this.ctrl.sauvegarderQuestion(nouvelleQst)) {
+                this.afficherMessageErreur("Erreur lors de la sauvegarde de la question dans la base de données");
+                return;
             }
 
-
-            this.data.notion().ajouterQuestion(new Question(this.txtQst.getText(), this.data.tempsReponse(), this.data.type(), qcmReponse, this.data.diff()));
-
-            System.out.println("Enregistrement ...");
             System.out.println("Les questions dans la ressource " + this.data.ressource().getNom() + " pour la notion " + this.data.notion().getNom() + " sont : ");
-
 
             for ( int cpt = 0; cpt < this.data.notion().getNbQuestions(); cpt ++)
             {
                 System.out.println(this.data.notion().getQuestion(cpt));
             }
 
-
-
+            this.frameParent.fermerFenetre();
 
         }
 
 
+    }
 
+    /**
+     * Afficher un message d'erreur à l'utilisateur
+     * @param message Message à afficher
+     */
+    private void afficherMessageErreur ( String message ) {
+        JOptionPane.showMessageDialog(this,  message, "Impossible de sauvegarder la réponse", JOptionPane.ERROR_MESSAGE);
     }
 
     public void majIHM()
@@ -320,6 +326,5 @@ public class PanelQCM extends JPanel implements ActionListener
 
 }
 
-// todo Au moins un case cocher pour les réponses et du texte partout
 
 

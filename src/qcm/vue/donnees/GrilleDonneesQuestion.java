@@ -13,27 +13,22 @@ public class GrilleDonneesQuestion extends AbstractTableModel {
     private Object[][]  tabDonnees;
 
     private Controleur  ctrl;
-    private Ressource   ressource;
 
-    public GrilleDonneesQuestion(Controleur controleur, Ressource ressource, Notion notion) {
+    public GrilleDonneesQuestion(Controleur controleur, Notion notion) {
 
         this.ctrl = controleur;
-
-        if (ressource == null) ressource = new Ressource("TEST");
-        if (notion == null) notion = new Notion("TEST");
+        if ( notion    == null ) notion    = new Notion   ( "TEST" , null);
 
         this.tabEntete  = new String[] { "Intitulé", "Difficulté", "Type"};
-        this.tabDonnees = new Object[this.ctrl.getNbQuestions()][this.tabEntete.length];
+        this.tabDonnees = new Object[notion.getNbQuestions()][this.tabEntete.length];
 
-        for (int i = 0; i < this.ctrl.getNbNotion(ressource); i++) {
+        for ( int i = 0; i < notion.getNbQuestions(); i++) {
 
-            //Question question = this.ctrl.getNbQuestions(ressource, i);
+            Question question = notion.getQuestion(i);
 
-            tabDonnees[i][0] = notion.getNom();
-            tabDonnees[i][1] = 0;
-            tabDonnees[i][2] = 0;
-            tabDonnees[i][3] = 0;
-            tabDonnees[i][4] = 0;
+            tabDonnees[i][0] = question.getTexteQuestion();
+            tabDonnees[i][1] = question.getDifficulte();
+            tabDonnees[i][2] = question.getTypeQuestion();
 
         }
 
@@ -43,12 +38,12 @@ public class GrilleDonneesQuestion extends AbstractTableModel {
     /*	 Getters 	*/
     /* ------------ */
 
-    public int getRowCount()    {   return this.tabDonnees.length; }
-    public int getColumnCount() {   return this.tabEntete.length;  }
+    public int      getRowCount()    {   return this.tabDonnees.length; }
+    public int      getColumnCount() {   return this.tabEntete.length;  }
 
-    public String getColumnName (int col)                       { return this.tabEntete[col];                      }
-    public Object getValueAt    (int rowIndex, int columnIndex) { return this.tabDonnees[rowIndex][columnIndex];   }
-    public Class  getColumnClass(int c)                         { return this.getValueAt(0, c).getClass(); }
+    public String   getColumnName (int col)                       { return this.tabEntete[col];                      }
+    public Object   getValueAt    (int rowIndex, int columnIndex) { return this.tabDonnees[rowIndex][columnIndex];   }
+    public Class    getColumnClass(int c)                         { return this.getValueAt(0, c).getClass(); }
 
     /* ------------ */
     /*	 Setters 	*/

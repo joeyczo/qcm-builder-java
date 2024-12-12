@@ -25,6 +25,8 @@ public class FrameCreerQst extends JDialog
 
     }
 
+    // todo vérifier si lors de la création il y a une notion qui est présent eou non. exemple erreur si la ressource est sans notion donc aucune notion de rentré
+    // todo quand on ferme la fenetre des questions ( qcm, assos, ...) cela ferme aussi la fenetre creer question
     public void fermerFenetre() {
         this.dispose();
     }

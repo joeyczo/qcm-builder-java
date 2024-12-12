@@ -11,22 +11,22 @@ import java.awt.event.*;
 
 public class PanelParametre extends JPanel implements ActionListener
 {
-    private FrameParametres frameParent;
+    private FrameParametres     frameParent;
 
-    private JTable            tblGrilleDonnees;
-    private JComboBox<String> lstDeroulante;
+    private JTable              tblGrilleDonnees;
+    private JComboBox<String>   lstDeroulante;
 
-    private JButton btnAjouterRessource;
-    private JButton btnAjouterNotion;
+    private JButton             btnAjouterRessource;
+    private JButton             btnAjouterNotion;
 
-    private Controleur      ctrl;
+    private Controleur          ctrl;
 
     public PanelParametre(FrameParametres parent, Controleur ctrl)
     {
         this.frameParent = parent;
-        this.setLayout ( new FlowLayout() );
+        this.ctrl        =   ctrl;
 
-        this.ctrl          = ctrl;
+        this.setLayout ( new FlowLayout() );
 
         String[] tabRessource = new String[this.ctrl.getNbRessource()];
 
@@ -56,9 +56,9 @@ public class PanelParametre extends JPanel implements ActionListener
         this.lstDeroulante      .addActionListener(this);
     }
 
-    /*  -----------------  */
-    /*	 Autres méthodes   */
-    /*  -----------------  */
+    /*  ------------------  */
+    /*	 Méthode d'action   */
+    /*  ------------------  */
 
     public void actionPerformed(ActionEvent e)
     {
@@ -100,8 +100,8 @@ public class PanelParametre extends JPanel implements ActionListener
                 if (nomNotion == null) return;
                 nomNotion = nomNotion.trim();
 
-                Notion    notion    = new Notion(nomNotion);
                 Ressource ressource = this.ctrl.getRessource((String) this.lstDeroulante.getSelectedItem());
+                Notion    notion    = new Notion(nomNotion, ressource);
 
 
                 // On vérifie si le nom n'existe pas dans la base de données des notions pour la ressource sélectionnée

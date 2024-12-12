@@ -13,6 +13,6 @@ public class QCMReponseItem
 
 	public String  getTexte()		    { return this.texte; }
 	public boolean isValide()		    { return this.valide;}
-	public void    setFichier(String s ){ this.texte = s;    }
+	public void    setTexte  (String s ){ this.texte = s;    }
 	public void    setValide (boolean b){ this.valide = b;   }
 }

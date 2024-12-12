@@ -7,6 +7,7 @@ public class Ressource
 {
 	private String nom;
 	private List<Notion> alNotion;
+	private String intitule; //Ex : r1.01
 
 	public Ressource(String nom)
 	{
@@ -15,8 +16,10 @@ public class Ressource
 	}
 
 	public String getNom() {return nom;}
+	public String getIntitule() {return intitule;}
 
 	public void setNom(String nom) {this.nom = nom;}
+	public void setIntitule(String intitule) {this.intitule = intitule;}
 
 	public List<Notion> getAlNotion() {return alNotion;}
 
@@ -25,6 +28,7 @@ public class Ressource
 		this.alNotion.add(n);
 
 	}
+
 
 
 	public boolean equals(Ressource r) {

@@ -16,6 +16,8 @@ public class PanelCreerQst extends JPanel implements ActionListener
 
     private JTextField              txtNbPoints;
     private JTextField              txtTempsRep;
+    
+    private JCheckBox               cbUnique;
 
     private JComboBox<String>       cmbRessources;
     private JComboBox<String>       cmbNotions;
@@ -37,11 +39,22 @@ public class PanelCreerQst extends JPanel implements ActionListener
         this.txtTempsRep = new JTextField("00:30", 5); // par défaut "00:30" pour le temps
 
         this.cmbRessources = new JComboBox<>();
+        for (int i = 0; i < this.cmbRessources.getItemCount(); i++)
+            this.cmbTypeQst.selectWithKeyChar(cmbTypeQst.getItemAt(i).charAt(0));
+
         this.cmbRessources.addItem("-- Choisir une ressource --");
+
         this.cmbNotions    = new JComboBox<>();
+        for (int i = 0; i < this.cmbNotions.getItemCount(); i++)
+            this.cmbTypeQst.selectWithKeyChar(cmbTypeQst.getItemAt(i).charAt(0));
+
         this.cmbNotions.addItem("-- Choisir une notion --");
+
         this.cmbNotions.setEnabled(false);
         this.cmbTypeQst = new JComboBox<>();
+        for (int i = 0; i < this.cmbTypeQst.getItemCount(); i++)
+            this.cmbTypeQst.selectWithKeyChar(cmbTypeQst.getItemAt(i).charAt(0));
+
         this.cmbTypeQst.addItem("-- Choisir un type de question --");
 
         for (int i = 0; i < this.ctrl.getNbRessource(); i++)
@@ -57,10 +70,15 @@ public class PanelCreerQst extends JPanel implements ActionListener
             btn.setBackground(diff.getCouleur());
             btn.setPreferredSize(new Dimension(35, 40));
             btn.setFont(new Font("Arial", Font.BOLD, 8));
+            if(diff.getTexte().equals("D"))
+                btn.setForeground(Color.WHITE);
             btn.setHorizontalAlignment(SwingConstants.CENTER);
 
             this.lstBtnDiff.add(btn);
         }
+
+        this.cbUnique = new JCheckBox("Choix multiple");
+        this.cbUnique.setVisible(false);
 
         this.pnlBoutons = new JPanel();
         this.pnlBoutons.setLayout(new GridLayout(1,4));
@@ -75,37 +93,37 @@ public class PanelCreerQst extends JPanel implements ActionListener
 
         // Ligne 1 : Label et champs texte pour nombre de points et temps de réponse
         gbc.gridx = 0;
-        gbc.gridy = 0;
+        gbc.gridy = 1;
         this.add(new JLabel("Nombre de points :"), gbc);
 
         gbc.gridx = 1;
-        gbc.gridy = 0;
+        gbc.gridy = 1;
         this.add(txtNbPoints, gbc);
 
         gbc.gridx = 2;
-        gbc.gridy = 0;
+        gbc.gridy = 1;
         this.add(new JLabel("Temps de réponse (min:sec) :"), gbc);
 
         gbc.gridx = 3;
-        gbc.gridy = 0;
+        gbc.gridy = 1;
         this.add(txtTempsRep, gbc);
 
         // Ligne 2 : Label et JComboBox pour Ressource
         gbc.gridx = 0;
-        gbc.gridy = 1;
+        gbc.gridy = 0;
         this.add(new JLabel("Ressource :"), gbc);
 
         gbc.gridx = 1;
-        gbc.gridy = 1;
+        gbc.gridy = 0;
         this.add(cmbRessources, gbc);
 
         // Ligne 3 : Label et JComboBox pour Notion
         gbc.gridx = 2;
-        gbc.gridy = 1;
+        gbc.gridy = 0;
         this.add(new JLabel("Notion :"), gbc);
 
         gbc.gridx = 3;
-        gbc.gridy = 1;
+        gbc.gridy = 0;
         this.add(cmbNotions, gbc);
 
         // Ligne 4 : Label et boutons de niveaux
@@ -133,6 +151,10 @@ public class PanelCreerQst extends JPanel implements ActionListener
         gbc.gridy = 3;
         this.add(this.btnValider, gbc);
 
+        gbc.gridx = 1;
+        gbc.gridy = 3;
+        this.add(this.cbUnique, gbc);
+
         this.cmbRessources.addActionListener(this);
         this.cmbNotions.addActionListener(this);
         this.cmbTypeQst.addActionListener(this);
@@ -141,10 +163,22 @@ public class PanelCreerQst extends JPanel implements ActionListener
             btn.addActionListener(this);
 
         this.btnValider.addActionListener(this);
+        this.cbUnique.addActionListener(this);
     }
 
     public void actionPerformed(ActionEvent e)
     {
+        String typeQ = (String) this.cmbTypeQst.getSelectedItem();
+
+        if("QCM".equals(typeQ)){
+            this.cbUnique.setVisible(true);
+        } else{
+            this.cbUnique.setVisible(false);
+        }
+
+        revalidate();
+        repaint();
+
         if (e.getSource() == this.cmbRessources)
         {
 
@@ -237,7 +271,7 @@ public class PanelCreerQst extends JPanel implements ActionListener
                     case "ELIMINATION"  -> type = TypeQuestion.ELIMINATION;
                 }
 
-                DonneesCreationQuestion data = new DonneesCreationQuestion(nbPoints, tempsReponse, rsc, not, difficulte, type);
+                DonneesCreationQuestion data = new DonneesCreationQuestion(nbPoints, tempsReponse, rsc, not, difficulte, type, this.cbUnique.isSelected());
 
                 System.out.println("C'EST BON ?!");
                 new FrameInfosQuestion(this.ctrl, data);

@@ -18,7 +18,7 @@ public class PanelElim extends JPanel implements ActionListener
 {
     private FrameInfosQuestion frameParent;
 
-    private JButton           btnSubmit, btnAdd, btnDelete;
+    private JButton           btnSubmit, btnAdd, btnDelete, btnExplain;
     private JTextArea         txtQst;
     private JScrollPane       scrollPane;
     private JPanel            panelHaut, panelMilieu, panelBas;
@@ -47,11 +47,12 @@ public class PanelElim extends JPanel implements ActionListener
         this.btnSubmit  = new JButton    ("Sauvegarder");
         this.btnAdd     = new JButton    (new ImageIcon("src/data/img/add.png"));
         this.btnDelete  = new JButton    (new ImageIcon("src/data/img/delete.png"));
+        this.btnExplain = new JButton    (new ImageIcon("src/data/img/edit.png"));
         this.btg        = new ButtonGroup();
 
-        this.panelHaut.setLayout   ( new GridBagLayout() );
-        this.panelMilieu.setLayout(new BoxLayout(panelMilieu, BoxLayout.Y_AXIS));
-        this.panelMilieu.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        this.panelHaut  .setLayout( new GridBagLayout() );
+        this.panelMilieu.setLayout( new BoxLayout(panelMilieu, BoxLayout.Y_AXIS));
+        this.panelMilieu.setBorder( BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets             = new Insets(5, 5, 5, 5);
@@ -60,7 +61,7 @@ public class PanelElim extends JPanel implements ActionListener
         // Panel haut
         gbc.gridx = 0;
         gbc.gridy = 0;
-        this.panelHaut.add(new JLabel("Envie de danser"), gbc);
+        this.panelHaut.add(new JLabel("Question :"), gbc);
 
         gbc.gridy     = 1;
         gbc.gridwidth = 10;
@@ -74,20 +75,40 @@ public class PanelElim extends JPanel implements ActionListener
 
         // Panel bas
         this.panelBas.add(btnAdd);
+        this.panelBas.add(btnExplain);
         this.panelBas.add(btnSubmit);
 
         this.add(panelHaut  , BorderLayout.NORTH);
         this.add(panelMilieu, BorderLayout.CENTER);
         this.add(panelBas   , BorderLayout.SOUTH);
 
-        this.btnSubmit.addActionListener(this);
-        this.btnAdd   .addActionListener(this);
-
+        this.btnSubmit .addActionListener(this);
+        this.btnAdd    .addActionListener(this);
+        this.btnExplain.addActionListener(this);
     }
 
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == btnAdd) {
             createAnswerPanel();
+        }
+        if(e.getSource() == btnExplain){
+            JTextArea   zoneTexte  = new JTextArea(10, 30);
+            JScrollPane scrollPane = new JScrollPane(zoneTexte);
+
+            int result = JOptionPane.showConfirmDialog(
+                    this,
+                    scrollPane,
+                    "Ajouter explication",
+                    JOptionPane.OK_CANCEL_OPTION,
+                    JOptionPane.PLAIN_MESSAGE
+            );
+
+            if (result == JOptionPane.OK_OPTION)
+            {
+                String explication = zoneTexte.getText();
+                System.out.println("Explication entrée : " + explication);
+            }
+            return;
         }
     }
 
@@ -174,6 +195,93 @@ public class PanelElim extends JPanel implements ActionListener
         };
         textField1.addKeyListener(keyListener);
         textField2.addKeyListener(keyListener);
+    }
+
+    //Return true s'il n'y a pas d'erreur
+    private boolean verifierErreurs() {
+        boolean uneCaseCochee = false;
+        boolean plusieursCasesCochees = false;
+
+        // Parcours des panneaux de réponses
+        for (JPanel reponsePanel : listReponses) {
+            boolean caseCocheeDansCePanel = false;
+            JTextField ordrePrioField = null;
+            JTextField noteSoustraiteField = null;
+
+            // Parcours des composants du panneau actuel
+            for (Component comp : reponsePanel.getComponents()) {
+                if (comp instanceof JPanel) {
+                    JPanel innerPanel = (JPanel) comp;
+                    for (Component innerComp : innerPanel.getComponents()) {
+                        // Vérifie si un des composants est un JRadioButton sélectionné
+                        if (innerComp instanceof JRadioButton) {
+                            JRadioButton radioButton = (JRadioButton) innerComp;
+                            if (radioButton.isSelected()) {
+                                if (caseCocheeDansCePanel) {
+                                    plusieursCasesCochees = true;
+                                } else {
+                                    caseCocheeDansCePanel = true;
+                                    uneCaseCochee = true;
+                                }
+                            }
+                        } else if (innerComp instanceof JTextField) {
+                            JTextField textField = (JTextField) innerComp;
+                            if (ordrePrioField == null) {
+                                ordrePrioField = textField;
+                            } else if (noteSoustraiteField == null) {
+                                noteSoustraiteField = textField;
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Vérifie la cohérence entre ordrePrio et noteSoustraite
+            if (ordrePrioField != null && noteSoustraiteField != null) {
+                boolean ordrePrioVide = ordrePrioField.getText().trim().isEmpty();
+                boolean noteSoustraiteVide = noteSoustraiteField.getText().trim().isEmpty();
+                if (ordrePrioVide != noteSoustraiteVide) {
+                    JOptionPane.showMessageDialog(
+                            this,
+                            "Erreur : Les champs 'ordre de priorité' et 'note soustraite' doivent soit être tous les deux remplis, soit tous les deux vides.",
+                            "Erreur de validation",
+                            JOptionPane.ERROR_MESSAGE
+                    );
+                    return false;
+                }
+            }
+
+            if (plusieursCasesCochees) {
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Erreur : Plusieurs cases sont cochées dans une réponse.",
+                        "Erreur de validation",
+                        JOptionPane.ERROR_MESSAGE
+                );
+                return false;
+            }
+        }
+
+        if (!uneCaseCochee) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Erreur : Au moins une case doit être cochée.",
+                    "Erreur de validation",
+                    JOptionPane.ERROR_MESSAGE
+            );
+            return false;
+        }
+
+        if (txtQst.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Erreur : Entrez une question.",
+                    "Erreur de validation",
+                    JOptionPane.ERROR_MESSAGE
+            );
+        }
+
+        return true;
     }
 
 

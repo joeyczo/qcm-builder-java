@@ -1,6 +1,7 @@
 package qcm;
 
 import qcm.metier.*;
+import qcm.utils.Uid;
 import qcm.vue.*;
 
 public class Controleur {
@@ -17,15 +18,15 @@ public class Controleur {
         this.ctrlDonnees    = new ControleurDonnees("src/data/DonneesParam.csv", this);
         this.generationEvals = new GenerationEvals();
 
-
+        System.out.println(Uid.generateUid(20));
 
         this.ctrlDonnees.chargerDonnees();
 
 	}
 
-    /*  --------------------------  */
-    /*	 Méthodes gestion données   */
-    /*  --------------------------  */
+    /*  -----------------------------  */
+    /*	 Méthodes gestion paramètres   */
+    /*  -----------------------------  */
 
     public boolean ajouterRessource (Ressource ressource)
     {
@@ -99,6 +100,16 @@ public class Controleur {
     public int getNbQuestions() {
         return this.generationEvals.getNbQuestions();
     }
+
+    /*  ------------------------------  */
+    /*	 Méthodes créations questions   */
+    /*  ------------------------------  */
+
+    public boolean sauvegarderQuestion ( Question q ) {
+        return this.ctrlDonnees.sauvegarderQuestion(q);
+    }
+
+
 
 
     /*  --------------------------  */

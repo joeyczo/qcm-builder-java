@@ -45,7 +45,7 @@ public class Accueil extends JFrame implements ActionListener
         this.lblTitre = new JLabel("QCM Builder");
         this.lblTitre.setFont(new Font("Arial", Font.BOLD, 30));
 
-        this.btnCreerEval     = new JButton("Créer une évaluation");
+        this.btnCreerEval     = new JButton("Générer une évaluation");
         this.btnCreerQuestion = new JButton("Créer une question");
         this.btnListeQst      = new JButton("Liste des Questions");
         this.btnParametres    = new JButton("Paramètres");
