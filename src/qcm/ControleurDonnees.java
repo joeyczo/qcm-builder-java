@@ -1,8 +1,6 @@
 package qcm;
 
-import qcm.metier.Notion;
-import qcm.metier.Question;
-import qcm.metier.Ressource;
+import qcm.metier.*;
 
 import java.io.FileInputStream;
 import java.io.PrintWriter;
@@ -46,7 +44,7 @@ public class ControleurDonnees
         for (int i = 0; i < this.ctrl.getNbRessource(); i++) {
             Ressource rsc = this.ctrl.getRessource(i);
 
-            sRet += rsc.getNom();
+            sRet += rsc.getNom().replaceAll(",", "|");
 
             String donnesNotions = this.sauvegardeNotion(rsc);
 
@@ -89,7 +87,7 @@ public class ControleurDonnees
         int nbNotion = this.ctrl.getNbNotion(rsc);
 
         for (int i = 0; i < nbNotion; i++)
-            sRet += this.ctrl.getNotion(rsc, i).getNom() + (((i+1)!=nbNotion)?",":"");
+            sRet += this.ctrl.getNotion(rsc, i).getNom().replaceAll(",", "|") + (((i+1)!=nbNotion)?",":"");
 
         return sRet;
 
@@ -165,7 +163,7 @@ public class ControleurDonnees
 
             PrintWriter pw = new PrintWriter(new FileOutputStream(pathFichierDonnees));
 
-            pw.println(sRet);
+            pw.print(sRet);
 
             pw.close();
 
@@ -185,7 +183,41 @@ public class ControleurDonnees
                 questionEnTxt += q.getReponse().getTexteExplication();
             }
 
-            pwQuestion.println(questionEnTxt);
+            /*  ---------------------------------------------  */
+            /*	  Écriture des réponses dans le fichier TXT    */
+            /*  ---------------------------------------------  */
+
+            if (q.getTypeQuestion() == TypeQuestion.QCM) {
+
+                QCMReponse reponse = (QCMReponse) q.getReponse();
+
+                for (QCMReponseItem item : reponse.getReponses()) {
+
+                    questionEnTxt += "\n{REPONSEQCM}\n";
+
+                    questionEnTxt += item.getTexte();
+
+                }
+
+            } else if (q.getTypeQuestion() == TypeQuestion.ASSOCIATION) {
+
+                AssociationReponse reponse = (AssociationReponse) q.getReponse();
+
+                for (AssociationReponseItem item : reponse.getReponses()) {
+
+                    questionEnTxt += "\n{ASSOCIATION}\n";
+
+                    questionEnTxt += item.getTexte();
+
+                    questionEnTxt += "\n{REPONSE}\n";
+
+                    questionEnTxt += item.getReponse().getTexte();
+
+                }
+
+            }
+
+            pwQuestion.print(questionEnTxt);
 
             pwQuestion.close();
 
@@ -229,13 +261,13 @@ public class ControleurDonnees
 
                 Scanner scLigne = new Scanner(ligne).useDelimiter(",");
 
-                Ressource rsc = new Ressource(scLigne.next());
+                String nomRessource = scLigne.next();
 
-                while (scLigne.hasNext()) {
+                Ressource rsc = new Ressource(nomRessource.replaceAll("[|]", ","));
 
-                    rsc.ajouterNotion(new Notion(scLigne.next(), rsc));
+                while (scLigne.hasNext())
+                    rsc.ajouterNotion(new Notion(scLigne.next().replaceAll("[|]", ","), rsc));
 
-                }
 
                 this.ctrl.ajouterRessource(rsc);
 

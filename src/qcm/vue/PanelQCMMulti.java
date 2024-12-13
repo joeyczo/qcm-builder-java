@@ -82,6 +82,7 @@ public class PanelQCMMulti extends JPanel implements ActionListener
             this.lstBtnSupp.get(cpt).setOpaque(false);
             this.lstBtnSupp.get(cpt).setContentAreaFilled(false);
             this.lstBtnSupp.get(cpt).setBorderPainted(false);
+            this.lstBtnSupp.get(cpt).setCursor(new Cursor(Cursor.HAND_CURSOR));
             this.lstBtnSupp.get(cpt).setIcon(new ImageIcon("src/data/img/delete.png"));
             this.add(this.lstBtnSupp.get(cpt), gbc);
 
@@ -107,6 +108,7 @@ public class PanelQCMMulti extends JPanel implements ActionListener
         this.btnAjouter.setContentAreaFilled(false);
         this.btnAjouter.setBorderPainted(false);
         this.btnAjouter.setIcon(new ImageIcon("src/data/img/add.png"));
+        this.btnAjouter.setCursor(new Cursor(Cursor.HAND_CURSOR));
         this.add(this.btnAjouter, gbc);
 
 
@@ -115,6 +117,7 @@ public class PanelQCMMulti extends JPanel implements ActionListener
         this.btnInfoSupp.setContentAreaFilled(false);
         this.btnInfoSupp.setBorderPainted(false);
         this.btnInfoSupp.setIcon(new ImageIcon("src/data/img/edit.png"));
+        this.btnInfoSupp.setCursor(new Cursor(Cursor.HAND_CURSOR));
         this.add(this.btnInfoSupp, gbc);
 
         gbc.gridx = 2;
@@ -292,6 +295,7 @@ public class PanelQCMMulti extends JPanel implements ActionListener
             this.lstBtnSupp.get(cpt).setContentAreaFilled(false);
             this.lstBtnSupp.get(cpt).setBorderPainted(false);
             this.lstBtnSupp.get(cpt).setIcon(new ImageIcon("src/data/img/delete.png"));
+            this.lstBtnSupp.get(cpt).setCursor(new Cursor(Cursor.HAND_CURSOR));
             this.add(this.lstBtnSupp.get(cpt), gbc);
 
             gbc.gridx     = 1;
@@ -314,6 +318,7 @@ public class PanelQCMMulti extends JPanel implements ActionListener
         this.btnAjouter.setOpaque(false);
         this.btnAjouter.setContentAreaFilled(false);
         this.btnAjouter.setBorderPainted(false);
+        this.btnAjouter.setCursor(new Cursor(Cursor.HAND_CURSOR));
         this.btnAjouter.setIcon(new ImageIcon("src/data/img/add.png"));
         this.add(this.btnAjouter, gbc);
 
@@ -322,6 +327,7 @@ public class PanelQCMMulti extends JPanel implements ActionListener
         this.btnInfoSupp.setOpaque(false);
         this.btnInfoSupp.setContentAreaFilled(false);
         this.btnInfoSupp.setBorderPainted(false);
+        this.btnInfoSupp.setCursor(new Cursor(Cursor.HAND_CURSOR));
         this.btnInfoSupp.setIcon(new ImageIcon("src/data/img/edit.png"));
         this.add(this.btnInfoSupp, gbc);
 
@@ -333,6 +339,3 @@ public class PanelQCMMulti extends JPanel implements ActionListener
     }
 
 }
-
-
-

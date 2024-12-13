@@ -12,7 +12,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
-
 public class PanelQCMSolo extends JPanel implements ActionListener
 {
 
@@ -31,8 +30,6 @@ public class PanelQCMSolo extends JPanel implements ActionListener
     private DonneesCreationQuestion data;
     private ButtonGroup             boutonGroup;
     private FrameInfosQuestion      frameParent;
-
-
 
     public PanelQCMSolo(DonneesCreationQuestion data, Controleur ctrl, FrameInfosQuestion frameParent )
     {
@@ -53,13 +50,10 @@ public class PanelQCMSolo extends JPanel implements ActionListener
         this.boutonGroup      = new ButtonGroup();
         this.frameParent      = frameParent;
 
-
-
         this.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets             = new Insets(5, 5, 5, 5);
         gbc.fill               = GridBagConstraints.HORIZONTAL;
-
 
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -90,6 +84,7 @@ public class PanelQCMSolo extends JPanel implements ActionListener
             this.lstBtnSupp.get(cpt).setOpaque(false);
             this.lstBtnSupp.get(cpt).setContentAreaFilled(false);
             this.lstBtnSupp.get(cpt).setBorderPainted(false);
+            this.lstBtnSupp.get(cpt).setCursor(new Cursor(Cursor.HAND_CURSOR));
             this.lstBtnSupp.get(cpt).setIcon(new ImageIcon("src/data/img/delete.png"));
             this.add(this.lstBtnSupp.get(cpt), gbc);
 
@@ -104,9 +99,7 @@ public class PanelQCMSolo extends JPanel implements ActionListener
             gbc.ipadx     = 0;
             gbc.ipady     = 0;
             this.add(this.lstBtnValideReponse.get(cpt), gbc);
-
         }
-
 
         gbc.gridwidth = 1;
         gbc.gridx     = 0;
@@ -114,6 +107,7 @@ public class PanelQCMSolo extends JPanel implements ActionListener
         this.btnAjouter.setOpaque(false);
         this.btnAjouter.setContentAreaFilled(false);
         this.btnAjouter.setBorderPainted(false);
+        this.btnAjouter.setCursor(new Cursor(Cursor.HAND_CURSOR));
         this.btnAjouter.setIcon(new ImageIcon("src/data/img/add.png"));
         this.add(this.btnAjouter, gbc);
 
@@ -122,12 +116,18 @@ public class PanelQCMSolo extends JPanel implements ActionListener
         this.btnInfoSupp.setOpaque(false);
         this.btnInfoSupp.setContentAreaFilled(false);
         this.btnInfoSupp.setBorderPainted(false);
+        this.btnInfoSupp.setCursor(new Cursor(Cursor.HAND_CURSOR));
         this.btnInfoSupp.setIcon(new ImageIcon("src/data/img/edit.png"));
         this.add(this.btnInfoSupp, gbc);
 
         gbc.gridx = 2;
-        this.add(this.btnEnregistrer, gbc);
+        gbc.gridwidth = 2;
+        this.add(new JLabel(""), gbc);
 
+        gbc.gridx     = GridBagConstraints.RELATIVE;
+        gbc.gridwidth = 1;
+
+        this.add(this.btnEnregistrer, gbc);
 
         this.btnAjouter    .addActionListener(this);
         this.btnInfoSupp   .addActionListener(this);
@@ -149,7 +149,7 @@ public class PanelQCMSolo extends JPanel implements ActionListener
             this.lstScrollTexte     .add(new JScrollPane(this.lstTxtReponses.getLast(), JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED));
             JRadioButton radioBouton = new JRadioButton();
             this.lstBtnValideReponse.add(radioBouton);
-            this.boutonGroup.add(radioBouton);
+            this.boutonGroup        .add(radioBouton);
 
             this.lstBtnSupp.getLast().addActionListener(this);
 
@@ -242,7 +242,6 @@ public class PanelQCMSolo extends JPanel implements ActionListener
 
             System.out.println("Les questions dans la ressource " + this.data.ressource().getNom() + " pour la notion " + this.data.notion().getNom() + " sont : ");
 
-
             this.afficherMessageValide("La question a bien été sauvegardée dans la base de données");
 
             for ( int cpt = 0; cpt < this.data.notion().getNbQuestions(); cpt ++)
@@ -291,7 +290,6 @@ public class PanelQCMSolo extends JPanel implements ActionListener
         gbc.ipady     = 50;
         this.add(this.scrollTexte, gbc);
 
-
         for( int cpt = 0; cpt < this.lstTxtReponses.size(); cpt ++)
         {
 
@@ -303,6 +301,7 @@ public class PanelQCMSolo extends JPanel implements ActionListener
             this.lstBtnSupp.get(cpt).setOpaque(false);
             this.lstBtnSupp.get(cpt).setContentAreaFilled(false);
             this.lstBtnSupp.get(cpt).setBorderPainted(false);
+            this.lstBtnSupp.get(cpt).setCursor(new Cursor(Cursor.HAND_CURSOR));
             this.lstBtnSupp.get(cpt).setIcon(new ImageIcon("src/data/img/delete.png"));
             this.add(this.lstBtnSupp.get(cpt), gbc);
 
@@ -317,33 +316,30 @@ public class PanelQCMSolo extends JPanel implements ActionListener
             gbc.ipadx     = 0;
             gbc.ipady     = 0;
             this.add(this.lstBtnValideReponse.get(cpt), gbc);
-
         }
 
         gbc.gridwidth = 1;
-        gbc.gridx = 0;
-        gbc.gridy = 2 + this.lstTxtReponses.size();
+        gbc.gridx     = 0;
+        gbc.gridy     = 2 + this.lstTxtReponses.size();
         this.btnAjouter.setOpaque(false);
         this.btnAjouter.setContentAreaFilled(false);
         this.btnAjouter.setBorderPainted(false);
+        this.btnAjouter.setCursor(new Cursor(Cursor.HAND_CURSOR));
         this.btnAjouter.setIcon(new ImageIcon("src/data/img/add.png"));
         this.add(this.btnAjouter, gbc);
-
 
         gbc.gridx = 1;
         this.btnInfoSupp.setOpaque(false);
         this.btnInfoSupp.setContentAreaFilled(false);
         this.btnInfoSupp.setBorderPainted(false);
+        this.btnInfoSupp.setCursor(new Cursor(Cursor.HAND_CURSOR));
         this.btnInfoSupp.setIcon(new ImageIcon("src/data/img/edit.png"));
         this.add(this.btnInfoSupp, gbc);
 
-        gbc.gridx = 2;
+        gbc.gridx = 5;
         this.add(this.btnEnregistrer, gbc);
 
         this.revalidate();
         this.repaint();
     }
-
 }
-
-// todo Au moins un case cocher pour les réponses

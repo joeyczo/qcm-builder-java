@@ -34,7 +34,7 @@ public class FrameInfosQuestion extends JFrame {
             }
 
         } else if (data.type() == TypeQuestion.ASSOCIATION) {
-            PanelAssociation panelAssociation = new PanelAssociation();
+            PanelAssociation panelAssociation = new PanelAssociation(data, ctrl, this);
             JScrollPane scrollPanel           = new JScrollPane(panelAssociation, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
             this.add(scrollPanel);
         } else if(data.type() == TypeQuestion.ELIMINATION) {
@@ -50,9 +50,9 @@ public class FrameInfosQuestion extends JFrame {
 
     public void fermerFenetre()
     {
-
-
         this.dispose();
+
+        // TODO : Réouvrir CréerQuestion
     }
 
 

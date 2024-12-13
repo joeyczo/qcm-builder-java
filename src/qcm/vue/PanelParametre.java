@@ -69,10 +69,12 @@ public class PanelParametre extends JPanel implements ActionListener
         {
             String    nomRessource = JOptionPane.showInputDialog(this, "Entrez le nom de la ressource :", "Ajouter Ressource", JOptionPane.PLAIN_MESSAGE);
 
-            if (nomRessource == null) return;
+            if (nomRessource == null)
+                return;
+
             nomRessource = nomRessource.trim();
 
-            Ressource ressource    = new Ressource(nomRessource);
+            Ressource ressource = new Ressource(nomRessource);
 
             // On vérifie si le nom n'existe pas dans la base de données des ressources
             if (this.ctrl.getRessource(ressource.getNom()) != null) {
@@ -146,6 +148,4 @@ public class PanelParametre extends JPanel implements ActionListener
 // TODO relier les données (tf, f, m, d) avec les paramètres
 // TODO mettre que les stats sont a titre indicatif et juste des stats
 // TODO si , dans creation de ressource ( param ) remlpacer par "|"
-// TODO prbl si pas de notion
-// TODO gérer le temps
 // TODO vérifier si les commentaires erreur n'ont pas de faute

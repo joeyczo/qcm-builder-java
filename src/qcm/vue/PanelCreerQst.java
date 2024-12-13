@@ -29,18 +29,23 @@ public class PanelCreerQst extends JPanel implements ActionListener
 
     private JPanel                  pnlBoutons;
 
+    private String                  ressourceLaPlusLongue;
+
     public PanelCreerQst(FrameCreerQst parent, Controleur ctrl)
     {
         this.frameParent = parent;
-        this.ctrl = ctrl;
+        this.ctrl        = ctrl;
 
         // Initialisation des composants
         this.txtNbPoints = new JTextField("1.0", 5); // par défaut "1.0" pour le nombre de points
         this.txtTempsRep = new JTextField("00:30", 5); // par défaut "00:30" pour le temps
 
+        this.ressourceLaPlusLongue = "";
+
         this.cmbRessources = new JComboBox<>();
         for (int i = 0; i < this.cmbRessources.getItemCount(); i++)
             this.cmbTypeQst.selectWithKeyChar(cmbTypeQst.getItemAt(i).charAt(0));
+
 
         this.cmbRessources.addItem("-- Choisir une ressource --");
 
@@ -58,7 +63,12 @@ public class PanelCreerQst extends JPanel implements ActionListener
         this.cmbTypeQst.addItem("-- Choisir un type de question --");
 
         for (int i = 0; i < this.ctrl.getNbRessource(); i++)
+        {
+            if ( this.ressourceLaPlusLongue.length() < this.ctrl.getRessource(i).getNom().length())
+                this.ressourceLaPlusLongue = this.ctrl.getRessource(i).getNom();
+
             this.cmbRessources.addItem(this.ctrl.getRessource(i).getNomCourt());
+        }
 
         for (TypeQuestion type : TypeQuestion.values())
             this.cmbTypeQst.addItem(type.toString());
@@ -68,10 +78,9 @@ public class PanelCreerQst extends JPanel implements ActionListener
 
             RoundButton btn = new RoundButton(diff.getTexte(), diff.getCouleur());
             btn.setBackground(diff.getCouleur());
-            btn.setPreferredSize(new Dimension(35, 40));
+            btn.setPreferredSize(new Dimension(40, 40));
             btn.setFont(new Font("Arial", Font.BOLD, 8));
-            if(diff.getTexte().equals("D"))
-                btn.setForeground(Color.WHITE);
+            btn.setForeground(Color.WHITE);
             btn.setHorizontalAlignment(SwingConstants.CENTER);
 
             this.lstBtnDiff.add(btn);
@@ -245,11 +254,37 @@ public class PanelCreerQst extends JPanel implements ActionListener
                     return;
                 }
 
-                // TODO changer le temps
                 if (!tempsReponse.contains(":")) {
                     this.afficherMessageErreur("Veuillez indiquer un temps de réponse valide (min:sec)");
                     return;
                 }
+                else {
+                    String [] tabTempsReponse = tempsReponse.split(":");
+                    int       minute          = -1;
+                    int       seconde         = -1;
+
+                    try {
+                        minute  = Integer.parseInt(tabTempsReponse[0]);
+                        seconde = Integer.parseInt(tabTempsReponse[1]);
+                    }
+                    catch (Exception exception) {
+                        exception.getMessage();
+                        this.afficherMessageErreur("Veuillez indiquer un temps de réponse valide (min:sec)");
+                        return;
+                    }
+
+                    if ( minute == -1 || tabTempsReponse[0].length() > 2 || minute < 0 || minute > 59 ) {
+                        this.afficherMessageErreur("Le temps en minute doit être entre 0 et 59");
+                        return;
+                    }
+                    else if ( seconde == -1 || tabTempsReponse[1].length() > 2 || seconde <= 0 || seconde > 59 ) {
+                        this.afficherMessageErreur("Le temps en seconde doit être entre 1 et 59");
+                        return;
+                    }
+                    System.out.println(tabTempsReponse[0].length());
+
+                }
+
 
                 if (diff.isEmpty()) {
                     this.afficherMessageErreur("Veuillez sélectionner une difficulté pour la question");

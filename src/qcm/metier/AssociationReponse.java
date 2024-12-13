@@ -16,4 +16,8 @@ public class AssociationReponse implements Reponse
 	public String getTexteExplication() {
 		return this.txtExplication;
 	}
+
+	public void ajouterDefinition(AssociationReponseItem item) {
+		this.alReponses.add(item);
+	}
 }

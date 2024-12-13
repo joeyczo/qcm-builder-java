@@ -21,14 +21,14 @@ public class GenerationPageQuestion {
             contenu = "";
 
 
-            // HEAD
+            // --- HEAD
 
             //TODO : Scanner pour obtenir le title
             String title = "Questionnaire";
             contenu += genererHead(title);
 
 
-            // BODY
+            // --- BODY
 
 
             // ACCUEIL

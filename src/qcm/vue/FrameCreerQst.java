@@ -12,7 +12,7 @@ public class FrameCreerQst extends JDialog
     public FrameCreerQst(JFrame parent, Controleur ctrl)
     {
         super(parent, "Créer question", true);
-        this.setSize(1000, 600);
+        this.setSize(1000, 300);
         this.setLocationRelativeTo(null);
 
         this.ctrl = ctrl;
