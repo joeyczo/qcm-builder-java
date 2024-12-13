@@ -5,6 +5,8 @@ import java.util.List;
 
 public class Notion
 {
+    private final int LIMITE = 35;
+
     private String          nom;
     private List<Question>	alQuestions;
     private Ressource       ressource;
@@ -15,8 +17,25 @@ public class Notion
         this.alQuestions = new ArrayList<>();
     }
 
-    public String getNom(){
+    public String getNom() {
         return this.nom;
+    }
+
+    /**
+     * Rétrecie le nom de la notion si il est trop long
+     * @return Rétrecie le nom de la notion à 40 caractères si il est trop long
+     */
+    public String getNomCourt()
+    {
+        String nom = this.nom;
+
+        if ( this.nom.length() >= LIMITE )
+        {
+            nom = nom.substring(0, LIMITE - 3);
+            nom += "...";
+        }
+
+        return nom ;
     }
 
 

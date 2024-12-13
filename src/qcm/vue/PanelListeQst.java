@@ -50,7 +50,7 @@ public class PanelListeQst extends JPanel implements ActionListener, ItemListene
 
         if (premiereRessource != null) {
             for (Notion n : premiereRessource.getAlNotion())
-                this.ddlstNotion.addItem(n.getNom());
+                this.ddlstNotion.addItem(n.getNomCourt());
             this.ddlstNotion.setEnabled(true);
         }
 
@@ -111,7 +111,7 @@ public class PanelListeQst extends JPanel implements ActionListener, ItemListene
             this.ddlstNotion.removeAllItems();
 
             for (Notion n : rsc.getAlNotion())
-                this.ddlstNotion.addItem(n.getNom());
+                this.ddlstNotion.addItem(n.getNomCourt());
 
             this.ddlstNotion.setEnabled(true);
 

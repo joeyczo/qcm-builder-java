@@ -10,6 +10,7 @@ public class Question
 	private String 				texteQuestion;
 	private String 				tempsReponse;
 	private String				UID;
+	private double				nbPoints;
 
 	private TypeQuestion 		typeQuestion;
 	private Reponse 			reponse;
@@ -18,10 +19,11 @@ public class Question
 
 	private List<Fichier> 		fichiers;
 	
-	public Question(String texteQuestion, String tempsReponse, TypeQuestion typeQuestion, Reponse reponse, DifficulteQuestion difficulte, Notion notion) {
+	public Question(String texteQuestion, String tempsReponse, double nbPoints, TypeQuestion typeQuestion, Reponse reponse, DifficulteQuestion difficulte, Notion notion) {
 
 		this.UID			= Uid.generateUid(10);
 		this.texteQuestion 	= texteQuestion;
+		this.nbPoints		= nbPoints;
 		this.tempsReponse 	= tempsReponse;
 		this.typeQuestion 	= typeQuestion;
 		this.reponse 		= reponse;
@@ -31,10 +33,11 @@ public class Question
 
 	}
 
-	public Question(String uid, String texteQuestion, String tempsReponse, TypeQuestion typeQuestion, Reponse reponse, DifficulteQuestion difficulte, Notion notion) {
+	public Question(String uid, String texteQuestion, String tempsReponse, double nbPoints, TypeQuestion typeQuestion, Reponse reponse, DifficulteQuestion difficulte, Notion notion) {
 
 		this.UID			= uid;
 		this.texteQuestion 	= texteQuestion;
+		this.nbPoints		= nbPoints;
 		this.tempsReponse 	= tempsReponse;
 		this.typeQuestion 	= typeQuestion;
 		this.reponse 		= reponse;
@@ -78,6 +81,10 @@ public class Question
 		return this.notion;
 	}
 
+	public double getNbPoints() {
+		return nbPoints;
+	}
+
 	/* ------------ */
 	/*	 Setters 	*/
 	/* ------------ */
@@ -102,7 +109,13 @@ public class Question
 		this.reponse = reponse;
 	}
 
-	/* Methodes */
+	public void setNbPoints(double nbPoints) {
+		this.nbPoints = nbPoints;
+	}
+
+	/* ------------ */
+	/*	 Méthodes 	*/
+	/* ------------ */
 
 	public boolean ajouterFichier(Fichier f){
 		return this.fichiers.add(f);

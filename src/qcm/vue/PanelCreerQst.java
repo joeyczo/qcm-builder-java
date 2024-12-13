@@ -58,7 +58,7 @@ public class PanelCreerQst extends JPanel implements ActionListener
         this.cmbTypeQst.addItem("-- Choisir un type de question --");
 
         for (int i = 0; i < this.ctrl.getNbRessource(); i++)
-            this.cmbRessources.addItem(this.ctrl.getRessource(i).getNom());
+            this.cmbRessources.addItem(this.ctrl.getRessource(i).getNomCourt());
 
         for (TypeQuestion type : TypeQuestion.values())
             this.cmbTypeQst.addItem(type.toString());
@@ -156,8 +156,8 @@ public class PanelCreerQst extends JPanel implements ActionListener
         this.add(this.cbUnique, gbc);
 
         this.cmbRessources.addActionListener(this);
-        this.cmbNotions.addActionListener(this);
-        this.cmbTypeQst.addActionListener(this);
+        this.cmbNotions   .addActionListener(this);
+        this.cmbTypeQst   .addActionListener(this);
 
         for(RoundButton btn : lstBtnDiff)
             btn.addActionListener(this);
@@ -190,8 +190,10 @@ public class PanelCreerQst extends JPanel implements ActionListener
 
                 if (rsc == null) return;
 
+                this.cmbNotions.addItem("-- Choisir un type de question --");
+
                 for (Notion n : rsc.getAlNotion())
-                    this.cmbNotions.addItem(n.getNom());
+                    this.cmbNotions.addItem(n.getNomCourt());
 
                 this.cmbNotions.setEnabled(true);
             }
@@ -227,12 +229,23 @@ public class PanelCreerQst extends JPanel implements ActionListener
 
                 for (RoundButton btn : this.lstBtnDiff)
                     if (btn.isSelected()) diff = btn.getTexte();
-                
+
+                if (this.cmbRessources.getSelectedIndex() == 0) {
+                    this.afficherMessageErreur("Veuillez sélectionner une ressource");
+                    return;
+                }
+
+                if (this.cmbNotions.getSelectedIndex() == 0) {
+                    this.afficherMessageErreur("Veuillez sélectionner une notion");
+                    return;
+                }
+
                 if (nbPoints <= 0) {
                     this.afficherMessageErreur("Le nombre de point doît être supérieur à 0 !");
                     return;
                 }
 
+                // TODO changer le temps
                 if (!tempsReponse.contains(":")) {
                     this.afficherMessageErreur("Veuillez indiquer un temps de réponse valide (min:sec)");
                     return;
@@ -243,10 +256,6 @@ public class PanelCreerQst extends JPanel implements ActionListener
                     return;
                 }
 
-                if (this.cmbRessources.getSelectedIndex() == 0) {
-                    this.afficherMessageErreur("Veuillez sélectionner une ressource");
-                    return;
-                }
 
                 if (this.cmbTypeQst.getSelectedIndex() == 0) {
                     this.afficherMessageErreur("Veuillez sélectionner un type de question");
@@ -254,6 +263,12 @@ public class PanelCreerQst extends JPanel implements ActionListener
                 }
 
                 Ressource rsc = this.ctrl.getRessource(ressource);
+
+                if (rsc == null) {
+                    this.afficherMessageErreur("Impossible de récupérer la ressource !");
+                    return;
+                }
+
                 Notion    not = this.ctrl.getNotion(rsc, notion);
 
                 DifficulteQuestion difficulte = DifficulteQuestion.TRESFACILE;

@@ -8,6 +8,8 @@ public class GenerationPageQuestion {
     private String cheminFichierDonnees;
     private String cheminFichierSortie;
 
+    private String contenu;
+
     public GenerationPageQuestion(String cheminFichierDonnees, String cheminFichierSortie) {
         this.cheminFichierDonnees = cheminFichierDonnees;
         this.cheminFichierSortie = cheminFichierSortie;
@@ -16,9 +18,42 @@ public class GenerationPageQuestion {
         try {
             Scanner sc = new Scanner(new FileInputStream(cheminFichierDonnees));
 
-            // TODO : Obtenir le type de question
+            contenu = "";
 
+
+            // HEAD
+
+            //TODO : Scanner pour obtenir le title
+            String title = "Questionnaire";
+            contenu += genererHead(title);
+
+
+            // BODY
+
+
+            // ACCUEIL
+
+            //TODO : Scanner pour obtenir ces 3 attributs
+            String intituleRessource = "R2.01 Introduction au développement objet";
+            int nbNotions = 4;
+            String tempsEstime = "10mn30";
+
+            //Accueil
+            contenu += "<body>\n" +
+                    "    <div class=\"accueil-card\">\n" +
+                    "        <h1>" + intituleRessource + "</h1>\n" +
+                    "        <p>" + nbNotions + " notions - Environ " + tempsEstime + "</p>\n" +
+                    "        <button>Démarrer le questionnaire</button>\n" +
+                    "    </div>\n" +
+                    "</body>";
+
+
+
+            // TODO : Scanner, tant qu'il reste des questions :
+
+            // TODO : Obtenir le type de question
             String type= "sous le sunlight des tropiques";
+
             switch(type){
                 case "ELIMINATION" : genererPageElimination();
 
@@ -28,68 +63,45 @@ public class GenerationPageQuestion {
             }
 
 
+
+            //Fin, écriture dans cheminFichierSortie
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(cheminFichierSortie))) {
+                writer.write(contenu);
+            } catch (Exception e) {
+                System.out.println("Une erreur est survenue lors de la géneration du questionnaire : " + e.getMessage());
+            }
+
         } catch (FileNotFoundException e) {
             System.out.println((e.getMessage()));
         }
     }
+
+
+    private String genererHead(String title) {
+        String head = "<!DOCTYPE html>\n" +
+                "<html lang=\"fr\">\n" +
+                "<head>\n" +
+                "    <meta charset=\"UTF-8\">\n" +
+                "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n" +
+                "    <title>" + title + "</title>\n" +
+                "    <link href=\"style.css\" rel=\"stylesheet\">\n" +
+                "    <script src=\"script.js\"></script>\n" +
+                "</head>";
+
+        return head;
+    }
     
-    private void genererPageQCM() {
-        try (Scanner sc = new Scanner(new FileInputStream(cheminFichierDonnees));
-             FileWriter writer = new FileWriter(cheminFichierSortie)) {
-            StringBuilder htmlContent = new StringBuilder();
-            htmlContent.append("<!DOCTYPE html>\n");
-            htmlContent.append("<html lang=\"fr\">\n");
-            htmlContent.append("<head>\n");
-            htmlContent.append("    <meta charset=\"UTF-8\">\n");
-            htmlContent.append("    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n");
-            htmlContent.append("    <title>QCM</title>\n");
-            htmlContent.append("    <link rel=\"stylesheet\" href=\"styles.css\">\n");
-            htmlContent.append("</head>\n");
-            htmlContent.append("<body>\n");
-            htmlContent.append("<h1>Évaluation QCM</h1>\n");
+    private String genererPageQCM() {
+        String sRep = "";
 
-            String line;
-            int questionNumber = 1;
-
-            while ((line = sc.nextLine()) != null) {
-                String[] parts = line.split(";", 2);
-                if (parts.length < 2) {
-                    continue; // Skip malformed lines
-                }
-
-                String question = parts[0];
-                String[] options = parts[1].split(";");
-
-                htmlContent.append("<div class=\"question\">\n");
-                htmlContent.append("    <p>Question ").append(questionNumber++).append(": ").append(question).append("</p>\n");
-                htmlContent.append("    <ul>\n");
-
-                for (int i = 0; i < options.length; i++) {
-                    htmlContent.append("        <li>\n");
-                    htmlContent.append("            <input type=\"radio\" name=\"q").append(questionNumber).append("\" id=\"q").append(questionNumber).append("-option").append(i).append("\">\n");
-                    htmlContent.append("            <label for=\"q").append(questionNumber).append("-option").append(i).append("\">").append(options[i]).append("</label>\n");
-                    htmlContent.append("        </li>\n");
-                }
-
-                htmlContent.append("    </ul>\n");
-                htmlContent.append("</div>\n");
-            }
-
-            htmlContent.append("<button>Soumettre</button>\n");
-            htmlContent.append("</body>\n");
-            htmlContent.append("</html>\n");
-
-            writer.write(htmlContent.toString());
-        } catch (IOException e) {
-            System.err.println("Erreur lors de la génération de la page HTML : " + e.getMessage());
-        }
+        return sRep;
     }
 
-    private void genererPageLiaison() {
-        // TODO
+    private String genererPageLiaison() {
+        return "";
     }
 
-    private void genererPageElimination() {
-        // TODO
+    private String genererPageElimination() {
+        return "";
     }
 }

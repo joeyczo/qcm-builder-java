@@ -110,7 +110,8 @@ public class ControleurDonnees
 
         if (q == null) return false;
 
-        String sRet = "";
+        String sRet                 = "";
+        String pathFichierDonnees   = Paths.get("src", "data", "app", "DonneesQuestions.csv").toString();
 
         /*  ---------------------------------  */
         /*	  Lecture du fichier de données    */
@@ -118,13 +119,43 @@ public class ControleurDonnees
 
         try {
 
-            // TODO : Lecture du fichier
+            Scanner sc = new Scanner(new FileInputStream(pathFichierDonnees));
+
+            while (sc.hasNextLine()) {
+
+                sRet += sc.nextLine();
+
+            }
+
+            sc.close();
 
         } catch (Exception e) {
             System.out.println("Erreur lecture fichier : " + e.getMessage());
         }
 
-        sRet += q.getUID() + "," + q.getDifficulte() + "," + q.getTypeQuestion() + "," +  q.getNotion().getRessource().getNom() + "," +q.getNotion().getNom() + "," + q.getReponse().getTexteExplication();
+        sRet += (!sRet.isEmpty()) ? "\n" : "";
+
+        /*
+         * Structure :
+         * UID
+         * Difficulte (TRESFACILE, FACILE ...)
+         * Type de question (QCM,ASSOCIATION,ELIMINIATION)
+         * Nom de la ressource
+         * Nom de la notion
+         * Temps de réponse (mm:ss)
+         * Nombre de points
+         */
+
+        String nomRessource = q.getNotion().getRessource().getNom().replaceAll(",", "|");
+        String nomNotion    = q.getNotion().getNom().replaceAll(",", "|");
+
+        sRet += q.getUID()                  + "," +
+                q.getDifficulte()           + "," +
+                q.getTypeQuestion()         + "," +
+                nomRessource                + "," +
+                nomNotion                   + "," +
+                q.getTempsReponse()         + "," +
+                q.getNbPoints();
 
         /*  ----------------------------------  */
         /*	  Écriture du fichier de données    */
@@ -132,7 +163,7 @@ public class ControleurDonnees
 
         try {
 
-            PrintWriter pw = new PrintWriter(new FileOutputStream(Paths.get("src", "data", "app", "DonneesQuestions.csv").toString()));
+            PrintWriter pw = new PrintWriter(new FileOutputStream(pathFichierDonnees));
 
             pw.println(sRet);
 
@@ -142,11 +173,21 @@ public class ControleurDonnees
             /*	  Écriture de la question au format TXT    */
             /*  -----------------------------------------  */
 
-            /*PrintWriter pwQuestion = new PrintWriter(new FileOutputStream(Paths.get("src", "data", "app", q.getUID()+".txt").toString()));
+            PrintWriter pwQuestion = new PrintWriter(new FileOutputStream(Paths.get("src", "data", "app", q.getUID()+".txt").toString()));
 
-            pwQuestion.println(q.getTexteQuestion());
+            String questionEnTxt = "{TEXTEQST}\n";
 
-            pwQuestion.close();*/
+            questionEnTxt += q.getTexteQuestion();
+
+            if (q.getReponse().getTexteExplication() != null) {
+                questionEnTxt += "\n{TEXTEEXPLICATION}\n";
+
+                questionEnTxt += q.getReponse().getTexteExplication();
+            }
+
+            pwQuestion.println(questionEnTxt);
+
+            pwQuestion.close();
 
             return true;
 
@@ -154,6 +195,8 @@ public class ControleurDonnees
             System.out.println("Erreur de fichier : " + e.getMessage());
             return false;
         }
+
+        // TODO : Sauvegarde des réponses dans les fichiers CSV
 
     }
 
@@ -165,6 +208,16 @@ public class ControleurDonnees
     /*  --------------------------  */
 
     public void chargerDonnees() {
+
+        // Chargement des données (Ressource et Notion)
+        this.chargerDonneesParametres();
+
+    }
+
+    /**
+     * Chargement des données paramètres, Ressource et Notion-
+     */
+    private void chargerDonneesParametres() {
 
         try {
 

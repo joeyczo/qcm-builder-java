@@ -42,6 +42,8 @@ public class GrilleDonneesEval extends AbstractTableModel
             tabDonnees[lig][2] = 0;
             tabDonnees[lig][3] = 0;
             tabDonnees[lig][4] = 0;
+
+
             tabDonnees[lig][5] = 0;
             tabDonnees[lig][6] = 0;
         }
@@ -147,7 +149,7 @@ public class GrilleDonneesEval extends AbstractTableModel
 
     private void resetLigne(int lig) {
 
-        for (int i = 2; i < DifficulteQuestion.values().length; i++) {
+        for (int i = 2; i < DifficulteQuestion.values().length+2; i++) {
             this.tabDonnees[lig][i] = 0;
             this.fireTableCellUpdated(lig, i);
         }

@@ -50,6 +50,8 @@ public class FrameInfosQuestion extends JFrame {
 
     public void fermerFenetre()
     {
+
+
         this.dispose();
     }
 

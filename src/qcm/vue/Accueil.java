@@ -19,7 +19,7 @@ public class Accueil extends JFrame implements ActionListener
 
     private FrameParametres frameParametres;
     private FrameCreerQst   frameCreerQuestion;
-    private FrameCreerEval  frameCreerEval;
+    private FrameGenererEval frameGenererEval;
     private FrameListeQst   frameListeQst;
 
     private Controleur      ctrl;
@@ -80,20 +80,17 @@ public class Accueil extends JFrame implements ActionListener
 
     public void actionPerformed(ActionEvent e)
     {
-        if(e.getSource() == this.btnParametres) {
+        if(e.getSource() == this.btnParametres)
             this.frameParametres = new FrameParametres(this, this.ctrl);
-        }
 
-        if(e.getSource() == this.btnCreerQuestion) {
+        if(e.getSource() == this.btnCreerQuestion)
             this.frameCreerQuestion = new FrameCreerQst(this, this.ctrl);
-        }
 
-        if(e.getSource() == this.btnCreerEval) {
-            this.frameCreerEval = new FrameCreerEval(this, this.ctrl);
-        }
+        if(e.getSource() == this.btnCreerEval)
+            this.frameGenererEval = new FrameGenererEval(this, this.ctrl);
 
-        if(e.getSource() == this.btnListeQst){
+        if(e.getSource() == this.btnListeQst)
             this.frameListeQst = new FrameListeQst(this,this.ctrl);
-        }
+
     }
 }

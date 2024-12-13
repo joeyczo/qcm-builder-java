@@ -73,7 +73,7 @@ public class GestionDonnees {
         Ressource trouves = null;
 
         for (Ressource r : this.lstRessource)
-            if (r.getNom().equals(nom)) {
+            if (r.getNom().equals(nom) || r.getNomCourt().equals(nom)) {
                 trouves = r;
                 break;
             }
@@ -159,7 +159,7 @@ public class GestionDonnees {
         Notion trouve = null;
 
         for (Notion n : lstNotions)
-            if (n.getNom().equals(nom)) {
+            if (n.getNom().equals(nom) || n.getNomCourt().equals(nom)) {
                 trouve = n;
                 break;
             }

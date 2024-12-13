@@ -1,6 +1,5 @@
 package qcm.vue;
 import qcm.Controleur;
-import qcm.metier.Notion;
 import qcm.metier.Ressource;
 import qcm.vue.donnees.GrilleDonneesEval;
 
@@ -10,20 +9,20 @@ import java.awt.event.ActionEvent;
 import java.io.File;
 import javax.swing.*;
 
-public class PanelEval extends JPanel implements ActionListener
+public class PanelGenererEval extends JPanel implements ActionListener
 {
     private JButton             btnSubmit;
     private JComboBox<String>   ddlstRessource;
     private JRadioButton        rbOui, rbNon;
 
-    private FrameCreerEval      frameParent;
+    private FrameGenererEval    frameParent;
     private JTable              tblGrilleDonnees;
     private JPanel              panelHaut;
     private String[]            tabLbl;
 
     private Controleur ctrl;
 
-    public PanelEval( FrameCreerEval parent, Controleur ctrl ){
+    public PanelGenererEval(FrameGenererEval parent, Controleur ctrl ){
         this.frameParent = parent;
         this.setLayout ( new BorderLayout() );
         this.ctrl = ctrl;
@@ -40,7 +39,7 @@ public class PanelEval extends JPanel implements ActionListener
         this.tblGrilleDonnees = new JTable ( new GrilleDonneesEval(this.ctrl, premiereRessource) );
         this.tblGrilleDonnees.setFillsViewportHeight(true);
 
-        this.btnSubmit = new JButton("Créer une nouvelle évaluation");
+        this.btnSubmit = new JButton("Généré une nouvelle évaluation");
 
         rbNon = new JRadioButton("non");
         rbOui = new JRadioButton("oui");
@@ -100,7 +99,7 @@ public class PanelEval extends JPanel implements ActionListener
             }
 
             if (nbSe <= 0) {
-                this.afficherMessageErreur("Veullez sélectionner au moins une ressource dans le tableau !");
+                this.afficherMessageErreur("Veullez sélectionner au moins une notion dans le tableau !");
                 return;
             }
 

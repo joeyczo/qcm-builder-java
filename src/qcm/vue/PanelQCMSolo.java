@@ -223,7 +223,6 @@ public class PanelQCMSolo extends JPanel implements ActionListener
                 return;
             }
 
-
             QCMReponse qcmReponse = new QCMReponse();
 
             for ( int cpt = 0; cpt < this.lstTxtReponses.size(); cpt ++)
@@ -232,7 +231,7 @@ public class PanelQCMSolo extends JPanel implements ActionListener
             if ( !this.txtInfoSupp.getText().isEmpty() && !this.txtInfoSupp.getText().trim().isEmpty())
                 qcmReponse.ajouterTexteExplication(this.txtInfoSupp.getText());
 
-            Question nouvelleQst = new Question(this.txtQst.getText(), this.data.tempsReponse(), this.data.type(), qcmReponse, this.data.diff(), this.data.notion());
+            Question nouvelleQst = new Question(this.txtQst.getText(), this.data.tempsReponse(), this.data.nbPoints(), this.data.type(), qcmReponse, this.data.diff(), this.data.notion());
 
             this.data.notion().ajouterQuestion(nouvelleQst);
 
@@ -243,10 +242,13 @@ public class PanelQCMSolo extends JPanel implements ActionListener
 
             System.out.println("Les questions dans la ressource " + this.data.ressource().getNom() + " pour la notion " + this.data.notion().getNom() + " sont : ");
 
+
+            this.afficherMessageValide("La question a bien été sauvegardée dans la base de données");
+
             for ( int cpt = 0; cpt < this.data.notion().getNbQuestions(); cpt ++)
-            {
                 System.out.println(this.data.notion().getQuestion(cpt));
-            }
+
+
 
             this.frameParent.fermerFenetre();
 
@@ -261,6 +263,14 @@ public class PanelQCMSolo extends JPanel implements ActionListener
      */
     private void afficherMessageErreur ( String message ) {
         JOptionPane.showMessageDialog(this,  message, "Impossible de sauvegarder la réponse", JOptionPane.ERROR_MESSAGE);
+    }
+
+    /**
+     * Afficher un message de validation à l'utilisateur
+     * @param message Message à afficher
+     */
+    private void afficherMessageValide ( String message ) {
+        JOptionPane.showMessageDialog(this,  message, "Succès", JOptionPane.INFORMATION_MESSAGE);
     }
 
     public void majIHM()
