@@ -122,7 +122,7 @@ public class ControleurDonnees
 
             while (sc.hasNextLine()) {
 
-                sRet += sc.nextLine();
+                sRet += sc.nextLine() + "\n";
 
             }
 
@@ -132,13 +132,11 @@ public class ControleurDonnees
             System.out.println("Erreur lecture fichier : " + e.getMessage());
         }
 
-        sRet += (!sRet.isEmpty()) ? "\n" : "";
-
         /*
          * Structure :
          * UID
          * Difficulte (TRESFACILE, FACILE ...)
-         * Type de question (QCM,ASSOCIATION,ELIMINIATION)
+         * Type de question (QCMSOLO,QCMMULTI,ASSOCIATION,ELIMINIATION)
          * Nom de la ressource
          * Nom de la notion
          * Temps de réponse (mm:ss)
@@ -183,12 +181,11 @@ public class ControleurDonnees
 
                 questionEnTxt += q.getReponse().getTexteExplication();
             }
-
             /*  ---------------------------------------------  */
             /*	  Écriture des réponses dans le fichier TXT    */
             /*  ---------------------------------------------  */
 
-            if (q.getTypeQuestion() == TypeQuestion.QCMSOLO) {
+            if (q.getTypeQuestion() == TypeQuestion.QCMSOLO || q.getTypeQuestion() == TypeQuestion.QCMMULTI) {
 
                 QCMReponse reponse = (QCMReponse) q.getReponse();
 
@@ -222,14 +219,49 @@ public class ControleurDonnees
 
             pwQuestion.close();
 
-            return true;
+
+            /*  ------------------------------------  */
+            /*	  Sauvegarde du fichier de réponse    */
+            /*  ------------------------------------  */
+
+            return sauvegarderReponse(q);
 
         } catch (Exception e) {
             System.out.println("Erreur de fichier : " + e.getMessage());
             return false;
         }
 
-        // TODO : Sauvegarde des réponses dans les fichiers CSV
+    }
+
+    /**
+     * Sauvegarder la réponse dans le fichier CSV
+     * @param q Question à sauvegarder
+     * @return Le résultat de la sauvegarde
+     */
+    private boolean sauvegarderReponse ( Question q ) {
+
+        String pathFichierReponses  = Paths.get("src", "data", "app", "DonneesReponses.csv").toString();
+
+        try {
+
+            // Lecture des réponses existantes
+            String dataReponse = "";
+
+            Scanner scReponse = new Scanner(new FileInputStream(pathFichierReponses));
+
+            while (scReponse.hasNextLine()) {
+                dataReponse += scReponse.nextLine() + "\n";
+            }
+
+            // Écriture de la réponse
+
+            // TODO : a faire
+
+        } catch (Exception e) {
+            System.out.println("Impossible de sauvegarder la réponse : " + e.getMessage());
+        }
+
+        return true;
 
     }
 
@@ -335,7 +367,6 @@ public class ControleurDonnees
     private String getTexteQuestion (String uid) {
 
         String  pathFichierQuestion = Paths.get("src", "data", "app", uid+".txt").toString();
-        String  typeLecture         = "aucune";
         String sRet                 = "";
 
         try {
@@ -346,16 +377,16 @@ public class ControleurDonnees
 
                 String ligne = sc.nextLine();
 
-                if (typeLecture.equals("texte"))
-                    sRet += ligne;
-
                 // TODO : Lecutre des fichiers
 
                 // Déterminer le type de lecture
-                if (ligne.equals("{TEXTEQST}"))         typeLecture = "texte";
-                if (ligne.equals("{TEXTEEXPLICATION}")) typeLecture = "explication";
-                if (ligne.equals("{ASSOCIATION}"))      typeLecture = "association";
-                if (ligne.equals("{REPONSE}"))          typeLecture = "reponse";
+                if (ligne.equals("{TEXTEQST}")) {
+
+                    sRet = sc.nextLine();
+
+                    sRet = sRet.replaceAll("\\\\n", "\n").replaceAll("\\\\t", "\t");
+
+                }
 
 
 
@@ -366,6 +397,18 @@ public class ControleurDonnees
         }
 
         return sRet;
+
+    }
+
+    /**
+     * Permets de récupérer la réponse à la question en fonction de son UID et de son type (Qui sera retourné)
+     * @param uid UID de la question
+     * @param question Type de la question
+     * @return L'objet Reponse correspondant à l'UID de la question
+     */
+    private Reponse getReponseFichier ( String uid, TypeQuestion question ) {
+
+        return null;
 
     }
 

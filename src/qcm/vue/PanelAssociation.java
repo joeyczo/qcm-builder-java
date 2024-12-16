@@ -30,14 +30,14 @@ public class PanelAssociation extends JPanel implements ActionListener
     private JButton                 btnEnregistrer;
     private JTextArea               txtInfoSupp;
 
-    public PanelAssociation(DonneesCreationQuestion data, Controleur ctrl, FrameInfosQuestion frameInfosQuestion) {
-
+    public PanelAssociation(DonneesCreationQuestion data, Controleur ctrl, FrameInfosQuestion frameInfosQuestion)
+    {
         this.data           = data;
         this.ctrl           = ctrl;
         this.frameParent    = frameInfosQuestion;
 
         this.txtQuestion  = new JTextArea("Ajouter une question", 10, 20);
-        this.txtInfoSupp  = new JTextArea (2, 1);
+        this.txtInfoSupp  = new JTextArea (10, 10);
         this.scQuestion   = new JScrollPane(this.txtQuestion, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
         this.lstTxtReponses = new ArrayList<>();
@@ -60,27 +60,23 @@ public class PanelAssociation extends JPanel implements ActionListener
 
         this.btnEnregistrer = new JButton("Enregistrer");
 
-        // Ajouter deux réponses et définitions par défaut
         addDefinition("Ajouter une définition");
         addReponse("Ajouter une réponse");
         addDefinition("Ajouter une autre définition");
         addReponse("Ajouter une autre réponse");
 
-        // Layout
         this.setLayout(new GridBagLayout());
 
-        // Activation des événements
         this.btnAjouter.addActionListener(this);
         this.btnExplication.addActionListener(this);
         this.btnEnregistrer.addActionListener(this);
 
-        // Afficher l'IHM
         majIHM();
     }
 
-    public void actionPerformed(ActionEvent e) {
+    public void actionPerformed(ActionEvent e)
+    {
         if (e.getSource() == this.btnAjouter) {
-            // Ajouter une nouvelle définition et une nouvelle réponse
             addDefinition("Ajouter une définition");
             addReponse("Ajouter une réponse");
             majIHM();
@@ -124,19 +120,19 @@ public class PanelAssociation extends JPanel implements ActionListener
             AssociationReponse associationReponse = new AssociationReponse();
 
             if (!this.txtInfoSupp.getText().isEmpty() || !this.txtInfoSupp.getText().trim().isEmpty()) {
-                associationReponse.ajouterTexteExplication(this.txtInfoSupp.getText().trim());
+                associationReponse.ajouterTexteExplication(this.txtInfoSupp.getText().trim().replaceAll("\n", "\\\\n").replaceAll("\t", "\\\\t"));
             }
 
             // Association des définitions <> réponses
             for ( int i = 0; i < this.lstTxtDefinitions.size(); i++) {
 
-                AssociationReponseItem reponse      = new AssociationReponseItem(this.lstTxtReponses.get(i).getText().trim());
-                AssociationReponseItem definition   = new AssociationReponseItem(reponse, this.lstTxtDefinitions.get(i).getText().trim());
+                AssociationReponseItem reponse      = new AssociationReponseItem(this.lstTxtReponses.get(i).getText().trim().replaceAll("\n", "\\\\n").replaceAll("\t", "\\\\t"));
+                AssociationReponseItem definition   = new AssociationReponseItem(reponse, this.lstTxtDefinitions.get(i).getText().trim().replaceAll("\n", "\\\\n").replaceAll("\t", "\\\\t"));
 
                 associationReponse.ajouterDefinition(definition);
             }
 
-            Question question = new Question(this.txtQuestion.getText().trim(), this.data.tempsReponse(), this.data.nbPoints(), this.data.type(), associationReponse, this.data.diff(), this.data.notion());
+            Question question = new Question(this.txtQuestion.getText().trim().replaceAll("\n", "\\\\n").replaceAll("\t", "\\\\t"), this.data.tempsReponse(), this.data.nbPoints(), this.data.type(), associationReponse, this.data.diff(), this.data.notion());
 
             this.data.notion().ajouterQuestion(question);
 
@@ -155,7 +151,8 @@ public class PanelAssociation extends JPanel implements ActionListener
      * Afficher un message d'erreur à l'utilisateur
      * @param message Message à afficher
      */
-    private void afficherMessageErreur ( String message ) {
+    private void afficherMessageErreur ( String message )
+    {
         JOptionPane.showMessageDialog(this,  message, "Impossible de sauvegarder la réponse", JOptionPane.ERROR_MESSAGE);
     }
 
@@ -163,18 +160,21 @@ public class PanelAssociation extends JPanel implements ActionListener
      * Afficher un message de validation à l'utilisateur
      * @param message Message à afficher
      */
-    private void afficherMessageValide ( String message ) {
+    private void afficherMessageValide ( String message )
+    {
         JOptionPane.showMessageDialog(this,  message, "Succès", JOptionPane.INFORMATION_MESSAGE);
     }
 
-    private void addReponse(String text) {
+    private void addReponse(String text)
+    {
         JTextArea newReponse = new JTextArea(text, 5, 20);
         JScrollPane scReponse = new JScrollPane(newReponse, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
         this.lstTxtReponses.add(newReponse);
     }
 
-    private void addDefinition(String text) {
+    private void addDefinition(String text)
+    {
         JTextArea newDefinition = new JTextArea(text, 5, 20);
         JScrollPane scDefinition = new JScrollPane(newDefinition, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
@@ -184,16 +184,15 @@ public class PanelAssociation extends JPanel implements ActionListener
         btnSupprimerGauche.setBorderPainted(false);
         btnSupprimerGauche.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnSupprimerGauche.setIcon(new ImageIcon("src/data/img/delete.png"));
-        btnSupprimerGauche.setPreferredSize(new Dimension(20, 20));
 
         btnSupprimerGauche.addActionListener(e -> {
-            if (this.lstTxtDefinitions.size() > 2) {  // Ne permettre la suppression que si plus de 2 lignes
+            if (this.lstTxtDefinitions.size() > 2) {
                 int index = this.lstBtnSupprimerGauche.indexOf(btnSupprimerGauche);
                 if (index >= 0) {
                     this.lstTxtDefinitions.remove(index);
                     this.lstTxtReponses.remove(index);
                     this.lstBtnSupprimerGauche.remove(index);
-                    majIHM(); // Rafraîchir l'IHM après suppression
+                    majIHM();
                 }
             } else {
                 JOptionPane.showMessageDialog(this, "Il doit rester au moins deux lignes.");
@@ -219,25 +218,31 @@ public class PanelAssociation extends JPanel implements ActionListener
 
         gbc.gridx = 0;
         gbc.gridy = 1;
-        gbc.gridwidth = 4;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
         this.add(this.scQuestion, gbc);
 
-        gbc.gridwidth = 1;
+        //gbc.gridwidth = 1;
         int yIndex = 2;
 
         for (int i = 0; i < this.lstTxtDefinitions.size(); i++) {
             gbc.gridx = 0;
             gbc.gridy = yIndex;
+            gbc.fill = GridBagConstraints.HORIZONTAL;
+            gbc.weightx = 0.2;
             this.add(this.lstBtnSupprimerGauche.get(i), gbc);
 
             gbc.gridx = 1;
+            gbc.gridy = yIndex;
             JScrollPane scDefinition = new JScrollPane(this.lstTxtDefinitions.get(i), JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-            gbc.weightx = 1.0;
+            gbc.weightx = 0.4;
+            gbc.fill = GridBagConstraints.HORIZONTAL;
             this.add(scDefinition, gbc);
 
             gbc.gridx = 3;
+            gbc.gridy = yIndex;
             JScrollPane scReponse = new JScrollPane(this.lstTxtReponses.get(i), JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-            gbc.weightx = 1.0;
+            gbc.weightx = 0.4;
+            gbc.fill = GridBagConstraints.HORIZONTAL;
             this.add(scReponse, gbc);
 
             yIndex++;
@@ -249,12 +254,10 @@ public class PanelAssociation extends JPanel implements ActionListener
 
         gbc.gridx = 1;
         gbc.gridy = yIndex;
-        this.add(this.btnExplication, gbc);
-
-        gbc.gridx = 2;
-        gbc.gridy = yIndex;
+        //gbc.gridwidth = GridBagConstraints.REMAINDER;
         JPanel pnl = new JPanel();
         pnl.setLayout(new BorderLayout());
+        pnl.add(this.btnExplication, BorderLayout.WEST);
         pnl.add(this.btnEnregistrer, BorderLayout.EAST);
         this.add(pnl, gbc);
 

@@ -40,109 +40,27 @@ public class PanelQCMMulti extends JPanel implements ActionListener
         this.lstBtnValideReponse = new ArrayList<JCheckBox>();
         this.lstScrollTexte      = new ArrayList<JScrollPane>();
 
-        this.txtQst           = new JTextArea (5, 1);
-        this.txtInfoSupp      = new JTextArea (2, 20);
-        this.btnAjouter       = new JButton   ();
-        this.btnInfoSupp      = new JButton   ();
-        this.btnEnregistrer   = new JButton   ("Enregistrer");
+        this.txtQst            = new JTextArea (5, 1);
+        this.txtInfoSupp       = new JTextArea (10,10);
+        this.btnAjouter        = new JButton   ();
+        this.btnInfoSupp       = new JButton   ();
+        this.btnEnregistrer    = new JButton   ("Enregistrer");
         this.btnAjouterFichier = new JButton();
-        this.scrollTexte      = new JScrollPane(this.txtQst, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        this.data             = data;
-        this.ctrl             = ctrl;
+        this.scrollTexte       = new JScrollPane(this.txtQst, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        this.data              = data;
+        this.ctrl              = ctrl;
         this.pnl               = new JPanel();
-        this.frameParent      = frameParent;
-
-
-
-        this.setLayout(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets             = new Insets(5, 5, 5, 5);
-        gbc.fill               = GridBagConstraints.HORIZONTAL;
-
-
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        this.add(new JLabel("Question"), gbc);
-
-        gbc.gridy     = 1;
-        gbc.gridwidth = 6;
-        gbc.ipadx     = 600;
-        gbc.ipady     = 50;
-        this.add(this.scrollTexte, gbc);
-
+        this.frameParent       = frameParent;
 
         for( int cpt = 0; cpt < 2; cpt ++)
         {
-            this.lstBtnSupp         .add(new JButton());
-            this.lstTxtReponses     .add(new JTextArea (5, 1));
-            this.lstScrollTexte     .add(new JScrollPane(this.lstTxtReponses.getLast(), JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED));
+            this.lstBtnSupp.add(new JButton());
+            this.lstTxtReponses.add(new JTextArea(5, 1));
+            this.lstScrollTexte.add(new JScrollPane(this.lstTxtReponses.getLast(), JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED));
             this.lstBtnValideReponse.add(new JCheckBox());
-
-            gbc.gridwidth = 1;
-            gbc.ipadx     = 0;
-            gbc.ipady     = 0;
-            gbc.gridx     = 0;
-            gbc.gridy     = 2 + cpt;
-            this.lstBtnSupp.get(cpt).setOpaque(false);
-            this.lstBtnSupp.get(cpt).setContentAreaFilled(false);
-            this.lstBtnSupp.get(cpt).setBorderPainted(false);
-            this.lstBtnSupp.get(cpt).setCursor(new Cursor(Cursor.HAND_CURSOR));
-            this.lstBtnSupp.get(cpt).setIcon(new ImageIcon("src/data/img/delete.png"));
-            this.add(this.lstBtnSupp.get(cpt), gbc);
-
-            gbc.gridx     = 1;
-            gbc.gridwidth = 5;
-            gbc.ipadx     = 400;
-            gbc.ipady     = 30;
-            this.add(this.lstScrollTexte.get(cpt), gbc);
-
-            gbc.gridx     = GridBagConstraints.RELATIVE;
-            gbc.gridwidth = GridBagConstraints.RELATIVE;
-            gbc.ipadx     = 0;
-            gbc.ipady     = 0;
-            this.add(this.lstBtnValideReponse.get(cpt), gbc);
-
         }
 
-
-        gbc.gridwidth = 1;
-        gbc.gridx     = 0;
-        gbc.gridy     = 2 + this.lstTxtReponses.size();
-        this.btnAjouter.setOpaque(false);
-        this.btnAjouter.setContentAreaFilled(false);
-        this.btnAjouter.setBorderPainted(false);
-        this.btnAjouter.setIcon(new ImageIcon("src/data/img/add.png"));
-        this.btnAjouter.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        this.add(this.btnAjouter, gbc);
-
-
-        gbc.gridx = 1;
-        this.btnInfoSupp.setOpaque(false);
-        this.btnInfoSupp.setContentAreaFilled(false);
-        this.btnInfoSupp.setBorderPainted(false);
-        this.btnInfoSupp.setIcon(new ImageIcon("src/data/img/edit.png"));
-        this.btnInfoSupp.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        this.add(this.btnInfoSupp, gbc);
-
-        gbc.gridx = 2;
-        this.btnAjouterFichier.setOpaque(false);
-        this.btnAjouterFichier.setContentAreaFilled(false);
-        this.btnAjouterFichier.setBorderPainted(false);
-        this.btnAjouterFichier.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        this.btnAjouterFichier.setIcon(new ImageIcon("src/data/img/file.png"));
-        this.add(this.btnAjouterFichier, gbc);
-
-        gbc.gridx = 3;
-        gbc.gridwidth = 2;
-        this.add(new JLabel(""), gbc);
-
-        gbc.gridx     = GridBagConstraints.RELATIVE;
-        gbc.gridwidth = 1;
-
-        this.add(this.pnl, gbc);
-        this.pnl.setLayout(new BorderLayout());
-        this.pnl.add(this.btnEnregistrer, BorderLayout.EAST);
-
+        this.majIHM();
 
         this.btnAjouter    .addActionListener(this);
         this.btnInfoSupp   .addActionListener(this);
@@ -208,6 +126,7 @@ public class PanelQCMMulti extends JPanel implements ActionListener
             return;
         }
 
+        // Ajout dans la base de données des questions
         if ( e.getSource() == this.btnEnregistrer )
         {
 
@@ -239,12 +158,14 @@ public class PanelQCMMulti extends JPanel implements ActionListener
             QCMReponse qcmReponse = new QCMReponse();
 
             for ( int cpt = 0; cpt < this.lstTxtReponses.size(); cpt ++)
-                qcmReponse.ajouterItem(new QCMReponseItem(this.lstTxtReponses.get(cpt).getText(), this.lstBtnValideReponse.get(cpt).isValid()));
+                qcmReponse.ajouterItem(new QCMReponseItem(this.lstTxtReponses.get(cpt).getText().trim().replaceAll("\n", "\\\\n").replaceAll("\t", "\\\\t"), this.lstBtnValideReponse.get(cpt).isValid()));
 
             if ( !this.txtInfoSupp.getText().isEmpty() && !this.txtInfoSupp.getText().trim().isEmpty())
-                qcmReponse.ajouterTexteExplication(this.txtInfoSupp.getText());
+                qcmReponse.ajouterTexteExplication(this.txtInfoSupp.getText().trim().replaceAll("\n", "\\\\n").replaceAll("\t", "\\\\t"));
 
-            Question nouvelleQst = new Question(this.txtQst.getText(), this.data.tempsReponse(), this.data.nbPoints(), this.data.type(), qcmReponse, this.data.diff(), this.data.notion());
+            String txtQuestion = this.txtQst.getText().trim().replaceAll("\n", "\\\\n").replaceAll("\t", "\\\\t");
+
+            Question nouvelleQst = new Question(txtQuestion, this.data.tempsReponse(), this.data.nbPoints(), this.data.type(), qcmReponse, this.data.diff(), this.data.notion());
 
             this.data.notion().ajouterQuestion(nouvelleQst);
 
@@ -288,6 +209,7 @@ public class PanelQCMMulti extends JPanel implements ActionListener
     {
         this.removeAll();
 
+        this.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets             = new Insets(5, 5, 5, 5);
         gbc.fill               = GridBagConstraints.HORIZONTAL;

@@ -18,8 +18,6 @@ public class Controleur {
         this.ctrlDonnees    = new ControleurDonnees("src/data/DonneesParam.csv", this);
         this.generationEvals = new GenerationEvals();
 
-        System.out.println(Uid.generateUid(20));
-
         this.ctrlDonnees.chargerDonnees();
 
 	}
