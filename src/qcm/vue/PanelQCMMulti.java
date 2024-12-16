@@ -23,9 +23,11 @@ public class PanelQCMMulti extends JPanel implements ActionListener
     private JButton                 btnAjouter;
     private JButton                 btnInfoSupp;
     private JButton                 btnEnregistrer;
+    private JButton                 btnAjouterFichier;
     private JScrollPane             scrollTexte;
     private Controleur              ctrl;
     private DonneesCreationQuestion data;
+    private JPanel                  pnl;
     private FrameInfosQuestion      frameParent;
 
 
@@ -39,13 +41,15 @@ public class PanelQCMMulti extends JPanel implements ActionListener
         this.lstScrollTexte      = new ArrayList<JScrollPane>();
 
         this.txtQst           = new JTextArea (5, 1);
-        this.txtInfoSupp      = new JTextArea (2, 1);
+        this.txtInfoSupp      = new JTextArea (2, 20);
         this.btnAjouter       = new JButton   ();
         this.btnInfoSupp      = new JButton   ();
         this.btnEnregistrer   = new JButton   ("Enregistrer");
+        this.btnAjouterFichier = new JButton();
         this.scrollTexte      = new JScrollPane(this.txtQst, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         this.data             = data;
         this.ctrl             = ctrl;
+        this.pnl               = new JPanel();
         this.frameParent      = frameParent;
 
 
@@ -61,7 +65,7 @@ public class PanelQCMMulti extends JPanel implements ActionListener
         this.add(new JLabel("Question"), gbc);
 
         gbc.gridy     = 1;
-        gbc.gridwidth = 5;
+        gbc.gridwidth = 6;
         gbc.ipadx     = 600;
         gbc.ipady     = 50;
         this.add(this.scrollTexte, gbc);
@@ -121,7 +125,23 @@ public class PanelQCMMulti extends JPanel implements ActionListener
         this.add(this.btnInfoSupp, gbc);
 
         gbc.gridx = 2;
-        this.add(this.btnEnregistrer, gbc);
+        this.btnAjouterFichier.setOpaque(false);
+        this.btnAjouterFichier.setContentAreaFilled(false);
+        this.btnAjouterFichier.setBorderPainted(false);
+        this.btnAjouterFichier.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        this.btnAjouterFichier.setIcon(new ImageIcon("src/data/img/file.png"));
+        this.add(this.btnAjouterFichier, gbc);
+
+        gbc.gridx = 3;
+        gbc.gridwidth = 2;
+        this.add(new JLabel(""), gbc);
+
+        gbc.gridx     = GridBagConstraints.RELATIVE;
+        gbc.gridwidth = 1;
+
+        this.add(this.pnl, gbc);
+        this.pnl.setLayout(new BorderLayout());
+        this.pnl.add(this.btnEnregistrer, BorderLayout.EAST);
 
 
         this.btnAjouter    .addActionListener(this);
@@ -277,7 +297,7 @@ public class PanelQCMMulti extends JPanel implements ActionListener
         this.add(new JLabel("Question"), gbc);
 
         gbc.gridy     = 1;
-        gbc.gridwidth = 5;
+        gbc.gridwidth = 6;
         gbc.ipadx     = 600;
         gbc.ipady     = 50;
         this.add(this.scrollTexte, gbc);
@@ -332,7 +352,23 @@ public class PanelQCMMulti extends JPanel implements ActionListener
         this.add(this.btnInfoSupp, gbc);
 
         gbc.gridx = 2;
-        this.add(this.btnEnregistrer, gbc);
+        this.btnAjouterFichier.setOpaque(false);
+        this.btnAjouterFichier.setContentAreaFilled(false);
+        this.btnAjouterFichier.setBorderPainted(false);
+        this.btnAjouterFichier.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        this.btnAjouterFichier.setIcon(new ImageIcon("src/data/img/file.png"));
+        this.add(this.btnAjouterFichier, gbc);
+
+        gbc.gridx = 3;
+        gbc.gridwidth = 2;
+        this.add(new JLabel(""), gbc);
+
+        gbc.gridx     = GridBagConstraints.RELATIVE;
+        gbc.gridwidth = 1;
+
+        this.add(this.pnl, gbc);
+        this.pnl.setLayout(new BorderLayout());
+        this.pnl.add(this.btnEnregistrer, BorderLayout.EAST);
 
         this.revalidate();
         this.repaint();

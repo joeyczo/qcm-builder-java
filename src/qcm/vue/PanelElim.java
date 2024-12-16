@@ -21,16 +21,16 @@ public class PanelElim extends JPanel implements ActionListener
     private Controleur         ctrl;
 
 
-    private ArrayList<JButton>     lstBtnSupp;
-    private ArrayList<JTextArea>   lstTxtReponses;
-    private ArrayList<JCheckBox>   lstBtnValideReponse;
-    private ArrayList<JScrollPane> lstScrollTexte;
-    private ArrayList<JTextField>  lstOrdrePrioQst;
-    private ArrayList<JTextField>  lstPointEnMoins;
+    private ArrayList<JButton>      lstBtnSupp;
+    private ArrayList<JTextArea>    lstTxtReponses;
+    private ArrayList<JRadioButton> lstBtnValideReponse;
+    private ArrayList<JScrollPane>  lstScrollTexte;
+    private ArrayList<JTextField>   lstOrdrePrioQst;
+    private ArrayList<JTextField>   lstPointEnMoins;
 
 
-    private JButton           btnSubmit, btnAdd, btnExplain;
-    private JTextArea         txtQst;
+    private JButton           btnEnregistrer, btnAdd, btnExplain,btnInfoSupp;
+    private JTextArea         txtQst, txtInfoSupp;
     private JScrollPane       scrollPane;
     //private JPanel            panelHaut, panelMilieu, panelBas;
     private ButtonGroup       btg;
@@ -54,33 +54,37 @@ public class PanelElim extends JPanel implements ActionListener
 
         this.lstBtnSupp          = new ArrayList<JButton>();
         this.lstTxtReponses      = new ArrayList<JTextArea>();
-        this.lstBtnValideReponse = new ArrayList<JCheckBox>();
+        this.lstBtnValideReponse = new ArrayList<JRadioButton>();
         this.lstScrollTexte      = new ArrayList<JScrollPane>();
         this.lstOrdrePrioQst     = new ArrayList<JTextField>();
         this.lstPointEnMoins     = new ArrayList<JTextField>();
 
 
-        this.txtQst     = new JTextArea  (5, 1);
-        this.scrollPane = new JScrollPane(this.txtQst, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        this.btnSubmit  = new JButton    ("Enregistrer");
-        this.btnAdd     = new JButton    (new ImageIcon("src/data/img/add.png"));
-        this.btnExplain = new JButton    (new ImageIcon("src/data/img/edit.png"));
-        this.btg        = new ButtonGroup();
+
+        this.txtQst         = new JTextArea  ("test", 5, 1);
+        this.txtInfoSupp    = new JTextArea  (10, 10);
+        this.scrollPane     = new JScrollPane(this.txtQst, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        this.btnEnregistrer = new JButton    ("Enregistrer");
+        this.btnInfoSupp    = new JButton    ();
+        this.btnAdd         = new JButton    (new ImageIcon("src/data/img/add.png"));
+        this.btnExplain     = new JButton    (new ImageIcon("src/data/img/edit.png"));
+        this.btg            = new ButtonGroup();
 
 //        this.panelHaut  .setLayout( new GridBagLayout() );
 //        this.panelMilieu.setLayout( new BoxLayout(panelMilieu, BoxLayout.Y_AXIS));
 //        this.panelMilieu.setBorder( BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
+        this.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets             = new Insets(5, 5, 5, 5);
         gbc.fill               = GridBagConstraints.HORIZONTAL;
 
         gbc.gridx = 0;
         gbc.gridy = 0;
-        this.add(new JLabel("Question :"), gbc);
+        this.add(new JLabel("Question"), gbc);
 
         gbc.gridy     = 1;
-        gbc.gridwidth = 5;
+        gbc.gridwidth = 6;
         gbc.ipadx     = 600;
         gbc.ipady     = 50;
         this.add(this.scrollPane, gbc);
@@ -94,14 +98,18 @@ public class PanelElim extends JPanel implements ActionListener
             this.lstBtnSupp         .add(new JButton());
             this.lstTxtReponses     .add(new JTextArea (5, 1));
             this.lstScrollTexte     .add(new JScrollPane(this.lstTxtReponses.getLast(), JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED));
-            this.lstBtnValideReponse.add(new JCheckBox());
+            this.lstOrdrePrioQst    .add(new JTextField(3));
+            this.lstPointEnMoins    .add(new JTextField(3));
+            JRadioButton radioBouton = new JRadioButton();
+            this.lstBtnValideReponse.add(radioBouton);
+            this.btg.add(radioBouton);
 
             gbc.gridwidth  = 1;
             gbc.gridheight = 2;
             gbc.ipadx      = 0;
             gbc.ipady      = 0;
             gbc.gridx      = 0;
-            gbc.gridy      = 2 + cpt;
+            gbc.gridy      = 2 + ( cpt * 2 );
             this.lstBtnSupp.get(cpt).setOpaque(false);
             this.lstBtnSupp.get(cpt).setContentAreaFilled(false);
             this.lstBtnSupp.get(cpt).setBorderPainted(false);
@@ -115,24 +123,19 @@ public class PanelElim extends JPanel implements ActionListener
             gbc.ipady     = 30;
             this.add(this.lstScrollTexte.get(cpt), gbc);
 
+            gbc.ipadx      = 0;
+            gbc.ipady      = 0;
             gbc.gridheight = 1;
             gbc.gridx      = GridBagConstraints.RELATIVE;
-            gbc.gridy      = GridBagConstraints.RELATIVE;
+            gbc.gridwidth  = GridBagConstraints.RELATIVE;
             this.add(this.lstOrdrePrioQst.get(cpt), gbc);
 
-            gbc.gridheight = 1;
-            gbc.gridx      = GridBagConstraints.RELATIVE;
-            gbc.gridy      = GridBagConstraints.RELATIVE;
+            gbc.gridy      = 2 + ( cpt * 2 ) + 1;
             this.add(this.lstPointEnMoins.get(cpt), gbc);
 
             gbc.gridheight = 2;
-            gbc.gridx      = GridBagConstraints.RELATIVE;
-            gbc.gridwidth  = GridBagConstraints.RELATIVE;
-            gbc.ipadx      = 0;
-            gbc.ipady      = 0;
+            gbc.gridy      = 2 + ( cpt * 2 );
             this.add(this.lstBtnValideReponse.get(cpt), gbc);
-
-            // TODO JE ME SUIS ARRETER LA
 
 
 //            JTextField ordrePrio = new JTextField(3);
@@ -149,19 +152,26 @@ public class PanelElim extends JPanel implements ActionListener
 
         }
 
-
+        gbc.gridheight = 1;
+        gbc.gridwidth  = 1;
+        gbc.gridx      = 0;
+        gbc.gridy      = 2 + ( this.lstTxtReponses.size() * 2 );
 // TODO faire en sorte de voir quand la sourie passe sur le bouton
         this.btnAdd.setOpaque(false);
         this.btnAdd.setContentAreaFilled(false);
         this.btnAdd.setBorderPainted(false);
-        this.add(btnAdd);
+        this.add(btnAdd, gbc);
 
+        gbc.gridx      = 1;
         this.btnExplain.setOpaque(false);
         this.btnExplain.setContentAreaFilled(false);
         this.btnExplain.setBorderPainted(false);
-        this.add(btnExplain);
+        this.add(btnExplain, gbc);
 
-        this.add(btnSubmit);
+
+        // TODO travaille Evan !! Fait pareil pour les boutons enregistrer et fichier
+        gbc.gridx      = 2;
+        this.add(btnEnregistrer, gbc);
 
 //        this.add(panelHaut  , BorderLayout.NORTH);
 //        this.add(panelMilieu, BorderLayout.CENTER);
@@ -169,34 +179,158 @@ public class PanelElim extends JPanel implements ActionListener
 
 
 
-        this.btnSubmit .addActionListener(this);
-        this.btnAdd    .addActionListener(this);
-        this.btnExplain.addActionListener(this);
+        this.btnEnregistrer.addActionListener(this);
+        this.btnAdd        .addActionListener(this);
+        this.btnInfoSupp   .addActionListener(this);
+        this.btnExplain    .addActionListener(this);
+
+
+        for ( int cpt = 0; cpt < this.lstBtnSupp.size(); cpt ++)
+            this.lstBtnSupp.get(cpt).addActionListener(this);
+
     }
 
-    public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == btnAdd) {
-            createAnswerPanel();
-        }
-        if(e.getSource() == btnExplain){
-            JTextArea   zoneTexte  = new JTextArea(10, 30);
-            JScrollPane scrollPane = new JScrollPane(zoneTexte);
+    public void actionPerformed(ActionEvent e)
+    {
+        if (e.getSource() == this.btnAdd)
+        {
+            this.lstBtnSupp         .add(new JButton());
+            this.lstTxtReponses     .add(new JTextArea (5, 1));
+            this.lstScrollTexte     .add(new JScrollPane(this.lstTxtReponses.getLast(), JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED));
+            this.lstOrdrePrioQst    .add(new JTextField(3));
+            this.lstPointEnMoins    .add(new JTextField(3));
+            JRadioButton radioBouton = new JRadioButton();
+            this.lstBtnValideReponse.add(radioBouton);
+            this.btg                .add(radioBouton);
 
-            int result = JOptionPane.showConfirmDialog(
+            this.lstBtnSupp.getLast().addActionListener(this);
+
+            this.majIHM();
+            return;
+        }
+
+        for ( int cpt = 0; cpt < this.lstBtnSupp.size(); cpt ++)
+            if (e.getSource() == this.lstBtnSupp.get(cpt))
+            {
+                // Bloque la suppression s'il y a moins de 2 cases après la suppression
+                if ( this.lstBtnSupp.size() > 2 )
+                {
+                    this.lstBtnSupp         .remove(cpt);
+                    this.lstTxtReponses     .remove(cpt);
+                    this.lstScrollTexte     .remove(cpt);
+                    this.lstBtnValideReponse.remove(cpt);
+                    this.lstOrdrePrioQst    .remove(cpt);
+                    this.lstPointEnMoins    .remove(cpt);
+
+                    System.out.println( this.lstBtnSupp.size());
+
+                    this.majIHM();
+                }
+                else
+                {
+                    System.out.println( this.lstBtnSupp.size());
+
+                    JOptionPane.showMessageDialog(this,  "Erreur : Il doit y avoir au minimum 2 réponses possible", "Erreur Suppression ", JOptionPane.ERROR_MESSAGE);
+                }
+                return;
+
+
+            }
+
+        if(e.getSource() == this.btnInfoSupp)
+        {
+            JScrollPane scrollPane = new JScrollPane(this.txtInfoSupp);
+
+            int resultat = JOptionPane.showConfirmDialog(
                     this,
                     scrollPane,
                     "Ajouter explication",
                     JOptionPane.OK_CANCEL_OPTION,
                     JOptionPane.PLAIN_MESSAGE
             );
-
-            if (result == JOptionPane.OK_OPTION)
-            {
-                String explication = zoneTexte.getText();
-                System.out.println("Explication entrée : " + explication);
-            }
-            return;
         }
+    }
+
+    public void majIHM()
+    {
+
+        this.removeAll();
+
+        GridBagConstraints gbc = new GridBagConstraints();
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        this.add(new JLabel("Question"), gbc);
+
+        gbc.gridy     = 1;
+        gbc.gridwidth = 6;
+        gbc.ipadx     = 600;
+        gbc.ipady     = 50;
+        this.add(this.scrollPane, gbc);
+
+
+        for( int cpt = 0; cpt < this.lstTxtReponses.size(); cpt ++)
+        {
+
+            gbc.gridwidth  = 1;
+            gbc.gridheight = 2;
+            gbc.ipadx      = 0;
+            gbc.ipady      = 0;
+            gbc.gridx      = 0;
+            gbc.gridy      = 2 + ( cpt * 2 );
+            this.lstBtnSupp.get(cpt).setOpaque(false);
+            this.lstBtnSupp.get(cpt).setContentAreaFilled(false);
+            this.lstBtnSupp.get(cpt).setBorderPainted(false);
+            this.lstBtnSupp.get(cpt).setCursor(new Cursor(Cursor.HAND_CURSOR));
+            this.lstBtnSupp.get(cpt).setIcon(new ImageIcon("src/data/img/delete.png"));
+            this.add(this.lstBtnSupp.get(cpt), gbc);
+
+            gbc.gridx     = 1;
+            gbc.gridwidth = 5;
+            gbc.ipadx     = 400;
+            gbc.ipady     = 30;
+            this.add(this.lstScrollTexte.get(cpt), gbc);
+
+            gbc.ipadx      = 0;
+            gbc.ipady      = 0;
+            gbc.gridheight = 1;
+            gbc.gridx      = GridBagConstraints.RELATIVE;
+            gbc.gridwidth  = GridBagConstraints.RELATIVE;
+            this.add(this.lstOrdrePrioQst.get(cpt), gbc);
+
+            gbc.gridy      = 2 + ( cpt * 2 ) + 1;
+            this.add(this.lstPointEnMoins.get(cpt), gbc);
+
+            gbc.gridheight = 2;
+            gbc.gridy      = 2 + ( cpt * 2 );
+            this.add(this.lstBtnValideReponse.get(cpt), gbc);
+
+
+        }
+
+        gbc.gridheight = 1;
+        gbc.gridwidth  = 1;
+        gbc.gridx      = 0;
+        gbc.gridy      = 2 + ( this.lstTxtReponses.size() * 2 );
+// TODO faire en sorte de voir quand la sourie passe sur le bouton
+        this.btnAdd.setOpaque(false);
+        this.btnAdd.setContentAreaFilled(false);
+        this.btnAdd.setBorderPainted(false);
+        this.add(btnAdd, gbc);
+
+        gbc.gridx      = 1;
+        this.btnExplain.setOpaque(false);
+        this.btnExplain.setContentAreaFilled(false);
+        this.btnExplain.setBorderPainted(false);
+        this.add(btnExplain, gbc);
+
+
+        // TODO travaille Evan !! Fait pareil pour les boutons enregistrer et fichier
+        gbc.gridx      = 2;
+        this.add(btnEnregistrer, gbc);
+
+        this.revalidate();
+        this.repaint();
     }
 
     public void createAnswerPanel()

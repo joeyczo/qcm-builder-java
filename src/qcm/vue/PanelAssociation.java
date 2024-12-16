@@ -12,7 +12,8 @@ import java.awt.event.*;
 import java.io.*;
 import java.util.ArrayList;
 
-public class PanelAssociation extends JPanel implements ActionListener {
+public class PanelAssociation extends JPanel implements ActionListener
+{
     private JTextArea               txtQuestion;
     private JScrollPane             scQuestion;
 
@@ -43,14 +44,21 @@ public class PanelAssociation extends JPanel implements ActionListener {
         this.lstTxtDefinitions = new ArrayList<>();
         this.lstBtnSupprimerGauche = new ArrayList<>();
 
-        this.btnAjouter = new JButton("Ajouter");
-        this.btnExplication = new JButton("Explication");
-        this.btnEnregistrer = new JButton("Enregistrer");
+        this.btnAjouter = new JButton();
+        this.btnAjouter.setOpaque(false);
+        this.btnAjouter.setContentAreaFilled(false);
+        this.btnAjouter.setBorderPainted(false);
+        this.btnAjouter.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        this.btnAjouter.setIcon(new ImageIcon("src/data/img/add.png"));
 
-        Dimension buttonSize = new Dimension(80, 30);
-        this.btnAjouter.setPreferredSize(buttonSize);
-        this.btnExplication.setPreferredSize(buttonSize);
-        this.btnEnregistrer.setPreferredSize(buttonSize);
+        this.btnExplication = new JButton();
+        this.btnExplication.setOpaque(false);
+        this.btnExplication.setContentAreaFilled(false);
+        this.btnExplication.setBorderPainted(false);
+        this.btnExplication.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        this.btnExplication.setIcon(new ImageIcon("src/data/img/edit.png"));
+
+        this.btnEnregistrer = new JButton("Enregistrer");
 
         // Ajouter deux réponses et définitions par défaut
         addDefinition("Ajouter une définition");
@@ -160,7 +168,6 @@ public class PanelAssociation extends JPanel implements ActionListener {
     }
 
     private void addReponse(String text) {
-        // Augmenter la taille de la JTextArea à 5 lignes
         JTextArea newReponse = new JTextArea(text, 5, 20);
         JScrollPane scReponse = new JScrollPane(newReponse, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
@@ -168,11 +175,15 @@ public class PanelAssociation extends JPanel implements ActionListener {
     }
 
     private void addDefinition(String text) {
-        // Augmenter la taille de la JTextArea à 5 lignes
         JTextArea newDefinition = new JTextArea(text, 5, 20);
         JScrollPane scDefinition = new JScrollPane(newDefinition, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
-        JButton btnSupprimerGauche = new JButton("X");
+        JButton btnSupprimerGauche = new JButton();
+        btnSupprimerGauche.setOpaque(false);
+        btnSupprimerGauche.setContentAreaFilled(false);
+        btnSupprimerGauche.setBorderPainted(false);
+        btnSupprimerGauche.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnSupprimerGauche.setIcon(new ImageIcon("src/data/img/delete.png"));
         btnSupprimerGauche.setPreferredSize(new Dimension(20, 20));
 
         btnSupprimerGauche.addActionListener(e -> {
@@ -193,7 +204,8 @@ public class PanelAssociation extends JPanel implements ActionListener {
         this.lstBtnSupprimerGauche.add(btnSupprimerGauche);
     }
 
-    private void majIHM() {
+    private void majIHM()
+    {
         this.removeAll();
 
         GridBagConstraints gbc = new GridBagConstraints();
@@ -233,12 +245,18 @@ public class PanelAssociation extends JPanel implements ActionListener {
 
         gbc.gridx = 0;
         gbc.gridy = yIndex;
-        gbc.gridwidth = 4;
-        JPanel pnlButtons = new JPanel();
-        pnlButtons.add(this.btnAjouter);
-        pnlButtons.add(this.btnExplication);
-        pnlButtons.add(this.btnEnregistrer);
-        this.add(pnlButtons, gbc);
+        this.add(this.btnAjouter, gbc);
+
+        gbc.gridx = 1;
+        gbc.gridy = yIndex;
+        this.add(this.btnExplication, gbc);
+
+        gbc.gridx = 2;
+        gbc.gridy = yIndex;
+        JPanel pnl = new JPanel();
+        pnl.setLayout(new BorderLayout());
+        pnl.add(this.btnEnregistrer, BorderLayout.EAST);
+        this.add(pnl, gbc);
 
         this.revalidate();
         this.repaint();

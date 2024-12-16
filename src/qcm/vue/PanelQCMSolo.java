@@ -25,10 +25,12 @@ public class PanelQCMSolo extends JPanel implements ActionListener
     private JButton                 btnAjouter;
     private JButton                 btnInfoSupp;
     private JButton                 btnEnregistrer;
+    private JButton                 btnAjouterFichier;
     private JScrollPane             scrollTexte;
     private Controleur              ctrl;
     private DonneesCreationQuestion data;
     private ButtonGroup             boutonGroup;
+    private JPanel                  pnl;
     private FrameInfosQuestion      frameParent;
 
     public PanelQCMSolo(DonneesCreationQuestion data, Controleur ctrl, FrameInfosQuestion frameParent )
@@ -39,16 +41,18 @@ public class PanelQCMSolo extends JPanel implements ActionListener
         this.lstBtnValideReponse = new ArrayList<JRadioButton>();
         this.lstScrollTexte      = new ArrayList<JScrollPane>();
 
-        this.txtQst           = new JTextArea (5, 1);
-        this.txtInfoSupp      = new JTextArea (2, 1);
-        this.btnAjouter       = new JButton   ();
-        this.btnInfoSupp      = new JButton   ();
-        this.btnEnregistrer   = new JButton   ("Enregistrer");
-        this.scrollTexte      = new JScrollPane(this.txtQst, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        this.data             = data;
-        this.ctrl             = ctrl;
-        this.boutonGroup      = new ButtonGroup();
-        this.frameParent      = frameParent;
+        this.txtQst            = new JTextArea (5, 1);
+        this.txtInfoSupp       = new JTextArea (10, 10);
+        this.btnAjouter        = new JButton   ();
+        this.btnInfoSupp       = new JButton   ();
+        this.btnEnregistrer    = new JButton   ("Enregistrer");
+        this.btnAjouterFichier = new JButton();
+        this.scrollTexte       = new JScrollPane(this.txtQst, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        this.data              = data;
+        this.ctrl              = ctrl;
+        this.boutonGroup       = new ButtonGroup();
+        this.pnl               = new JPanel();
+        this.frameParent       = frameParent;
 
         this.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
@@ -60,7 +64,7 @@ public class PanelQCMSolo extends JPanel implements ActionListener
         this.add(new JLabel("Question"), gbc);
 
         gbc.gridy     = 1;
-        gbc.gridwidth = 5;
+        gbc.gridwidth = 6;
         gbc.ipadx     = 600;
         gbc.ipady     = 50;
         this.add(this.scrollTexte, gbc);
@@ -121,17 +125,28 @@ public class PanelQCMSolo extends JPanel implements ActionListener
         this.add(this.btnInfoSupp, gbc);
 
         gbc.gridx = 2;
+        this.btnAjouterFichier.setOpaque(false);
+        this.btnAjouterFichier.setContentAreaFilled(false);
+        this.btnAjouterFichier.setBorderPainted(false);
+        this.btnAjouterFichier.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        this.btnAjouterFichier.setIcon(new ImageIcon("src/data/img/file.png"));
+        this.add(this.btnAjouterFichier, gbc);
+
+        gbc.gridx = 3;
         gbc.gridwidth = 2;
         this.add(new JLabel(""), gbc);
 
         gbc.gridx     = GridBagConstraints.RELATIVE;
         gbc.gridwidth = 1;
 
-        this.add(this.btnEnregistrer, gbc);
+        this.add(this.pnl, gbc);
+        this.pnl.setLayout(new BorderLayout());
+        this.pnl.add(this.btnEnregistrer, BorderLayout.EAST);
 
-        this.btnAjouter    .addActionListener(this);
-        this.btnInfoSupp   .addActionListener(this);
-        this.btnEnregistrer.addActionListener(this);
+        this.btnAjouter       .addActionListener(this);
+        this.btnInfoSupp      .addActionListener(this);
+        this.btnEnregistrer   .addActionListener(this);
+        this.btnAjouterFichier.addActionListener(this);
 
         for ( int cpt = 0; cpt < this.lstBtnSupp.size(); cpt ++)
             this.lstBtnSupp.get(cpt).addActionListener(this);
@@ -141,7 +156,6 @@ public class PanelQCMSolo extends JPanel implements ActionListener
 
     public void actionPerformed(ActionEvent e)
     {
-
         if ( e.getSource() == this.btnAjouter )
         {
             this.lstBtnSupp         .add(new JButton());
@@ -285,7 +299,7 @@ public class PanelQCMSolo extends JPanel implements ActionListener
         this.add(new JLabel("Question"), gbc);
 
         gbc.gridy     = 1;
-        gbc.gridwidth = 5;
+        gbc.gridwidth = 6;
         gbc.ipadx     = 600;
         gbc.ipady     = 50;
         this.add(this.scrollTexte, gbc);
@@ -336,8 +350,23 @@ public class PanelQCMSolo extends JPanel implements ActionListener
         this.btnInfoSupp.setIcon(new ImageIcon("src/data/img/edit.png"));
         this.add(this.btnInfoSupp, gbc);
 
-        gbc.gridx = 5;
-        this.add(this.btnEnregistrer, gbc);
+        gbc.gridx = 2;
+        this.btnAjouterFichier.setOpaque(false);
+        this.btnAjouterFichier.setContentAreaFilled(false);
+        this.btnAjouterFichier.setBorderPainted(false);
+        this.btnAjouterFichier.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        this.btnAjouterFichier.setIcon(new ImageIcon("src/data/img/file.png"));
+        this.add(this.btnAjouterFichier, gbc);
+
+        gbc.gridx = 3;
+        gbc.gridwidth = 2;
+        this.add(new JLabel(""), gbc);
+
+        gbc.gridx = GridBagConstraints.RELATIVE;
+        gbc.gridwidth = 1;
+        this.add(this.pnl, gbc);
+        this.pnl.setLayout(new BorderLayout());
+        this.pnl.add(this.btnEnregistrer, BorderLayout.EAST);
 
         this.revalidate();
         this.repaint();

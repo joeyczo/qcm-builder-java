@@ -5,6 +5,7 @@ import qcm.metier.*;
 import java.io.FileInputStream;
 import java.io.PrintWriter;
 import java.io.FileOutputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -187,7 +188,7 @@ public class ControleurDonnees
             /*	  Écriture des réponses dans le fichier TXT    */
             /*  ---------------------------------------------  */
 
-            if (q.getTypeQuestion() == TypeQuestion.QCM) {
+            if (q.getTypeQuestion() == TypeQuestion.QCMSOLO) {
 
                 QCMReponse reponse = (QCMReponse) q.getReponse();
 
@@ -239,10 +240,18 @@ public class ControleurDonnees
     /*                              */
     /*  --------------------------  */
 
+    /**
+     * Méthode permettant de charger les données dans la base de données
+     * - Paramètres (Ressources et Notions)
+     * - Questions (Avec les réponses)
+     */
     public void chargerDonnees() {
 
         // Chargement des données (Ressource et Notion)
         this.chargerDonneesParametres();
+
+        // Chargement des questions et réponses
+        this.chargerDonneesQuestions();
 
     }
 
@@ -276,9 +285,87 @@ public class ControleurDonnees
 
         } catch (Exception e) {
 
-            System.out.println("Erreur lors de l'ouverture du fichier : " + e.getMessage());
+            System.out.println("Erreur lors de l'ouverture du fichier des paramètres : " + e.getMessage());
 
         }
+
+    }
+
+    /**
+     * Chargement des questions dans la base de données
+     */
+    private void chargerDonneesQuestions() {
+
+        String pathFichierDonnees   = Paths.get("src", "data", "app", "DonneesQuestions.csv").toString();
+
+        try {
+
+            Scanner sc = new Scanner(new FileInputStream(pathFichierDonnees), StandardCharsets.UTF_8);
+
+            while (sc.hasNextLine()) {
+
+                Scanner scLigne = new Scanner(sc.nextLine()).useDelimiter(",");
+
+                String  uidQuestion = scLigne.next();
+                String  difficulte  = scLigne.next();
+                String  typeQst     = scLigne.next();
+                String  ressource   = scLigne.next();
+                String  notion      = scLigne.next();
+                String  tempsRsp    = scLigne.next();
+                String  ptsRsp      = scLigne.next();
+
+                String txtQuestion  = this.getTexteQuestion(uidQuestion);
+
+                System.out.println("UID " + uidQuestion);
+                System.out.println(txtQuestion);
+
+            }
+
+        } catch (Exception e) {
+            System.out.println("Erreur lors de l'ouverture du fichier des questions : " + e.getMessage());
+        }
+
+    }
+
+    /**
+     * Récupérer le texte de la question en fonction de son UID
+     * @param uid UID de la question pour récupérer les données dans le fichier TXT
+     * @return Le texte de la question
+     */
+    private String getTexteQuestion (String uid) {
+
+        String  pathFichierQuestion = Paths.get("src", "data", "app", uid+".txt").toString();
+        String  typeLecture         = "aucune";
+        String sRet                 = "";
+
+        try {
+
+            Scanner sc = new Scanner(new FileInputStream(pathFichierQuestion));
+
+            while (sc.hasNextLine()) {
+
+                String ligne = sc.nextLine();
+
+                if (typeLecture.equals("texte"))
+                    sRet += ligne;
+
+                // TODO : Lecutre des fichiers
+
+                // Déterminer le type de lecture
+                if (ligne.equals("{TEXTEQST}"))         typeLecture = "texte";
+                if (ligne.equals("{TEXTEEXPLICATION}")) typeLecture = "explication";
+                if (ligne.equals("{ASSOCIATION}"))      typeLecture = "association";
+                if (ligne.equals("{REPONSE}"))          typeLecture = "reponse";
+
+
+
+            }
+
+        } catch (Exception e) {
+            System.out.println("Erreur lecture fichier données de la question : " + e.getMessage());
+        }
+
+        return sRet;
 
     }
 

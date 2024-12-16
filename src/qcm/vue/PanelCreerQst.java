@@ -71,7 +71,7 @@ public class PanelCreerQst extends JPanel implements ActionListener
         }
 
         for (TypeQuestion type : TypeQuestion.values())
-            this.cmbTypeQst.addItem(type.toString());
+            this.cmbTypeQst.addItem(type.getNomType());
 
         this.lstBtnDiff = new ArrayList<RoundButton>();
         for (DifficulteQuestion diff : DifficulteQuestion.values()) {
@@ -314,14 +314,15 @@ public class PanelCreerQst extends JPanel implements ActionListener
                     case "D"    -> difficulte = DifficulteQuestion.DIFFICILE;
                 }
 
-                TypeQuestion type = TypeQuestion.QCM;
+                TypeQuestion type = TypeQuestion.QCMSOLO;
 
                 switch ((String) this.cmbTypeQst.getSelectedItem()) {
-                    case "ASSOCIATION"  -> type = TypeQuestion.ASSOCIATION;
-                    case "ELIMINATION"  -> type = TypeQuestion.ELIMINATION;
+                    case "QCM à réponse multiple"   -> type = TypeQuestion.QCMMULTI;
+                    case "Association"              -> type = TypeQuestion.ASSOCIATION;
+                    case "Élimination"              -> type = TypeQuestion.ELIMINATION;
                 }
 
-                DonneesCreationQuestion data = new DonneesCreationQuestion(nbPoints, tempsReponse, rsc, not, difficulte, type, this.cbUnique.isSelected());
+                DonneesCreationQuestion data = new DonneesCreationQuestion(nbPoints, tempsReponse, rsc, not, difficulte, type);
 
                 System.out.println("C'EST BON ?!");
                 new FrameInfosQuestion(this.ctrl, data);
@@ -333,6 +334,7 @@ public class PanelCreerQst extends JPanel implements ActionListener
                 System.out.println("Erreur format points : " + ne.getMessage());
             } catch (Exception ex) {
                 this.afficherMessageErreur("Une erreur inconnu vient de se produire");
+                ex.printStackTrace();
                 System.out.println("Autre erreur : " +ex.getMessage());
             }
 

@@ -19,21 +19,17 @@ public class FrameInfosQuestion extends JFrame {
         this.setLocationRelativeTo(null);
         this.setResizable(false);
 
-        if (data.type() == TypeQuestion.QCM) {
-            if ( !data.questionReponseUnique() )
-            {
-                PanelQCMSolo panelQCMSolo = new PanelQCMSolo(data, ctrl, this);
-                JScrollPane scrollPanel   = new JScrollPane(panelQCMSolo, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-                this.add(scrollPanel);
-            }
-            else
-            {
-                PanelQCMMulti panelQCMMulti = new PanelQCMMulti(data, ctrl, this);
-                JScrollPane scrollPanel     = new JScrollPane(panelQCMMulti, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-                this.add(scrollPanel);
-            }
+        if (data.type() == TypeQuestion.QCMSOLO) {
+            PanelQCMSolo panelQCMSolo = new PanelQCMSolo(data, ctrl, this);
+            JScrollPane scrollPanel   = new JScrollPane(panelQCMSolo, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+            this.add(scrollPanel);
 
-        } else if (data.type() == TypeQuestion.ASSOCIATION) {
+        } else if (data.type() == TypeQuestion.QCMMULTI) {
+            PanelQCMMulti panelQCMMulti = new PanelQCMMulti(data, ctrl, this);
+            JScrollPane scrollPanel     = new JScrollPane(panelQCMMulti, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+            this.add(scrollPanel);
+        }
+        else if (data.type() == TypeQuestion.ASSOCIATION) {
             PanelAssociation panelAssociation = new PanelAssociation(data, ctrl, this);
             JScrollPane scrollPanel           = new JScrollPane(panelAssociation, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
             this.add(scrollPanel);
