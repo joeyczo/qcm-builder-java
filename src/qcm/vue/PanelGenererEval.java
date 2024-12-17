@@ -115,7 +115,7 @@ public class PanelGenererEval extends JPanel implements ActionListener
             if (returnValue == JFileChooser.APPROVE_OPTION) {
 
                 File selectedFile = desti.getSelectedFile();
-                System.out.println(selectedFile.getPath());
+                this.ctrl.generationEvaluation(selectedFile.getPath());
 
             }
 

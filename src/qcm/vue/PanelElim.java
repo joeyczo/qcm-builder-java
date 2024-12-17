@@ -1,12 +1,12 @@
 package qcm.vue;
 
 import qcm.Controleur;
+import qcm.metier.EliminationReponse;
 
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.util.*;
-import java.util.List;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -57,11 +57,11 @@ public class PanelElim extends JPanel implements ActionListener, DocumentListene
 
         for( int cpt = 0; cpt < 2; cpt ++)
         {
-            this.lstBtnSupp.add(new JButton());
-            this.lstTxtReponses.add(new JTextArea(5, 1));
-            this.lstScrollTexte.add(new JScrollPane(this.lstTxtReponses.getLast(), JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED));
-            this.lstOrdrePrioQst.add(new JTextField(3));
-            this.lstPointEnMoins.add(new JTextField(3));
+            this.lstBtnSupp         .add(new JButton());
+            this.lstTxtReponses     .add(new JTextArea(5, 1));
+            this.lstScrollTexte     .add(new JScrollPane(this.lstTxtReponses.getLast(), JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED));
+            this.lstOrdrePrioQst    .add(new JTextField(3));
+            this.lstPointEnMoins    .add(new JTextField(3));
             JRadioButton radioBouton = new JRadioButton();
             this.lstBtnValideReponse.add(radioBouton);
             this.btg.add(radioBouton);
@@ -98,8 +98,7 @@ public class PanelElim extends JPanel implements ActionListener, DocumentListene
 
             this.lstOrdrePrioQst.getLast().getDocument().addDocumentListener(this);
             this.lstPointEnMoins.getLast().getDocument().addDocumentListener(this);
-
-            this.lstBtnSupp.getLast().addActionListener(this);
+            this.lstBtnSupp     .getLast().addActionListener(this);
 
             this.majIHM();
             return;
@@ -145,14 +144,16 @@ public class PanelElim extends JPanel implements ActionListener, DocumentListene
 
         if ( e.getSource() == this.btnEnregistrer)
         {
+
             if ( this.txtQst.getText().isEmpty() || this.txtQst.getText().trim().isEmpty() )
             {
                 this.afficherMessageErreur("Erreur : Aucun texte n'est entré pour la question");
                 return;
             }
 
-            for (JTextArea lstTxtRepons : this.lstTxtReponses)
-                if (lstTxtRepons.getText().isEmpty() || lstTxtRepons.getText().trim().isEmpty()) {
+            for (JTextArea lstTxtReponse : this.lstTxtReponses)
+                if (lstTxtReponse.getText().isEmpty() || lstTxtReponse.getText().trim().isEmpty())
+                {
                     this.afficherMessageErreur("Erreur : Aucun texte n'est entré pour l'une des réponse");
                     return;
                 }
@@ -167,6 +168,39 @@ public class PanelElim extends JPanel implements ActionListener, DocumentListene
                 this.afficherMessageErreur("Erreur : Il faut au moins sélectionner un réponse valide");
                 return;
             }
+
+            for (int cpt = 0; cpt < this.lstOrdrePrioQst.size(); cpt ++)
+            {
+                try
+                {
+                    if ( !(this.lstOrdrePrioQst.get(cpt).getText().isEmpty() || this.lstOrdrePrioQst.get(cpt).getText().trim().isEmpty() &&
+                           this.lstPointEnMoins.get(cpt).getText().isEmpty() || this.lstPointEnMoins.get(cpt).getText().trim().isEmpty()) )
+
+                        // TODO faire les verifs
+                        Integer.parseInt();
+                    Double.parseDouble(this.lstPointEnMoins.get(cpt).getText());
+                }
+                catch (Exception exception)
+                {
+                    System.out.println(exception.getMessage());
+                }
+            }
+
+            EliminationReponse eliminationReponse = new EliminationReponse();
+
+            int i = 0;
+            for (JTextArea txt : this.lstTxtReponses) {
+
+                String  txtReponse      = txt.getText().trim().replaceAll("\n", "\\\\n").replaceAll("\t", "\\\\t");
+                String  ordreReponse    = this.lstOrdrePrioQst.get(i).getText();
+                String  ptsReponse      = this.lstPointEnMoins.get(i).getText();
+
+                // TODO : Finir associer réponses dans la base de données
+
+                i++;
+
+            }
+
         }
 
 
@@ -252,7 +286,6 @@ public class PanelElim extends JPanel implements ActionListener, DocumentListene
         gbc.gridwidth  = 1;
         gbc.gridx      = 0;
         gbc.gridy      = 2 + ( this.lstTxtReponses.size() * 2 );
-// TODO faire en sorte de voir quand la sourie passe sur le bouton
         this.btnAdd.setOpaque(false);
         this.btnAdd.setContentAreaFilled(false);
         this.btnAdd.setBorderPainted(false);
@@ -267,7 +300,6 @@ public class PanelElim extends JPanel implements ActionListener, DocumentListene
         this.add(btnExplain, gbc);
 
 
-        // TODO travaille Evan !! Fait pareil pour les boutons enregistrer et fichier
         gbc.gridx      = 2;
         this.add(btnEnregistrer, gbc);
 
@@ -317,4 +349,28 @@ public class PanelElim extends JPanel implements ActionListener, DocumentListene
     public void changedUpdate(DocumentEvent e) {
 
     }
+
+    /*
+    private void chargerDonnees()
+    {
+        Question q = this.data.qst();
+        this.txtQuestion.setText(q.getTexteQuestion());
+        AssociationReponse associationReponse = (AssociationReponse) q.getReponse();
+
+        for(int i = 0 ; i < associationReponse.getNbReponses(); i++) {
+            AssociationReponse a = (AssociationReponse) q.getReponse();
+            AssociationReponseItem ai = a.getReponse(i);
+
+            if(i >= 2){
+                this.addDefinition(ai.getTexte());
+                this.addReponse(ai.getReponse().getTexte());
+            } else {
+                this.lstTxtDefinitions.get(i).setText(ai.getTexte());
+                this.lstTxtReponses.get(i).setText(ai.getReponse().getTexte());
+            }
+
+        }
+        majIHM();
+    }
+    */
 }

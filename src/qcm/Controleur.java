@@ -99,6 +99,10 @@ public class Controleur {
         return this.generationEvals.getNbQuestions();
     }
 
+    public void generationEvaluation ( String path ) {
+        this.generationEvals.genererEvaluation(path);
+    }
+
     /*  ------------------------------  */
     /*	 Méthodes créations questions   */
     /*  ------------------------------  */

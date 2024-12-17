@@ -12,7 +12,10 @@ public enum DifficulteQuestion
 	private Color couleur;
 	private String texte;
 
-	DifficulteQuestion (Color c, String t) {this.couleur = c;this.texte = t;}
+	DifficulteQuestion (Color c, String t) {
+		this.couleur 	= c;
+		this.texte 		= t;
+	}
 
 	public Color getCouleur()	{	return this.couleur;	}
 	public String getTexte  ()	{	return this.texte;  	}

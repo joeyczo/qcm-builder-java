@@ -90,10 +90,14 @@ public class GrilleDonneesEval extends AbstractTableModel
 
             if (this.getValueAt(row, col) instanceof Integer) {
                 if ((boolean) this.getValueAt(row, 1)) {
-                    this.tabDonnees[row][col] = value;
-                    this.sommeLigne(row);
-                    this.ctrl.ajouterDifficulteQuestion(this.getNotionLigne(row), this.getDifficulteColonne(col), (Integer) value);
-                    this.fireTableCellUpdated(row, col);
+
+                    if (this.ctrl.ajouterDifficulteQuestion(this.getNotionLigne(row), this.getDifficulteColonne(col), (Integer) value)) {
+
+                        this.tabDonnees[row][col] = value;
+                        this.sommeLigne(row);
+                        this.fireTableCellUpdated(row, col);
+                    }
+
                 }
             }
 

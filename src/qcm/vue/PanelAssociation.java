@@ -1,10 +1,7 @@
 package qcm.vue;
 
 import qcm.Controleur;
-import qcm.metier.AssociationReponse;
-import qcm.metier.AssociationReponseItem;
-import qcm.metier.DonneesCreationQuestion;
-import qcm.metier.Question;
+import qcm.metier.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,35 +10,35 @@ import java.util.ArrayList;
 
 public class PanelAssociation extends JPanel implements ActionListener
 {
-    private JTextArea               txtQuestion;
-    private JScrollPane             scQuestion;
+    private JTextArea txtQuestion;
+    private JScrollPane scQuestion;
 
     private DonneesCreationQuestion data;
-    private Controleur              ctrl;
-    private FrameInfosQuestion      frameParent;
+    private Controleur ctrl;
+    private FrameInfosQuestion frameParent;
 
-    private ArrayList<JTextArea>    lstTxtReponses;
-    private ArrayList<JTextArea>    lstTxtDefinitions;
-    private ArrayList<JButton>      lstBtnSupprimerGauche;
+    private ArrayList<JTextArea> lstTxtReponses;
+    private ArrayList<JTextArea> lstTxtDefinitions;
+    private ArrayList<JButton> lstBtnSupprimerGauche;
 
-    private JButton                 btnAjouter;
-    private JButton                 btnExplication;
-    private JButton                 btnEnregistrer;
-    private JTextArea               txtInfoSupp;
+    private JButton btnAjouter;
+    private JButton btnExplication;
+    private JButton btnEnregistrer;
+    private JTextArea txtInfoSupp;
 
     public PanelAssociation(DonneesCreationQuestion data, Controleur ctrl, FrameInfosQuestion frameInfosQuestion)
     {
-        this.data           = data;
-        this.ctrl           = ctrl;
-        this.frameParent    = frameInfosQuestion;
+        this.data = data;
+        this.ctrl = ctrl;
+        this.frameParent = frameInfosQuestion;
 
-        this.txtQuestion  = new JTextArea("Ajouter une question", 10, 20);
-        this.txtInfoSupp  = new JTextArea (10, 10);
-        this.scQuestion   = new JScrollPane(this.txtQuestion, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        this.txtQuestion = new JTextArea("Ajouter une question", 10, 20);
+        this.txtInfoSupp = new JTextArea(10, 10);
+        this.scQuestion = new JScrollPane(this.txtQuestion, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
-        this.lstTxtReponses         = new ArrayList<>();
-        this.lstTxtDefinitions      = new ArrayList<>();
-        this.lstBtnSupprimerGauche  = new ArrayList<>();
+        this.lstTxtReponses = new ArrayList<>();
+        this.lstTxtDefinitions = new ArrayList<>();
+        this.lstBtnSupprimerGauche = new ArrayList<>();
 
         this.btnAjouter = new JButton();
         this.btnAjouter.setOpaque(false);
@@ -59,10 +56,10 @@ public class PanelAssociation extends JPanel implements ActionListener
 
         this.btnEnregistrer = new JButton("Enregistrer");
 
-        addDefinition("Ajouter une définition");
-        addReponse("Ajouter une réponse");
-        addDefinition("Ajouter une autre définition");
-        addReponse("Ajouter une autre réponse");
+        addDefinition("");
+        addReponse("");
+        addDefinition("");
+        addReponse("");
 
         this.setLayout(new GridBagLayout());
 
@@ -72,16 +69,16 @@ public class PanelAssociation extends JPanel implements ActionListener
 
         majIHM();
 
-        if(this.data != null){
+        if (this.data.qst() != null)
             this.chargerDonnees();
-        }
+
     }
 
     public void actionPerformed(ActionEvent e)
     {
         if (e.getSource() == this.btnAjouter) {
-            addDefinition("Ajouter une définition");
-            addReponse("Ajouter une réponse");
+            addDefinition("");
+            addReponse("");
             majIHM();
         }
 
@@ -127,10 +124,10 @@ public class PanelAssociation extends JPanel implements ActionListener
             }
 
             // Association des définitions <> réponses
-            for ( int i = 0; i < this.lstTxtDefinitions.size(); i++) {
+            for (int i = 0; i < this.lstTxtDefinitions.size(); i++) {
 
-                AssociationReponseItem reponse      = new AssociationReponseItem(this.lstTxtReponses.get(i).getText().trim().replaceAll("\n", "\\\\n").replaceAll("\t", "\\\\t"));
-                AssociationReponseItem definition   = new AssociationReponseItem(reponse, this.lstTxtDefinitions.get(i).getText().trim().replaceAll("\n", "\\\\n").replaceAll("\t", "\\\\t"));
+                AssociationReponseItem reponse = new AssociationReponseItem(this.lstTxtReponses.get(i).getText().trim().replaceAll("\n", "\\\\n").replaceAll("\t", "\\\\t"));
+                AssociationReponseItem definition = new AssociationReponseItem(reponse, this.lstTxtDefinitions.get(i).getText().trim().replaceAll("\n", "\\\\n").replaceAll("\t", "\\\\t"));
 
                 associationReponse.ajouterDefinition(definition);
             }
@@ -152,20 +149,22 @@ public class PanelAssociation extends JPanel implements ActionListener
 
     /**
      * Afficher un message d'erreur à l'utilisateur
+     *
      * @param message Message à afficher
      */
-    private void afficherMessageErreur ( String message )
+    private void afficherMessageErreur(String message)
     {
-        JOptionPane.showMessageDialog(this,  message, "Impossible de sauvegarder la réponse", JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(this, message, "Impossible de sauvegarder la réponse", JOptionPane.ERROR_MESSAGE);
     }
 
     /**
      * Afficher un message de validation à l'utilisateur
+     *
      * @param message Message à afficher
      */
-    private void afficherMessageValide ( String message )
+    private void afficherMessageValide(String message)
     {
-        JOptionPane.showMessageDialog(this,  message, "Succès", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(this, message, "Succès", JOptionPane.INFORMATION_MESSAGE);
     }
 
     private void addReponse(String text)
@@ -206,7 +205,8 @@ public class PanelAssociation extends JPanel implements ActionListener
         this.lstBtnSupprimerGauche.add(btnSupprimerGauche);
     }
 
-    private void majIHM() {
+    private void majIHM()
+    {
         this.removeAll();
 
         GridBagConstraints gbc = new GridBagConstraints();
@@ -283,9 +283,25 @@ public class PanelAssociation extends JPanel implements ActionListener
         this.repaint();
     }
 
-    private void chargerDonnees(){
+    private void chargerDonnees()
+    {
         Question q = this.data.qst();
-
         this.txtQuestion.setText(q.getTexteQuestion());
+        AssociationReponse associationReponse = (AssociationReponse) q.getReponse();
+
+        for(int i = 0 ; i < associationReponse.getNbReponses(); i++) {
+            AssociationReponse a = (AssociationReponse) q.getReponse();
+            AssociationReponseItem ai = a.getReponse(i);
+
+            if(i >= 2){
+                this.addDefinition(ai.getTexte());
+                this.addReponse(ai.getReponse().getTexte());
+            } else {
+                this.lstTxtDefinitions.get(i).setText(ai.getTexte());
+                this.lstTxtReponses.get(i).setText(ai.getReponse().getTexte());
+            }
+
+        }
+        majIHM();
     }
 }

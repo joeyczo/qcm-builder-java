@@ -1,10 +1,7 @@
 package qcm.vue;
 
 import qcm.Controleur;
-import qcm.metier.DonneesCreationQuestion;
-import qcm.metier.QCMReponse;
-import qcm.metier.QCMReponseItem;
-import qcm.metier.Question;
+import qcm.metier.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -53,14 +50,20 @@ public class PanelQCMSolo extends JPanel implements ActionListener
         this.frameParent       = frameParent;
 
 
-        for( int cpt = 0; cpt < 2; cpt ++)
+        if ( data.qst() == null )
+            for( int cpt = 0; cpt < 2; cpt ++)
+            {
+                this.lstBtnSupp         .add(new JButton());
+                this.lstTxtReponses     .add(new JTextArea(5, 1));
+                this.lstScrollTexte     .add(new JScrollPane(this.lstTxtReponses.getLast(), JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED));
+                JRadioButton radioBouton = new JRadioButton();
+                this.lstBtnValideReponse.add(radioBouton);
+                this.boutonGroup        .add(radioBouton);
+            }
+        else
         {
-            this.lstBtnSupp.add(new JButton());
-            this.lstTxtReponses.add(new JTextArea(5, 1));
-            this.lstScrollTexte     .add(new JScrollPane(this.lstTxtReponses.getLast(), JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED));
-            JRadioButton radioBouton = new JRadioButton();
-            this.lstBtnValideReponse.add(radioBouton);
-            this.boutonGroup        .add(radioBouton);
+            this.ajoutTextePourModif();
+            this.ajoutElementModifier();
         }
 
         this.majIHM();
@@ -161,14 +164,21 @@ public class PanelQCMSolo extends JPanel implements ActionListener
             if ( !this.txtInfoSupp.getText().isEmpty() && !this.txtInfoSupp.getText().trim().isEmpty())
                 qcmReponse.ajouterTexteExplication(this.txtInfoSupp.getText().trim().replaceAll("\n", "\\\\n").replaceAll("\t", "\\\\t"));
 
-            Question nouvelleQst = new Question(this.txtQst.getText().trim().replaceAll("\n", "\\\\n").replaceAll("\t", "\\\\t"), this.data.tempsReponse(), this.data.nbPoints(), this.data.type(), qcmReponse, this.data.diff(), this.data.notion());
 
-            this.data.notion().ajouterQuestion(nouvelleQst);
+            if ( this.data.qst() == null )
+            {
+                Question nouvelleQst = new Question(this.txtQst.getText().trim().replaceAll("\n", "\\\\n").replaceAll("\t", "\\\\t"), this.data.tempsReponse(), this.data.nbPoints(), this.data.type(), qcmReponse, this.data.diff(), this.data.notion());
 
-            if (!this.ctrl.sauvegarderQuestion(nouvelleQst)) {
-                this.afficherMessageErreur("Erreur lors de la sauvegarde de la question dans la base de données");
-                return;
+                this.data.notion().ajouterQuestion(nouvelleQst);
+
+                if (!this.ctrl.sauvegarderQuestion(nouvelleQst)) {
+                    this.afficherMessageErreur("Erreur lors de la sauvegarde de la question dans la base de données");
+                    return;
+                }
             }
+
+            // TODO joey fait en sorte que ça enregistre les modifiées
+
 
             System.out.println("Les questions dans la ressource " + this.data.ressource().getNom() + " pour la notion " + this.data.notion().getNom() + " sont : ");
 
@@ -176,7 +186,6 @@ public class PanelQCMSolo extends JPanel implements ActionListener
 
             for ( int cpt = 0; cpt < this.data.notion().getNbQuestions(); cpt ++)
                 System.out.println(this.data.notion().getQuestion(cpt));
-
 
 
             this.frameParent.fermerFenetre();
@@ -221,7 +230,6 @@ public class PanelQCMSolo extends JPanel implements ActionListener
 
         for( int cpt = 0; cpt < this.lstTxtReponses.size(); cpt ++)
         {
-
             gbc.gridwidth = 1;
             gbc.ipadx     = 0;
             gbc.ipady     = 0;
@@ -277,7 +285,7 @@ public class PanelQCMSolo extends JPanel implements ActionListener
         gbc.gridwidth = 2;
         this.add(new JLabel(""), gbc);
 
-        gbc.gridx = GridBagConstraints.RELATIVE;
+        gbc.gridx     = GridBagConstraints.RELATIVE;
         gbc.gridwidth = 1;
         this.add(this.pnl, gbc);
         this.pnl.setLayout(new BorderLayout());
@@ -285,5 +293,39 @@ public class PanelQCMSolo extends JPanel implements ActionListener
 
         this.revalidate();
         this.repaint();
+    }
+
+    public void ajoutTextePourModif()
+    {
+        QCMReponse qcmReponse = (QCMReponse) this.data.qst().getReponse();
+
+        for ( int cpt = 0; cpt < qcmReponse.getNbReponse(); cpt ++)
+        {
+            this.lstBtnSupp         .add(new JButton());
+            this.lstTxtReponses     .add(new JTextArea (5, 1));
+            this.lstScrollTexte     .add(new JScrollPane(this.lstTxtReponses.getLast(), JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED));
+            JRadioButton radioBouton = new JRadioButton();
+            this.lstBtnValideReponse.add(radioBouton);
+            this.boutonGroup        .add(radioBouton);
+
+            this.lstBtnSupp.getLast().addActionListener(this);
+        }
+    }
+
+    public void ajoutElementModifier()
+    {
+        QCMReponse qcmReponse = (QCMReponse) data.qst().getReponse();
+
+        this.txtQst.setText(this.data.qst().getTexteQuestion());
+        this.txtInfoSupp.setText(qcmReponse.getTexteExplication());
+
+        for ( int cpt = 0; cpt < qcmReponse.getNbReponse(); cpt ++)
+        {
+            this.lstTxtReponses.get(cpt).setText( qcmReponse.getReponse(cpt).getTexte() );
+
+            if ( qcmReponse.getReponse(cpt).isValide() )
+                this.lstBtnValideReponse.get(cpt).setSelected(true);
+
+        }
     }
 }

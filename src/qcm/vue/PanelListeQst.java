@@ -1,11 +1,7 @@
 package qcm.vue;
 
 import qcm.Controleur;
-import qcm.metier.DonneesCreationQuestion;
-import qcm.metier.Question;
-import qcm.metier.Ressource;
-import qcm.metier.Notion;
-import qcm.vue.donnees.GrilleDonneesNotion;
+import qcm.metier.*;
 import qcm.vue.donnees.GrilleDonneesQuestion;
 
 import javax.swing.*;
@@ -89,11 +85,25 @@ public class PanelListeQst extends JPanel implements ActionListener, ItemListene
         if ( e.getSource() == this.edit ){
             Ressource ressource = this.ctrl.getRessource((String) this.ddlstRessource.getSelectedItem());
 
-            if ( ressource == null ) return;
+            if ( ressource == null )
+            {
+                JOptionPane.showMessageDialog(this, "Il n'y aucune ressource de sélectionnée", "Erreur lors de la modification des données", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
 
             Notion notion = this.ctrl.getNotion(ressource, (String) this.ddlstNotion.getSelectedItem());
 
-            if ( notion == null ) return;
+            if ( notion == null )
+            {
+                JOptionPane.showMessageDialog(this, "Il n'y aucune notion de sélectionnée", "Erreur lors de la modification des données", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            if ( this.tblGrilleDonnees.getSelectedRowCount() != 1 )
+            {
+                JOptionPane.showMessageDialog(this, "Il doit y avoir une case de sélectionnée", "Erreur lors de la modification des données", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
 
             Question qst = this.ctrl.getQuestionUID(notion,(String) this.tblGrilleDonnees.getValueAt(this.tblGrilleDonnees.getSelectedRow(), 0));
 
@@ -101,6 +111,8 @@ public class PanelListeQst extends JPanel implements ActionListener, ItemListene
 
             System.out.println("Modification ...");
             new FrameInfosQuestion(this.ctrl, data);
+            this.frameListQst.fermerFenetre();
+
         }
     }
 

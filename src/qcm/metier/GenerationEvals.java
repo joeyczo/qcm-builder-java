@@ -62,11 +62,12 @@ public class GenerationEvals {
      */
     public boolean ajouterDifficulteQuestion (Notion n, DifficulteQuestion diff, Integer num) {
 
-        if (!this.mapNotions.containsKey(n)) return false;
+        if (!this.mapNotions.containsKey(n))    return false;
+        if (n.getNbQuestions(diff) < num)       return false;
 
         Map<DifficulteQuestion, Integer> mapNotion = this.mapNotions.get(n);
 
-        System.out.println("Ajout de la difficulté " + diff + " (" + num + ") pour la Notion " + n.getNom());
+        System.out.println(num + " >= " + n.getNbQuestions(diff));
 
         mapNotion.put(diff, num);
 
@@ -111,6 +112,21 @@ public class GenerationEvals {
         }
 
         return nbQuestion;
+
+    }
+
+    /**
+     * Permets de générer une évaluation ainsi que tous les fichiers
+     * @param path Lien vers la destination
+     */
+    public void genererEvaluation ( String path ) {
+
+        System.out.println("Génération en cours ...");
+
+        // Vérification du nombre de question
+        if (this.getNbQuestions() < 0) return;
+
+        
 
     }
 

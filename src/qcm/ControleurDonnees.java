@@ -351,6 +351,13 @@ public class ControleurDonnees
 
                 Reponse rsp = this.getReponseFichier(uidQuestion, typeQuestion);
 
+                if (typeQuestion == TypeQuestion.ASSOCIATION) {
+
+                    AssociationReponse qcmReponse = (AssociationReponse) rsp;
+
+                    System.out.println(qcmReponse.getNbReponses());
+                }
+
                 Question nouvelleQuestion = new Question(txtQuestion, tempsRsp, nbPoints, typeQuestion, rsp, difficulteQuestion, notion);
 
                 notion.ajouterQuestion(nouvelleQuestion);
@@ -411,7 +418,6 @@ public class ControleurDonnees
         String  pathFichierQuestion = Paths.get("src", "data", "app", uid+".txt").toString();
         QCMReponse          qcmReponse          = new QCMReponse();
         AssociationReponse  associationReponse  = new AssociationReponse();
-
         
         try {
 
@@ -424,6 +430,9 @@ public class ControleurDonnees
                 // Association des bonnes ou mauvaises réponses pour les QCM Solo et Multiples
                 if (typeQuestion == TypeQuestion.QCMSOLO || typeQuestion == TypeQuestion.QCMMULTI) {
 
+                    if (ligne.equals("{TEXTEEXPLICATION}"))
+                        qcmReponse.ajouterTexteExplication(sc.nextLine().replaceAll("\\\\n", "\n").replaceAll("\\\\t", "\t"));
+
                     if (ligne.equals("{REPONSEQCM}")) {
 
                         boolean estValide   = sc.nextLine().equals("1");
@@ -435,9 +444,10 @@ public class ControleurDonnees
 
                     }
 
-                    return qcmReponse;
-
                 } else if (typeQuestion == TypeQuestion.ASSOCIATION) { // Association pour les réponses de type associations
+
+                    if (ligne.equals("{TEXTEEXPLICATION}"))
+                        associationReponse.ajouterTexteExplication(sc.nextLine().replaceAll("\\\\n", "\n").replaceAll("\\\\t", "\t"));
 
                     if (ligne.equals("{ASSOCIATION}")) {
 
@@ -463,16 +473,20 @@ public class ControleurDonnees
 
                 }
 
-                return null;
 
             }
 
-            
+            if (typeQuestion == TypeQuestion.QCMSOLO || typeQuestion == TypeQuestion.QCMMULTI)
+                return qcmReponse;
+            else if (typeQuestion == TypeQuestion.ASSOCIATION)
+                return associationReponse;
+            else
+                return null;
+
         } catch (Exception e) {
             System.out.println("Erreur de lecture du fichier de données de la réponse : " + e.getMessage());
+            return null;
         }
-
-        return null;
 
     }
 

@@ -28,4 +28,9 @@ public class FrameListeQst extends JDialog
         this.setVisible(true);
     }
 
+    public void fermerFenetre() {
+        this.dispose();
+    }
+
+
 }

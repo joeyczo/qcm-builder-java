@@ -9,6 +9,14 @@ public class AssociationReponse implements Reponse
 	
 	public ArrayList<AssociationReponseItem> getReponses(){ return this.alReponses;}
 
+	public int getNbReponses () {
+		return this.alReponses.size();
+	}
+
+	public AssociationReponseItem getReponse ( int indince ) {
+		return this.alReponses.get(indince);
+	}
+
 	public void ajouterTexteExplication(String s) {
 		this.txtExplication = s;
 	}
