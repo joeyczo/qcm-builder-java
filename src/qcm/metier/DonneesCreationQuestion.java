@@ -6,6 +6,7 @@ public record DonneesCreationQuestion(
         Ressource           ressource,
         Notion              notion,
         DifficulteQuestion  diff,
-        TypeQuestion        type
+        TypeQuestion        type,
+        Question            qst
 ) {
 }

@@ -9,7 +9,6 @@ import qcm.metier.Question;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.*;
 import java.util.ArrayList;
 
 public class PanelAssociation extends JPanel implements ActionListener
@@ -40,9 +39,9 @@ public class PanelAssociation extends JPanel implements ActionListener
         this.txtInfoSupp  = new JTextArea (10, 10);
         this.scQuestion   = new JScrollPane(this.txtQuestion, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
-        this.lstTxtReponses = new ArrayList<>();
-        this.lstTxtDefinitions = new ArrayList<>();
-        this.lstBtnSupprimerGauche = new ArrayList<>();
+        this.lstTxtReponses         = new ArrayList<>();
+        this.lstTxtDefinitions      = new ArrayList<>();
+        this.lstBtnSupprimerGauche  = new ArrayList<>();
 
         this.btnAjouter = new JButton();
         this.btnAjouter.setOpaque(false);
@@ -72,6 +71,10 @@ public class PanelAssociation extends JPanel implements ActionListener
         this.btnEnregistrer.addActionListener(this);
 
         majIHM();
+
+        if(this.data != null){
+            this.chargerDonnees();
+        }
     }
 
     public void actionPerformed(ActionEvent e)
@@ -203,58 +206,73 @@ public class PanelAssociation extends JPanel implements ActionListener
         this.lstBtnSupprimerGauche.add(btnSupprimerGauche);
     }
 
-    private void majIHM()
-    {
+    private void majIHM() {
         this.removeAll();
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5);
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.weightx = 1.0;
+        gbc.fill = GridBagConstraints.HORIZONTAL; // Remplissage horizontal par défaut
 
+        // Label "Question"
         gbc.gridx = 0;
         gbc.gridy = 0;
+        gbc.gridwidth = 4; // Étendre sur toute la largeur (modification)
         this.add(new JLabel("Question :"), gbc);
 
+        // Zone de texte pour la question
         gbc.gridx = 0;
         gbc.gridy = 1;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.gridwidth = 4; // Étendre sur 4 colonnes
+        gbc.weightx = 1.0; // Donne la priorité pour occuper l'espace
+        gbc.fill = GridBagConstraints.BOTH; // Remplissage horizontal et vertical pour la zone de question
         this.add(this.scQuestion, gbc);
 
-        //gbc.gridwidth = 1;
         int yIndex = 2;
 
         for (int i = 0; i < this.lstTxtDefinitions.size(); i++) {
+            // Bouton supprimer gauche
             gbc.gridx = 0;
             gbc.gridy = yIndex;
-            gbc.fill = GridBagConstraints.HORIZONTAL;
-            gbc.weightx = 0.2;
+            gbc.gridwidth = 1; // Remet à 1 pour ce composant
+            gbc.weightx = 0; // Pas d'extension pour le bouton
+            gbc.fill = GridBagConstraints.NONE; // Pas de remplissage
             this.add(this.lstBtnSupprimerGauche.get(i), gbc);
 
+            // Zone de texte pour la définition
             gbc.gridx = 1;
             gbc.gridy = yIndex;
+            gbc.gridwidth = 1;
+            gbc.weightx = 0.5; // Équilibre l'espace avec la réponse
+            gbc.fill = GridBagConstraints.BOTH; // Remplissage dans les deux directions
             JScrollPane scDefinition = new JScrollPane(this.lstTxtDefinitions.get(i), JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-            gbc.weightx = 0.4;
-            gbc.fill = GridBagConstraints.HORIZONTAL;
             this.add(scDefinition, gbc);
 
+            // Zone de texte pour la réponse
             gbc.gridx = 3;
             gbc.gridy = yIndex;
+            gbc.gridwidth = 1;
+            gbc.weightx = 0.5;
+            gbc.fill = GridBagConstraints.BOTH;
             JScrollPane scReponse = new JScrollPane(this.lstTxtReponses.get(i), JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-            gbc.weightx = 0.4;
-            gbc.fill = GridBagConstraints.HORIZONTAL;
             this.add(scReponse, gbc);
 
             yIndex++;
         }
 
+        // Bouton ajouter
         gbc.gridx = 0;
         gbc.gridy = yIndex;
+        gbc.gridwidth = 1; // Remet à 1 pour les boutons
+        gbc.weightx = 0;
+        gbc.fill = GridBagConstraints.NONE;
         this.add(this.btnAjouter, gbc);
 
+        // Panneau pour les boutons d'explication et d'enregistrement
         gbc.gridx = 1;
         gbc.gridy = yIndex;
-        //gbc.gridwidth = GridBagConstraints.REMAINDER;
+        gbc.gridwidth = 3; // Étendre sur 3 colonnes
+        gbc.weightx = 1.0; // Remplit l'espace restant
+        gbc.fill = GridBagConstraints.HORIZONTAL; // Remplissage horizontal
         JPanel pnl = new JPanel();
         pnl.setLayout(new BorderLayout());
         pnl.add(this.btnExplication, BorderLayout.WEST);
@@ -263,5 +281,11 @@ public class PanelAssociation extends JPanel implements ActionListener
 
         this.revalidate();
         this.repaint();
+    }
+
+    private void chargerDonnees(){
+        Question q = this.data.qst();
+
+        this.txtQuestion.setText(q.getTexteQuestion());
     }
 }

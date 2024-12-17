@@ -168,4 +168,32 @@ public class GestionDonnees {
 
     }
 
+    /**
+     * Récupérer une question à partir de son UID si elle existe
+     * @param notion Notion à passer en paramètre
+     * @param uid UID de la question
+     * @return L'objet question, sinon null si elle n'existe pas
+     */
+    public Question getQuestionUID ( Notion notion, String uid ) {
+
+        if (uid == null) return null;
+        if (notion.getNbQuestions() == 0) return null;
+
+        Question resultat = null;
+
+        for ( int i = 0; i < notion.getNbQuestions(); i++) {
+
+            Question qst = notion.getQuestion(i);
+
+            if (qst.getUID().equals(uid)) {
+                resultat = qst;
+                break;
+            }
+
+        }
+
+        return resultat;
+
+    }
+
 }

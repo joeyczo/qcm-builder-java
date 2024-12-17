@@ -19,16 +19,17 @@ public class GrilleDonneesQuestion extends AbstractTableModel {
         this.ctrl = controleur;
         if ( notion    == null ) notion    = new Notion   ( "TEST" , null);
 
-        this.tabEntete  = new String[] { "Intitulé", "Difficulté", "Type"};
+        this.tabEntete  = new String[] { "ID", "Intitulé", "Difficulté", "Type"};
         this.tabDonnees = new Object[notion.getNbQuestions()][this.tabEntete.length];
 
         for ( int i = 0; i < notion.getNbQuestions(); i++) {
 
             Question question = notion.getQuestion(i);
 
-            tabDonnees[i][0] = question.getTexteQuestion();
-            tabDonnees[i][1] = question.getDifficulte();
-            tabDonnees[i][2] = question.getTypeQuestion();
+            tabDonnees[i][0] = question.getUID();
+            tabDonnees[i][1] = question.getTexteQuestion();
+            tabDonnees[i][2] = question.getDifficulte();
+            tabDonnees[i][3] = question.getTypeQuestion();
 
         }
 

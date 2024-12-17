@@ -322,7 +322,7 @@ public class PanelCreerQst extends JPanel implements ActionListener
                     case "Élimination"              -> type = TypeQuestion.ELIMINATION;
                 }
 
-                DonneesCreationQuestion data = new DonneesCreationQuestion(nbPoints, tempsReponse, rsc, not, difficulte, type);
+                DonneesCreationQuestion data = new DonneesCreationQuestion(nbPoints, tempsReponse, rsc, not, difficulte, type, null);
 
                 System.out.println("C'EST BON ?!");
                 new FrameInfosQuestion(this.ctrl, data);

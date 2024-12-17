@@ -64,17 +64,46 @@ public class PanelParametre extends JPanel implements ActionListener
 
     public void actionPerformed(ActionEvent e)
     {
+        JTextField txtCode      = new JTextField(5);
+        JTextField txtRessource = new JTextField(5);
+        JPanel     panelTemp    = new JPanel();
+
+        String nomRessource;
+        String code;
+
+        panelTemp.add(new JLabel("code:"));
+        panelTemp.add(txtCode);
+        panelTemp.add(Box.createHorizontalStrut(15));
+        panelTemp.add(new JLabel("nom ressource:"));
+        panelTemp.add(txtRessource);
+
 
         if (e.getSource() == this.btnAjouterRessource)
         {
-            String    nomRessource = JOptionPane.showInputDialog(this, "Entrez le nom de la ressource :", "Ajouter Ressource", JOptionPane.PLAIN_MESSAGE);
+            int resultat = JOptionPane.showConfirmDialog (null, panelTemp,
+                    "Ajouter Ressource", JOptionPane.OK_CANCEL_OPTION);
 
-            if (nomRessource == null)
+            if (resultat == JOptionPane.CANCEL_OPTION)
                 return;
 
-            nomRessource = nomRessource.trim();
 
-            Ressource ressource = new Ressource(nomRessource);
+            if ( txtCode.getText().isEmpty() || txtCode.getText().trim().isEmpty() )
+            {
+                JOptionPane.showMessageDialog(this,  "Erreur : Nom de code vide", "Erreur lors de l'ajout de la ressource", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            if ( txtRessource.getText().isEmpty() || txtRessource.getText().trim().isEmpty() )
+            {
+                JOptionPane.showMessageDialog(this,  "Erreur : Nom de ressource vide", "Erreur lors de l'ajout de la ressource", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            code         = txtCode     .getText().trim();
+            nomRessource = txtRessource.getText().trim();
+
+            Ressource ressource = new Ressource(nomRessource, code);
+
 
             // On vérifie si le nom n'existe pas dans la base de données des ressources
             if (this.ctrl.getRessource(ressource.getNom()) != null) {
@@ -82,13 +111,8 @@ public class PanelParametre extends JPanel implements ActionListener
                 return;
             }
 
-            // Permets de vérifier que les données sont ok
-            if (nomRessource.isEmpty()) {
-                JOptionPane.showMessageDialog(this,  "Erreur : Nom de ressource vide", "Erreur lors de l'ajout de la ressource", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
 
-            this.ddlstRessource.addItem(ressource.getNomCourt());
+            this.ddlstRessource.addItem(ressource.getCode() + " - " + ressource.getNomCourt());
 
             this.ctrl.ajouterRessource(ressource);
 
@@ -144,8 +168,6 @@ public class PanelParametre extends JPanel implements ActionListener
     }
 }
 
-// TODO sauvegarder les qst
 // TODO relier les données (tf, f, m, d) avec les paramètres
-// TODO mettre que les stats sont a titre indicatif et juste des stats
-// TODO si , dans creation de ressource ( param ) remlpacer par "|"
+// TODO mettre que les stats sont à titre indicatif et juste des stats
 // TODO vérifier si les commentaires erreur n'ont pas de faute

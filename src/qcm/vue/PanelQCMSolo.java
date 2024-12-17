@@ -55,8 +55,8 @@ public class PanelQCMSolo extends JPanel implements ActionListener
 
         for( int cpt = 0; cpt < 2; cpt ++)
         {
-            this.lstBtnSupp         .add(new JButton());
-            this.lstTxtReponses     .add(new JTextArea(5, 1));
+            this.lstBtnSupp.add(new JButton());
+            this.lstTxtReponses.add(new JTextArea(5, 1));
             this.lstScrollTexte     .add(new JScrollPane(this.lstTxtReponses.getLast(), JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED));
             JRadioButton radioBouton = new JRadioButton();
             this.lstBtnValideReponse.add(radioBouton);
@@ -156,7 +156,7 @@ public class PanelQCMSolo extends JPanel implements ActionListener
             QCMReponse qcmReponse = new QCMReponse();
 
             for ( int cpt = 0; cpt < this.lstTxtReponses.size(); cpt ++)
-                qcmReponse.ajouterItem(new QCMReponseItem(this.lstTxtReponses.get(cpt).getText().trim().replaceAll("\n", "\\\\n").replaceAll("\t", "\\\\t"), this.lstBtnValideReponse.get(cpt).isValid()));
+                qcmReponse.ajouterItem(new QCMReponseItem(this.lstTxtReponses.get(cpt).getText().trim().replaceAll("\n", "\\\\n").replaceAll("\t", "\\\\t"), this.lstBtnValideReponse.get(cpt).isSelected()));
 
             if ( !this.txtInfoSupp.getText().isEmpty() && !this.txtInfoSupp.getText().trim().isEmpty())
                 qcmReponse.ajouterTexteExplication(this.txtInfoSupp.getText().trim().replaceAll("\n", "\\\\n").replaceAll("\t", "\\\\t"));

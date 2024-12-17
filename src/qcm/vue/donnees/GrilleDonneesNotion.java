@@ -1,6 +1,7 @@
 package qcm.vue.donnees;
 
 import qcm.Controleur;
+import qcm.metier.DifficulteQuestion;
 import qcm.metier.Notion;
 import qcm.metier.Ressource;
 
@@ -18,7 +19,7 @@ public class GrilleDonneesNotion extends AbstractTableModel {
 
         this.ctrl = controleur;
 
-        if (ressource == null) ressource = new Ressource("TEST");
+        if (ressource == null) ressource = new Ressource("TEST", "R69.69");
 
         this.tabEntete  = new String[] { "Notion", "Nb. Très facile", "Nb. Facile", "Nb. Moyen", "Nb. difficile"};
         this.tabDonnees = new Object[this.ctrl.getNbNotion(ressource)][this.tabEntete.length];
@@ -28,10 +29,10 @@ public class GrilleDonneesNotion extends AbstractTableModel {
             Notion notion = this.ctrl.getNotion(ressource, i);
 
             tabDonnees[i][0] = notion.getNom();
-            tabDonnees[i][1] = 0;
-            tabDonnees[i][2] = 0;
-            tabDonnees[i][3] = 0;
-            tabDonnees[i][4] = 0;
+            tabDonnees[i][1] = notion.getNbQuestions(DifficulteQuestion.TRESFACILE);
+            tabDonnees[i][2] = notion.getNbQuestions(DifficulteQuestion.FACILE);
+            tabDonnees[i][3] = notion.getNbQuestions(DifficulteQuestion.MOYEN);
+            tabDonnees[i][4] = notion.getNbQuestions(DifficulteQuestion.DIFFICILE);
 
         }
 

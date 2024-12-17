@@ -8,13 +8,18 @@ public class Ressource
 	private final int LIMITE = 35;
 
 	private String       nom;
-	private String       intitule; //Ex : r1.01
+	private String       code; //Ex : r1.01
 	private List<Notion> alNotion;
 
-	public Ressource(String nom)
-	{
+	public Ressource(String nom)  {
 		this.nom      = nom;
 		this.alNotion = new ArrayList<Notion>();
+	}
+
+	public Ressource (String nom, String code) {
+		this.nom      	= nom;
+		this.alNotion 	= new ArrayList<Notion>();
+		this.code		= code;
 	}
 
 
@@ -36,9 +41,9 @@ public class Ressource
 		return nom ;
 	}
 
-	public String       getNom()      { return nom; }
-	public String       getIntitule() { return intitule; }
-	public List<Notion> getAlNotion() { return alNotion; }
+	public String       getNom()      { return nom; 		}
+	public String       getCode()     { return code; 		}
+	public List<Notion> getAlNotion() { return alNotion; 	}
 
 
 	/*---------------*/
@@ -46,14 +51,13 @@ public class Ressource
 	/*---------------*/
 
 
-	public void setNom     (String nom)      {this.nom      = nom;}
-	public void setIntitule(String intitule) {this.intitule = intitule;}
-
+	public void setNom     	(String nom)    {this.nom  = nom;	}
+	public void setCode		(String code) 	{this.code = code;	}
 
 
 	/*---------------*/
 	/*     AUTRE     */
 	/*---------------*/
-	public void    ajouterNotion(Notion n)    { this.alNotion.add(n); }
+	public void    ajouterNotion(Notion n)    { this.alNotion.add(n); 				}
 	public boolean equals       (Ressource r) { return this.nom.equals(r.getNom()); }
 }

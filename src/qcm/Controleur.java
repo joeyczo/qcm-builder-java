@@ -107,7 +107,9 @@ public class Controleur {
         return this.ctrlDonnees.sauvegarderQuestion(q);
     }
 
-
+    public Question getQuestionUID ( Notion n, String uid ) {
+        return this.gestionDonnees.getQuestionUID(n, uid);
+    }
 
 
     /*  --------------------------  */

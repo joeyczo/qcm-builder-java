@@ -1,6 +1,8 @@
 package qcm.vue;
 
 import qcm.Controleur;
+import qcm.metier.DonneesCreationQuestion;
+import qcm.metier.Question;
 import qcm.metier.Ressource;
 import qcm.metier.Notion;
 import qcm.vue.donnees.GrilleDonneesNotion;
@@ -23,14 +25,14 @@ public class PanelListeQst extends JPanel implements ActionListener, ItemListene
     private JButton edit;
     private JButton delete;
 
-    private Controleur      ctrl;
+    private Controleur ctrl;
 
     public PanelListeQst(FrameListeQst parent, Controleur ctrl)
     {
         this.frameListQst = parent;
         this.setLayout ( new FlowLayout() );
 
-        this.ctrl          = ctrl;
+        this.ctrl = ctrl;
 
         String[] tabRessource = new String[this.ctrl.getNbRessource()];
 
@@ -42,8 +44,8 @@ public class PanelListeQst extends JPanel implements ActionListener, ItemListene
         Ressource premiereRessource = (this.ctrl.getNbRessource() == 0) ? null : this.ctrl.getRessource(0);
         Notion    premiereNotion    = (premiereRessource == null || premiereRessource.getAlNotion().isEmpty()) ? null : premiereRessource.getAlNotion().getFirst();
 
-        this.ddlstRessource     = new JComboBox<>(tabRessource);
-        this.ddlstNotion       = new JComboBox<>();
+        this.ddlstRessource = new JComboBox<>(tabRessource);
+        this.ddlstNotion = new JComboBox<>();
         this.ddlstNotion.setEnabled(false);
         this.tblGrilleDonnees = new JTable ( new GrilleDonneesQuestion(this.ctrl, premiereNotion) );
         this.tblGrilleDonnees.setFillsViewportHeight(true);
@@ -68,10 +70,10 @@ public class PanelListeQst extends JPanel implements ActionListener, ItemListene
         this.add(this.delete);
         this.add(spGrilleDonnees);
 
-        this.delete      .addActionListener(this);
-        this.edit        .addActionListener(this);
+        this.delete        .addActionListener(this);
+        this.edit          .addActionListener(this);
         this.ddlstRessource.addItemListener(this);
-        this.ddlstNotion  .addItemListener(this);
+        this.ddlstNotion   .addItemListener(this);
     }
 
 
@@ -83,6 +85,23 @@ public class PanelListeQst extends JPanel implements ActionListener, ItemListene
             for (int i = 0; i < this.ctrl.getNbRessource(); i++)
                 tabNotions[i] = this.ctrl.getNotion(this.ctrl.getRessource(i), this.ctrl.getRessource(i).getNom()).getNom();
         }*/
+
+        if ( e.getSource() == this.edit ){
+            Ressource ressource = this.ctrl.getRessource((String) this.ddlstRessource.getSelectedItem());
+
+            if ( ressource == null ) return;
+
+            Notion notion = this.ctrl.getNotion(ressource, (String) this.ddlstNotion.getSelectedItem());
+
+            if ( notion == null ) return;
+
+            Question qst = this.ctrl.getQuestionUID(notion,(String) this.tblGrilleDonnees.getValueAt(this.tblGrilleDonnees.getSelectedRow(), 0));
+
+            DonneesCreationQuestion data = new DonneesCreationQuestion(qst.getNbPoints(), qst.getTempsReponse(), ressource, notion, qst.getDifficulte(), qst.getTypeQuestion(), qst);
+
+            System.out.println("Modification ...");
+            new FrameInfosQuestion(this.ctrl, data);
+        }
     }
 
     /**

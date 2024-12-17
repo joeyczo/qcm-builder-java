@@ -158,7 +158,7 @@ public class PanelQCMMulti extends JPanel implements ActionListener
             QCMReponse qcmReponse = new QCMReponse();
 
             for ( int cpt = 0; cpt < this.lstTxtReponses.size(); cpt ++)
-                qcmReponse.ajouterItem(new QCMReponseItem(this.lstTxtReponses.get(cpt).getText().trim().replaceAll("\n", "\\\\n").replaceAll("\t", "\\\\t"), this.lstBtnValideReponse.get(cpt).isValid()));
+                qcmReponse.ajouterItem(new QCMReponseItem(this.lstTxtReponses.get(cpt).getText().trim().replaceAll("\n", "\\\\n").replaceAll("\t", "\\\\t"), this.lstBtnValideReponse.get(cpt).isSelected()));
 
             if ( !this.txtInfoSupp.getText().isEmpty() && !this.txtInfoSupp.getText().trim().isEmpty())
                 qcmReponse.ajouterTexteExplication(this.txtInfoSupp.getText().trim().replaceAll("\n", "\\\\n").replaceAll("\t", "\\\\t"));

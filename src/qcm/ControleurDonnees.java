@@ -9,6 +9,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class ControleurDonnees
@@ -181,6 +183,8 @@ public class ControleurDonnees
 
                 questionEnTxt += q.getReponse().getTexteExplication();
             }
+
+
             /*  ---------------------------------------------  */
             /*	  Écriture des réponses dans le fichier TXT    */
             /*  ---------------------------------------------  */
@@ -193,9 +197,13 @@ public class ControleurDonnees
 
                     questionEnTxt += "\n{REPONSEQCM}\n";
 
+                    questionEnTxt += item.isValide() ? "1\n" : "0\n"; // 1 si la réponse est valide. Sinon 0
+
                     questionEnTxt += item.getTexte();
 
                 }
+
+
 
             } else if (q.getTypeQuestion() == TypeQuestion.ASSOCIATION) {
 
@@ -219,49 +227,12 @@ public class ControleurDonnees
 
             pwQuestion.close();
 
-
-            /*  ------------------------------------  */
-            /*	  Sauvegarde du fichier de réponse    */
-            /*  ------------------------------------  */
-
-            return sauvegarderReponse(q);
+            return true;
 
         } catch (Exception e) {
             System.out.println("Erreur de fichier : " + e.getMessage());
             return false;
         }
-
-    }
-
-    /**
-     * Sauvegarder la réponse dans le fichier CSV
-     * @param q Question à sauvegarder
-     * @return Le résultat de la sauvegarde
-     */
-    private boolean sauvegarderReponse ( Question q ) {
-
-        String pathFichierReponses  = Paths.get("src", "data", "app", "DonneesReponses.csv").toString();
-
-        try {
-
-            // Lecture des réponses existantes
-            String dataReponse = "";
-
-            Scanner scReponse = new Scanner(new FileInputStream(pathFichierReponses));
-
-            while (scReponse.hasNextLine()) {
-                dataReponse += scReponse.nextLine() + "\n";
-            }
-
-            // Écriture de la réponse
-
-            // TODO : a faire
-
-        } catch (Exception e) {
-            System.out.println("Impossible de sauvegarder la réponse : " + e.getMessage());
-        }
-
-        return true;
 
     }
 
@@ -342,14 +313,47 @@ public class ControleurDonnees
                 String  difficulte  = scLigne.next();
                 String  typeQst     = scLigne.next();
                 String  ressource   = scLigne.next();
-                String  notion      = scLigne.next();
+                String  nomNotion   = scLigne.next();
                 String  tempsRsp    = scLigne.next();
                 String  ptsRsp      = scLigne.next();
 
+                // Transformation des données
+
                 String txtQuestion  = this.getTexteQuestion(uidQuestion);
+                double nbPoints     = Double.parseDouble(ptsRsp);
+
+                TypeQuestion typeQuestion = switch (typeQst) {
+                    case "QCMMULTI"     -> TypeQuestion.QCMMULTI;
+                    case "ASSOCIATION"  -> TypeQuestion.ASSOCIATION;
+                    case "ELIMINATION"  -> TypeQuestion.ELIMINATION;
+                    default             -> TypeQuestion.QCMSOLO;
+                };
+
+                DifficulteQuestion difficulteQuestion = switch (difficulte) {
+                    case "TRESFACILE"   -> DifficulteQuestion.TRESFACILE;
+                    case "FACILE"       -> DifficulteQuestion.FACILE;
+                    case "MOYEN"        -> DifficulteQuestion.MOYEN;
+                    default             -> DifficulteQuestion.DIFFICILE;
+                };
+
+                Ressource rsc = this.ctrl.getRessource(ressource);
+
+                if (rsc == null)
+                    return;
+
+                Notion notion = this.ctrl.getNotion(rsc, nomNotion);
+
+                if (notion == null)
+                    return;
 
                 System.out.println("UID " + uidQuestion);
                 System.out.println(txtQuestion);
+
+                Reponse rsp = this.getReponseFichier(uidQuestion, typeQuestion);
+
+                Question nouvelleQuestion = new Question(txtQuestion, tempsRsp, nbPoints, typeQuestion, rsp, difficulteQuestion, notion);
+
+                notion.ajouterQuestion(nouvelleQuestion);
 
             }
 
@@ -377,8 +381,6 @@ public class ControleurDonnees
 
                 String ligne = sc.nextLine();
 
-                // TODO : Lecutre des fichiers
-
                 // Déterminer le type de lecture
                 if (ligne.equals("{TEXTEQST}")) {
 
@@ -387,8 +389,6 @@ public class ControleurDonnees
                     sRet = sRet.replaceAll("\\\\n", "\n").replaceAll("\\\\t", "\t");
 
                 }
-
-
 
             }
 
@@ -403,10 +403,74 @@ public class ControleurDonnees
     /**
      * Permets de récupérer la réponse à la question en fonction de son UID et de son type (Qui sera retourné)
      * @param uid UID de la question
-     * @param question Type de la question
+     * @param typeQuestion Type de la question
      * @return L'objet Reponse correspondant à l'UID de la question
      */
-    private Reponse getReponseFichier ( String uid, TypeQuestion question ) {
+    private Reponse getReponseFichier ( String uid, TypeQuestion typeQuestion ) {
+
+        String  pathFichierQuestion = Paths.get("src", "data", "app", uid+".txt").toString();
+        QCMReponse          qcmReponse          = new QCMReponse();
+        AssociationReponse  associationReponse  = new AssociationReponse();
+
+        
+        try {
+
+            Scanner sc = new Scanner(new FileInputStream(pathFichierQuestion));
+
+            while (sc.hasNextLine()) {
+
+                String ligne = sc.nextLine();
+
+                // Association des bonnes ou mauvaises réponses pour les QCM Solo et Multiples
+                if (typeQuestion == TypeQuestion.QCMSOLO || typeQuestion == TypeQuestion.QCMMULTI) {
+
+                    if (ligne.equals("{REPONSEQCM}")) {
+
+                        boolean estValide   = sc.nextLine().equals("1");
+                        String txtQuestion  = sc.nextLine().replaceAll("\\\\n", "\n").replaceAll("\\\\t", "\t");
+
+                        QCMReponseItem item = new QCMReponseItem(txtQuestion, estValide);
+
+                        qcmReponse.ajouterItem(item);
+
+                    }
+
+                    return qcmReponse;
+
+                } else if (typeQuestion == TypeQuestion.ASSOCIATION) { // Association pour les réponses de type associations
+
+                    if (ligne.equals("{ASSOCIATION}")) {
+
+                        String txtDefinition = sc.nextLine().replaceAll("\\\\n", "\n").replaceAll("\\\\t", "\t");
+
+                        AssociationReponseItem definition = new AssociationReponseItem(txtDefinition);
+
+                        if (sc.hasNextLine() && sc.nextLine().equals("{REPONSE}")) {
+
+                            String txtReponse = sc.nextLine().replaceAll("\\\\n", "\n").replaceAll("\\\\t", "\t");
+
+                            AssociationReponseItem reponse = new AssociationReponseItem(txtReponse);
+
+                            definition.setReponse(reponse);
+
+                            associationReponse.ajouterDefinition(definition);
+
+                        } else {
+                            System.out.println("Erreur lors de la lecture des associations !");
+                        }
+
+                    }
+
+                }
+
+                return null;
+
+            }
+
+            
+        } catch (Exception e) {
+            System.out.println("Erreur de lecture du fichier de données de la réponse : " + e.getMessage());
+        }
 
         return null;
 
