@@ -5,7 +5,10 @@ public class AssociationReponse implements Reponse
 	private ArrayList<AssociationReponseItem> 	alReponses;
 	private String								txtExplication;
 
-	public AssociationReponse(){this.alReponses=new ArrayList<AssociationReponseItem>();}
+	public AssociationReponse(){
+		this.alReponses		= new ArrayList<AssociationReponseItem>();
+		this.txtExplication	= null;
+	}
 	
 	public ArrayList<AssociationReponseItem> getReponses(){ return this.alReponses;}
 

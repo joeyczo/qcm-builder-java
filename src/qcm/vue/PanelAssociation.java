@@ -134,12 +134,12 @@ public class PanelAssociation extends JPanel implements ActionListener
 
             Question question = new Question(this.txtQuestion.getText().trim().replaceAll("\n", "\\\\n").replaceAll("\t", "\\\\t"), this.data.tempsReponse(), this.data.nbPoints(), this.data.type(), associationReponse, this.data.diff(), this.data.notion());
 
-            this.data.notion().ajouterQuestion(question);
-
             if (!this.ctrl.sauvegarderQuestion(question)) {
                 this.afficherMessageErreur("Impossible de sauvegarder la question dans la base de données !");
                 return;
             }
+
+            this.data.notion().ajouterQuestion(question);
 
             this.afficherMessageValide("La question a bien été sauvegardé");
             this.frameParent.fermerFenetre();

@@ -15,7 +15,7 @@ public class Controleur {
 
 		this.accueil		= new Accueil(this);
 		this.gestionDonnees = new GestionDonnees(this);
-        this.ctrlDonnees    = new ControleurDonnees("src/data/DonneesParam.csv", this);
+        this.ctrlDonnees    = new ControleurDonnees (this);
         this.generationEvals = new GenerationEvals();
 
         this.ctrlDonnees.chargerDonnees();

@@ -169,15 +169,15 @@ public class PanelQCMSolo extends JPanel implements ActionListener
             {
                 Question nouvelleQst = new Question(this.txtQst.getText().trim().replaceAll("\n", "\\\\n").replaceAll("\t", "\\\\t"), this.data.tempsReponse(), this.data.nbPoints(), this.data.type(), qcmReponse, this.data.diff(), this.data.notion());
 
-                this.data.notion().ajouterQuestion(nouvelleQst);
-
                 if (!this.ctrl.sauvegarderQuestion(nouvelleQst)) {
                     this.afficherMessageErreur("Erreur lors de la sauvegarde de la question dans la base de données");
                     return;
                 }
+
+                this.data.notion().ajouterQuestion(nouvelleQst);
             }
 
-            // TODO joey fait en sorte que ça enregistre les modifiées
+            // TODO Enregistrer les modifications de la question (Plus clair)
 
 
             System.out.println("Les questions dans la ressource " + this.data.ressource().getNom() + " pour la notion " + this.data.notion().getNom() + " sont : ");

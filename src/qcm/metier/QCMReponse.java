@@ -9,7 +9,8 @@ public class QCMReponse implements Reponse
 	private String					txtExplication;
 
 	public QCMReponse() {
-		this.alReponses=new ArrayList<QCMReponseItem>();
+		this.alReponses		= new ArrayList<QCMReponseItem>();
+		this.txtExplication	= null;
 	}
 	
 	public List<QCMReponseItem> getReponses(){

@@ -15,12 +15,10 @@ import java.util.Scanner;
 
 public class ControleurDonnees
 {
-    private String lienFichier;
     private Controleur ctrl;
 
-    public ControleurDonnees(String lienFichier, Controleur ctrl)
+    public ControleurDonnees(Controleur ctrl)
     {
-        this.lienFichier = lienFichier;
         this.ctrl = ctrl;
     }
 
@@ -30,6 +28,12 @@ public class ControleurDonnees
     /*	  SAUVEGARDE DES DONNEES    */
     /*                              */
     /*  --------------------------  */
+
+    // TODO : Modifier les tables de données (Une pour ressource et une pour notion)
+    // TODO : Sauvegarder code des ressources
+
+
+
 
     /*  ----------------------------------------  */
     /*	  SAUVEGARDE DES NOTIONS ET RESSOURCES    */
@@ -64,7 +68,7 @@ public class ControleurDonnees
 
         try {
 
-            PrintWriter pw = new PrintWriter(new FileOutputStream(this.lienFichier));
+            PrintWriter pw = new PrintWriter(new FileOutputStream(""));
 
             pw.println(sRet);
 
@@ -81,6 +85,43 @@ public class ControleurDonnees
 
     }
 
+    /**
+     * Nouvelle méthode permettant de sauvegarder les ressources et les notions
+     * (Deux tables séparées)
+     */
+    private void sauvegarderRessource ( ) {
+
+        String sRet = "";
+
+        try {
+
+            PrintWriter pw = new PrintWriter(new FileOutputStream("src/data/DonneesRessource.csv"));
+            
+            for ( int i = 0; i < this.ctrl.getNbRessource(); i++) {
+                
+                Ressource rsc = this.ctrl.getRessource(i);
+                
+                sRet += rsc.getUID() + "," + rsc.getCode() + "," + rsc.getNom();
+                
+                if (i != this.ctrl.getNbRessource()) sRet += "\n";
+            }
+
+            pw.println(sRet);
+
+            pw.close();
+
+        } catch (Exception e) {
+            System.out.println("Erreur sauvegarde fichier de données Ressource : " + e.getMessage());
+        }
+
+    }
+
+    /**
+     * Méthode permettant de sauvegarder les Notions dans un fichier CSV
+     * @param rsc Ressource parent des Notion
+     * @return Les données
+     * @deprecated
+     */
     private String sauvegardeNotion(Ressource rsc) {
 
         String sRet = "";
@@ -221,6 +262,23 @@ public class ControleurDonnees
 
                 }
 
+            } else if (q.getTypeQuestion() == TypeQuestion.ELIMINATION) {
+
+                EliminationReponse reponse = (EliminationReponse) q.getReponse();
+
+                for (EliminationReponseItem item : reponse.getReponsesItems()) {
+
+                    questionEnTxt += "\n{ELIMINIATION}\n";
+
+                    // Structure : ordre suppression, pts suppression, bonne réponse (1, sinon 0)
+                    questionEnTxt += item.getOrdreSuppression() + "," + item.getPtsSuppression() + "," + (item.isBonneReponse() ? "1" : "0");
+
+                    questionEnTxt += "\n";
+
+                    questionEnTxt += item.getTexte();
+
+                }
+
             }
 
             pwQuestion.print(questionEnTxt);
@@ -237,11 +295,17 @@ public class ControleurDonnees
     }
 
 
+
+
     /*  --------------------------  */
     /*                              */
     /*	  CHARGEMENT DES DONNEES    */
     /*                              */
     /*  --------------------------  */
+
+
+
+
 
     /**
      * Méthode permettant de charger les données dans la base de données
@@ -265,7 +329,7 @@ public class ControleurDonnees
 
         try {
 
-            Scanner sc = new Scanner(new FileInputStream(this.lienFichier));
+            Scanner sc = new Scanner(new FileInputStream("src/data/DonneesParam.csv"));
 
             while (sc.hasNextLine()) {
 
@@ -346,17 +410,7 @@ public class ControleurDonnees
                 if (notion == null)
                     return;
 
-                System.out.println("UID " + uidQuestion);
-                System.out.println(txtQuestion);
-
                 Reponse rsp = this.getReponseFichier(uidQuestion, typeQuestion);
-
-                if (typeQuestion == TypeQuestion.ASSOCIATION) {
-
-                    AssociationReponse qcmReponse = (AssociationReponse) rsp;
-
-                    System.out.println(qcmReponse.getNbReponses());
-                }
 
                 Question nouvelleQuestion = new Question(txtQuestion, tempsRsp, nbPoints, typeQuestion, rsp, difficulteQuestion, notion);
 
@@ -418,6 +472,7 @@ public class ControleurDonnees
         String  pathFichierQuestion = Paths.get("src", "data", "app", uid+".txt").toString();
         QCMReponse          qcmReponse          = new QCMReponse();
         AssociationReponse  associationReponse  = new AssociationReponse();
+        EliminationReponse  eliminationReponse  = new EliminationReponse();
         
         try {
 
@@ -471,6 +526,26 @@ public class ControleurDonnees
 
                     }
 
+                } else if (typeQuestion == TypeQuestion.ELIMINATION) {
+
+                    if (ligne.equals("{TEXTEEXPLICATION}"))
+                        eliminationReponse.ajouterTexteExplication(sc.nextLine().replaceAll("\\\\n", "\n").replaceAll("\\\\t", "\t"));
+
+                    if (ligne.equals("{ELIMINIATION}")) {
+
+                        Scanner donneesElimination = new Scanner(sc.nextLine()).useDelimiter(",");
+
+                        int     ordreSuppression    = Integer.parseInt(donneesElimination.next());
+                        int     ptsSuppression      = Integer.parseInt(donneesElimination.next());
+                        boolean reponse             = donneesElimination.next().equals("1");
+                        String  txtQuestion         = sc.nextLine().replaceAll("\\\\n", "\n").replaceAll("\\\\t", "\t");
+
+                        EliminationReponseItem item = new EliminationReponseItem(txtQuestion, ordreSuppression, ptsSuppression, reponse);
+
+                        eliminationReponse.ajouterReponseItem(item);
+
+                    }
+
                 }
 
 
@@ -480,6 +555,8 @@ public class ControleurDonnees
                 return qcmReponse;
             else if (typeQuestion == TypeQuestion.ASSOCIATION)
                 return associationReponse;
+            else if (typeQuestion == TypeQuestion.ELIMINATION)
+                return eliminationReponse;
             else
                 return null;
 

@@ -1,12 +1,16 @@
 package qcm.vue;
 
 import qcm.Controleur;
+import qcm.metier.DonneesCreationQuestion;
 import qcm.metier.EliminationReponse;
+import qcm.metier.EliminationReponseItem;
+import qcm.metier.Question;
 
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.util.*;
+import java.util.List;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -15,9 +19,9 @@ import javax.swing.event.DocumentListener;
 public class PanelElim extends JPanel implements ActionListener, DocumentListener
 {
 
-    private FrameInfosQuestion frameParent;
-    private Controleur         ctrl;
-
+    private FrameInfosQuestion      frameParent;
+    private Controleur              ctrl;
+    private DonneesCreationQuestion data;
 
     private ArrayList<JButton>      lstBtnSupp;
     private ArrayList<JTextArea>    lstTxtReponses;
@@ -27,14 +31,15 @@ public class PanelElim extends JPanel implements ActionListener, DocumentListene
     private ArrayList<JTextField>   lstPointEnMoins;
 
 
-    private JButton           btnEnregistrer, btnAdd, btnExplain,btnInfoSupp;
+    private JButton           btnEnregistrer, btnAdd,btnInfoSupp;
     private JTextArea         txtQst, txtInfoSupp;
     private JScrollPane       scrollPane;
     private ButtonGroup       btg;
 
-    public PanelElim( FrameInfosQuestion parent, Controleur ctrl )
+    public PanelElim( DonneesCreationQuestion data, FrameInfosQuestion parent, Controleur ctrl )
     {
 
+        this.data        = data;
         this.frameParent = parent;
         this.ctrl        = ctrl;
 
@@ -50,9 +55,8 @@ public class PanelElim extends JPanel implements ActionListener, DocumentListene
         this.txtInfoSupp    = new JTextArea  (10, 10);
         this.scrollPane     = new JScrollPane(this.txtQst, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         this.btnEnregistrer = new JButton    ("Enregistrer");
-        this.btnInfoSupp    = new JButton    ();
         this.btnAdd         = new JButton    (new ImageIcon("src/data/img/add.png"));
-        this.btnExplain     = new JButton    (new ImageIcon("src/data/img/edit.png"));
+        this.btnInfoSupp    = new JButton    (new ImageIcon("src/data/img/edit.png"));
         this.btg            = new ButtonGroup();
 
         for( int cpt = 0; cpt < 2; cpt ++)
@@ -75,7 +79,6 @@ public class PanelElim extends JPanel implements ActionListener, DocumentListene
         this.btnEnregistrer.addActionListener(this);
         this.btnAdd        .addActionListener(this);
         this.btnInfoSupp   .addActionListener(this);
-        this.btnExplain    .addActionListener(this);
 
 
         for ( int cpt = 0; cpt < this.lstBtnSupp.size(); cpt ++)
@@ -129,6 +132,9 @@ public class PanelElim extends JPanel implements ActionListener, DocumentListene
 
         if(e.getSource() == this.btnInfoSupp)
         {
+
+            System.out.println("CLIQUE SUR LE BOUTON");
+
             JScrollPane scrollPane = new JScrollPane(this.txtInfoSupp);
 
             int resultat = JOptionPane.showConfirmDialog(
@@ -169,22 +175,63 @@ public class PanelElim extends JPanel implements ActionListener, DocumentListene
                 return;
             }
 
+            List<Integer> ordreSuppressionMauvaiseRep = new ArrayList<Integer>();
+            Double        pointSoustrait              = 0.0;
+            Double        sommePointSoustrait         = 0.0;
+
             for (int cpt = 0; cpt < this.lstOrdrePrioQst.size(); cpt ++)
             {
                 try
                 {
-                    if ( !(this.lstOrdrePrioQst.get(cpt).getText().isEmpty() || this.lstOrdrePrioQst.get(cpt).getText().trim().isEmpty() &&
-                           this.lstPointEnMoins.get(cpt).getText().isEmpty() || this.lstPointEnMoins.get(cpt).getText().trim().isEmpty()) )
+                    if ( !(this.lstOrdrePrioQst.get(cpt).getText().trim().isEmpty() && this.lstPointEnMoins.get(cpt).getText().trim().isEmpty()) )
+                    {
 
-                        // TODO faire les verifs
-                        Integer.parseInt();
-                    Double.parseDouble(this.lstPointEnMoins.get(cpt).getText());
+                        System.out.println(this.lstOrdrePrioQst.get(cpt).getText());
+                        System.out.println(this.lstPointEnMoins.get(cpt).getText());
+
+                        ordreSuppressionMauvaiseRep.add(Integer.parseInt  (this.lstOrdrePrioQst.get(cpt).getText().trim()));
+                        pointSoustrait                = Double.parseDouble(this.lstPointEnMoins.get(cpt).getText().trim());
+
+                        if ( pointSoustrait < 0 )
+                            sommePointSoustrait += pointSoustrait;
+                        else
+                        {
+                            this.afficherMessageErreur("Erreur : Le nombre de point à enlevé doit être négatif -> (-0.5)");
+                            return;
+                        }
+
+
+                        if ( this.data.nbPoints() + sommePointSoustrait < 0 )
+                        {
+                            this.afficherMessageErreur("Erreur : Trop de points sont enlevé");
+                            return;
+                        }
+                    }
+
                 }
                 catch (Exception exception)
                 {
                     System.out.println(exception.getMessage());
+                    this.afficherMessageErreur("Erreur : Soit les deux cases de priorité d'ordre et point en moins doivent contenir des données soit aucune");
+                    return;
                 }
             }
+
+            // Trie dans l'ordre croissant l'ordre des suppressions
+            ordreSuppressionMauvaiseRep.sort(Comparator.naturalOrder());
+
+            for (int cpt = 1; cpt <= ordreSuppressionMauvaiseRep.size(); cpt++)
+            {
+
+                if ( ordreSuppressionMauvaiseRep.get(cpt-1) != cpt )
+                {
+                    this.afficherMessageErreur("Erreur : La saisie de l'ordre de suppression est incorrect");
+                    return;
+                }
+            }
+               
+
+            // On crée l'objet réponse
 
             EliminationReponse eliminationReponse = new EliminationReponse();
 
@@ -192,14 +239,41 @@ public class PanelElim extends JPanel implements ActionListener, DocumentListene
             for (JTextArea txt : this.lstTxtReponses) {
 
                 String  txtReponse      = txt.getText().trim().replaceAll("\n", "\\\\n").replaceAll("\t", "\\\\t");
-                String  ordreReponse    = this.lstOrdrePrioQst.get(i).getText();
-                String  ptsReponse      = this.lstPointEnMoins.get(i).getText();
+                String  ordreReponse    = this.lstOrdrePrioQst.get(i).getText().trim();
+                String  ptsReponse      = this.lstPointEnMoins.get(i).getText().trim();
 
-                // TODO : Finir associer réponses dans la base de données
+                int     ordreReponseInt = (!ordreReponse.isEmpty()) ? Integer.parseInt(ordreReponse) : 0;
+                float   pointsReponse   = (!ptsReponse.isEmpty())   ? Float.parseFloat(ptsReponse)   : 0;
+                boolean bonneReponse    = this.lstBtnValideReponse.get(i).isSelected();
+
+                EliminationReponseItem item = new EliminationReponseItem(txtReponse, ordreReponseInt, pointsReponse, bonneReponse);
+
+                eliminationReponse.ajouterReponseItem(item);
 
                 i++;
 
             }
+
+            if ( !this.txtInfoSupp.getText().isEmpty() && !this.txtInfoSupp.getText().trim().isEmpty())
+                eliminationReponse.ajouterTexteExplication(this.txtInfoSupp.getText().trim().replaceAll("\n", "\\\\n").replaceAll("\t", "\\\\t"));
+
+            // On crée l'objet question et on l'ajoute à la base de données
+
+            String txtQuestion = this.txtQst.getText().trim().replaceAll("\n", "\\\\n").replaceAll("\t", "\\\\t");
+
+            Question question = new Question(txtQuestion, this.data.tempsReponse(), this.data.nbPoints(), this.data.type(), eliminationReponse, this.data.diff(), this.data.notion());
+
+            if (!this.ctrl.sauvegarderQuestion(question)) {
+                this.afficherMessageErreur("Impossible de sauvegarder la réponse dans la base de données");
+                return;
+            }
+
+            this.data.notion().ajouterQuestion(question);
+
+            this.afficherMessageValide("La question a bien été sauvegardée dans la base de données !");
+
+            this.frameParent.fermerFenetre();
+
 
         }
 
@@ -293,11 +367,11 @@ public class PanelElim extends JPanel implements ActionListener, DocumentListene
         this.add(btnAdd, gbc);
 
         gbc.gridx      = 1;
-        this.btnExplain.setOpaque(false);
-        this.btnExplain.setContentAreaFilled(false);
-        this.btnExplain.setBorderPainted(false);
-        this.btnExplain.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        this.add(btnExplain, gbc);
+        this.btnInfoSupp.setOpaque(false);
+        this.btnInfoSupp.setContentAreaFilled(false);
+        this.btnInfoSupp.setBorderPainted(false);
+        this.btnInfoSupp.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        this.add(btnInfoSupp, gbc);
 
 
         gbc.gridx      = 2;
@@ -312,17 +386,18 @@ public class PanelElim extends JPanel implements ActionListener, DocumentListene
 
         for ( int cpt = 0; cpt < this.lstOrdrePrioQst.size(); cpt ++)
         {
+
             if (!this.lstOrdrePrioQst.get(cpt).getText().isEmpty() || !this.lstPointEnMoins.get(cpt).getText().isEmpty() )
             {
-                this.lstBtnValideReponse.get(cpt).setEnabled(false);
                 this.lstBtnValideReponse.get(cpt).setSelected(false);
+                this.lstBtnValideReponse.get(cpt).setEnabled(false);
+                System.out.println(this.lstBtnValideReponse.get(cpt).isSelected());
             }
-
-            if (this.lstOrdrePrioQst.get(cpt).getText().isEmpty() && this.lstPointEnMoins.get(cpt).getText().isEmpty())
-            {
+            else
                 this.lstBtnValideReponse.get(cpt).setEnabled(true);
-            }
+
         }
+
     }
 
     @Override
@@ -333,16 +408,15 @@ public class PanelElim extends JPanel implements ActionListener, DocumentListene
 
             if (!this.lstOrdrePrioQst.get(cpt).getText().isEmpty() || !this.lstPointEnMoins.get(cpt).getText().isEmpty() )
             {
-                this.lstBtnValideReponse.get(cpt).setEnabled(false);
                 this.lstBtnValideReponse.get(cpt).setSelected(false);
+                this.lstBtnValideReponse.get(cpt).setEnabled(false);
             }
-
-            if (this.lstOrdrePrioQst.get(cpt).getText().isEmpty() && this.lstPointEnMoins.get(cpt).getText().isEmpty())
-            {
+            else
                 this.lstBtnValideReponse.get(cpt).setEnabled(true);
-            }
 
         }
+
+        this.majIHM();
     }
 
     @Override

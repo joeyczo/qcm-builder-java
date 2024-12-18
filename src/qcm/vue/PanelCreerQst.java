@@ -173,6 +173,7 @@ public class PanelCreerQst extends JPanel implements ActionListener
 
         this.btnValider.addActionListener(this);
         this.cbUnique.addActionListener(this);
+        verifierTemps();
     }
 
     public void actionPerformed(ActionEvent e)
@@ -254,6 +255,7 @@ public class PanelCreerQst extends JPanel implements ActionListener
                     return;
                 }
 
+                /*
                 if (!tempsReponse.contains(":")) {
                     this.afficherMessageErreur("Veuillez indiquer un temps de réponse valide (min:sec)");
                     return;
@@ -282,8 +284,7 @@ public class PanelCreerQst extends JPanel implements ActionListener
                         return;
                     }
                     System.out.println(tabTempsReponse[0].length());
-
-                }
+                }*/
 
 
                 if (diff.isEmpty()) {
@@ -322,7 +323,7 @@ public class PanelCreerQst extends JPanel implements ActionListener
                     case "Élimination"              -> type = TypeQuestion.ELIMINATION;
                 }
 
-                DonneesCreationQuestion data = new DonneesCreationQuestion(nbPoints, tempsReponse, rsc, not, difficulte, type, null);
+                DonneesCreationQuestion data = new DonneesCreationQuestion(nbPoints, verifierTemps(), rsc, not, difficulte, type, null);
 
                 System.out.println("C'EST BON ?!");
                 new FrameInfosQuestion(this.ctrl, data);
@@ -346,12 +347,32 @@ public class PanelCreerQst extends JPanel implements ActionListener
      * Afficher un message d'erreur au client
      * @param message Message à afficher
      */
-    private void afficherMessageErreur(String message) {
-
+    private void afficherMessageErreur(String message)
+    {
         JOptionPane.showMessageDialog(this, message, "Erreur lors de la validation des données", JOptionPane.ERROR_MESSAGE);
-
     }
 
+    private String verifierTemps()
+    {
+        String temps = this.txtTempsRep.getText();
+        int minute, seconde;
+        int index = temps.indexOf(':');
+
+        if(index != -1){
+            seconde = Integer.parseInt(temps.substring(index + 1));
+            minute = Integer.parseInt(temps.substring(0, index));
+
+            while(seconde > 59){
+                minute++;
+                seconde -= 60;
+            }
+        } else{
+            this.afficherMessageErreur("Erreur : le format valide pour le temps est le suivant -> mm:ss");
+            return "";
+        }
+
+        return ((minute > 10) ? "" + minute : "0" + minute) + ":" + ((seconde > 10) ? "" + seconde : "0" + seconde);
+    }
 }
 
 class RoundButton extends JButton

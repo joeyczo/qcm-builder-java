@@ -34,7 +34,7 @@ public class FrameInfosQuestion extends JFrame {
             JScrollPane scrollPanel           = new JScrollPane(panelAssociation, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
             this.add(scrollPanel);
         } else if(data.type() == TypeQuestion.ELIMINATION) {
-            PanelElim panelElim     = new PanelElim(this, ctrl);
+            PanelElim panelElim     = new PanelElim(data, this, ctrl);
             JScrollPane scrollPanel = new JScrollPane(panelElim, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
             this.add(scrollPanel);
         }

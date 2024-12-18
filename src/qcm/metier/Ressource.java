@@ -1,5 +1,7 @@
 package qcm.metier;
 
+import qcm.utils.Uid;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,10 +9,15 @@ public class Ressource
 {
 	private final int LIMITE = 35;
 
-	private String       nom;
-	private String       code; //Ex : r1.01
-	private List<Notion> alNotion;
+	private String       	nom;
+	private String       	code; //Ex : r1.01
+	private List<Notion> 	alNotion;
+	private	String			UID;
 
+	/**
+	 * @deprecated
+	 * @param nom
+	 */
 	public Ressource(String nom)  {
 		this.nom      = nom;
 		this.alNotion = new ArrayList<Notion>();
@@ -20,6 +27,14 @@ public class Ressource
 		this.nom      	= nom;
 		this.alNotion 	= new ArrayList<Notion>();
 		this.code		= code;
+		this.UID		= Uid.generateUid(20);
+	}
+
+	public Ressource (String nom, String code, String UID) {
+		this.nom      	= nom;
+		this.alNotion 	= new ArrayList<Notion>();
+		this.code		= code;
+		this.UID		= UID;
 	}
 
 
@@ -27,6 +42,9 @@ public class Ressource
 	/*      GET      */
 	/*---------------*/
 
+	public String getUID() {
+		return UID;
+	}
 
 	public String getNomCourt()
 	{
@@ -53,6 +71,7 @@ public class Ressource
 
 	public void setNom     	(String nom)    {this.nom  = nom;	}
 	public void setCode		(String code) 	{this.code = code;	}
+	public void setUID		(String UID) 	{this.UID = UID;	}
 
 
 	/*---------------*/

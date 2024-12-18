@@ -175,12 +175,12 @@ public class PanelQCMMulti extends JPanel implements ActionListener
 
                 Question nouvelleQst = new Question(txtQuestion, this.data.tempsReponse(), this.data.nbPoints(), this.data.type(), qcmReponse, this.data.diff(), this.data.notion());
 
-                this.data.notion().ajouterQuestion(nouvelleQst);
-
                 if (!this.ctrl.sauvegarderQuestion(nouvelleQst)) {
                     this.afficherMessageErreur("Erreur lors de la sauvegarde de la question dans la base de données");
                     return;
                 }
+
+                this.data.notion().ajouterQuestion(nouvelleQst);
 
                 this.afficherMessageValide("La question a bien été sauvegardée dans la base de données");
 

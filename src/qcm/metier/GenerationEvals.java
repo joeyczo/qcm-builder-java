@@ -126,7 +126,7 @@ public class GenerationEvals {
         // Vérification du nombre de question
         if (this.getNbQuestions() < 0) return;
 
-        
+        // TODO : Générer les questions
 
     }
 
