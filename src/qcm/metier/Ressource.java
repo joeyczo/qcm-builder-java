@@ -14,15 +14,6 @@ public class Ressource
 	private List<Notion> 	alNotion;
 	private	String			UID;
 
-	/**
-	 * @deprecated
-	 * @param nom
-	 */
-	public Ressource(String nom)  {
-		this.nom      = nom;
-		this.alNotion = new ArrayList<Notion>();
-	}
-
 	public Ressource (String nom, String code) {
 		this.nom      	= nom;
 		this.alNotion 	= new ArrayList<Notion>();
@@ -48,7 +39,7 @@ public class Ressource
 
 	public String getNomCourt()
 	{
-		String nom = this.nom;
+		String nom = this.getNom();
 
 		if ( this.nom.length() >= LIMITE )
 		{
@@ -59,9 +50,21 @@ public class Ressource
 		return nom ;
 	}
 
-	public String       getNom()      { return nom; 		}
-	public String       getCode()     { return code; 		}
-	public List<Notion> getAlNotion() { return alNotion; 	}
+	public String       getNom()      		{ return this.code + " - " + this.nom;		}
+	public String 		getNomSansCode()	{ return this.nom;							}
+	public String       getCode()     		{ return this.code; 						}
+	public List<Notion> getAlNotion() 		{ return this.alNotion; 					}
+
+	public int getNbNotion() {
+		return this.alNotion.size();
+	}
+
+	public Notion getNotion( int indice ) {
+
+		if (indice < 0 || indice >= this.getNbNotion()) return null;
+
+		return this.alNotion.get(indice);
+	}
 
 
 	/*---------------*/

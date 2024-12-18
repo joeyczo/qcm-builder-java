@@ -3,6 +3,7 @@ package qcm;
 import qcm.metier.*;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.FileOutputStream;
 import java.nio.charset.StandardCharsets;
@@ -33,20 +34,25 @@ public class ControleurDonnees
     // TODO : Sauvegarder code des ressources
 
 
-
-
     /*  ----------------------------------------  */
     /*	  SAUVEGARDE DES NOTIONS ET RESSOURCES    */
     /*  ----------------------------------------  */
 
     public boolean sauvegarder() {
 
+        // Sauvegarde des Ressources et des Notions
+        this.sauvegarderRessources();
+
+        return true;
+        /*
+
+
         String sRet     = "";
         boolean sauves  = false;
 
-        /*  -----------------------------  */
-        /*	  Sauvegarde des ressources    */
-        /*  -----------------------------  */
+        *//*  -----------------------------  *//*
+        *//*	  Sauvegarde des ressources    *//*
+        *//*  -----------------------------  *//*
 
         for (int i = 0; i < this.ctrl.getNbRessource(); i++) {
             Ressource rsc = this.ctrl.getRessource(i);
@@ -62,9 +68,9 @@ public class ControleurDonnees
         }
 
 
-        /*  ----------------------------------  */
-        /*	  Écriture du fichier de données    */
-        /*  ----------------------------------  */
+        *//*  ----------------------------------  *//*
+        *//*	  Écriture du fichier de données    *//*
+        *//*  ----------------------------------  *//*
 
         try {
 
@@ -81,7 +87,7 @@ public class ControleurDonnees
             System.out.println("Problème lors de la création du fichier :" + e.getMessage());
         }
 
-        return sauves;
+        return sauves;*/
 
     }
 
@@ -89,7 +95,7 @@ public class ControleurDonnees
      * Nouvelle méthode permettant de sauvegarder les ressources et les notions
      * (Deux tables séparées)
      */
-    private void sauvegarderRessource ( ) {
+    private void sauvegarderRessources () {
 
         String sRet = "";
 
@@ -100,10 +106,15 @@ public class ControleurDonnees
             for ( int i = 0; i < this.ctrl.getNbRessource(); i++) {
                 
                 Ressource rsc = this.ctrl.getRessource(i);
+
+                String  code    = (rsc.getCode() != null)        ? rsc.getCode().replaceAll(",", "|") : "";
+                String  nom     = (rsc.getNomSansCode() != null) ? rsc.getNomSansCode().replaceAll(",", "|") : "";
                 
-                sRet += rsc.getUID() + "," + rsc.getCode() + "," + rsc.getNom();
+                sRet += rsc.getUID() + "," + code + "," + nom;
                 
-                if (i != this.ctrl.getNbRessource()) sRet += "\n";
+                if (i < this.ctrl.getNbRessource() -1) sRet += "\n";
+
+                this.sauvegarderNotions(rsc);
             }
 
             pw.println(sRet);
@@ -112,6 +123,101 @@ public class ControleurDonnees
 
         } catch (Exception e) {
             System.out.println("Erreur sauvegarde fichier de données Ressource : " + e.getMessage());
+        }
+
+    }
+
+    /**
+     * Permets de sauvegarder les notions dans la base de données
+     * Les notions sont associés à la ressource par son UID (De la ressource)
+     * @param r Ressource parent
+     */
+    private void sauvegarderNotions ( Ressource r ) {
+
+        if (r.getNbNotion() == 0) return;
+
+        String  lienFichier = "src/data/DonneesNotions.csv";
+        String  sRet        = "";
+        boolean modifie     = false;
+
+        try {
+
+            if (!Files.exists(Paths.get("src", "data", "DonneesNotions.csv")))
+                Files.createFile(Paths.get("src", "data", "DonneesNotions.csv"));
+
+            Scanner sc = new Scanner(new FileInputStream(lienFichier), StandardCharsets.UTF_8);
+
+            /*  ----------------------------------  */
+            /*	     Récupération des données       */
+            /*  ----------------------------------  */
+
+            while (sc.hasNextLine()) {
+                
+                System.out.println("NOUVELLE LIGNE");
+
+                String ligne = sc.nextLine();
+
+                Scanner scLigne = new Scanner(ligne).useDelimiter(",");
+
+                String  uid = scLigne.next();
+
+                if (uid.equals(r.getUID())) {
+
+                    sRet += r.getUID() + ",";
+
+                    for ( int i = 0; i < r.getNbNotion(); i++) {
+
+                        Notion not = r.getNotion(i);
+
+                        sRet += not.getNom().replaceAll(",", "|") + ((i<r.getNbNotion()-1) ? "," : "");
+
+                    }
+
+                    sRet += "\n";
+
+                    modifie = true;
+
+                } else {
+                    sRet += ligne + "\n";
+                }
+
+            }
+
+            if (!modifie) {
+
+                System.out.println("o");
+
+                sRet += r.getUID() + ",";
+
+                for ( int i = 0; i < r.getNbNotion(); i++) {
+
+                    Notion not = r.getNotion(i);
+
+                    sRet += not.getNom().replaceAll(",", "|") + ((i<r.getNbNotion()-1) ? "," : "");
+
+                }
+
+                sRet += "\n";
+
+            }
+
+            System.out.println(sRet);
+
+            /*  ----------------------------------  */
+            /*	      Sauvegarde des données        */
+            /*  ----------------------------------  */
+
+            PrintWriter pw = new PrintWriter(new FileOutputStream(lienFichier));
+
+            pw.print(sRet);
+
+            pw.close();
+
+
+        }
+        catch (Exception e) {
+            System.out.println("Erreur fichier de sauvegarde des données notions : " + e.getMessage());
+
         }
 
     }
@@ -245,7 +351,6 @@ public class ControleurDonnees
                 }
 
 
-
             } else if (q.getTypeQuestion() == TypeQuestion.ASSOCIATION) {
 
                 AssociationReponse reponse = (AssociationReponse) q.getReponse();
@@ -323,13 +428,13 @@ public class ControleurDonnees
     }
 
     /**
-     * Chargement des données paramètres, Ressource et Notion-
+     * Chargement des données paramètres, Ressource et Notion
      */
     private void chargerDonneesParametres() {
 
         try {
 
-            Scanner sc = new Scanner(new FileInputStream("src/data/DonneesParam.csv"));
+            Scanner sc = new Scanner(new FileInputStream("src/data/DonneesRessource.csv"), StandardCharsets.UTF_8);
 
             while (sc.hasNextLine()) {
 
@@ -337,13 +442,15 @@ public class ControleurDonnees
 
                 Scanner scLigne = new Scanner(ligne).useDelimiter(",");
 
-                String nomRessource = scLigne.next();
+                String  uidRessource    = scLigne.next();
+                String  codeRessource   = scLigne.next().replaceAll("[|]", ",");
+                String  nomRessource    = scLigne.next().replaceAll("[|]", ",");
 
-                Ressource rsc = new Ressource(nomRessource.replaceAll("[|]", ","));
+                Ressource rsc = new Ressource(nomRessource, codeRessource, uidRessource);
+                
+                System.out.println(rsc.getCode());
 
-                while (scLigne.hasNext())
-                    rsc.ajouterNotion(new Notion(scLigne.next().replaceAll("[|]", ","), rsc));
-
+                this.chargerNotionsRessource(rsc);
 
                 this.ctrl.ajouterRessource(rsc);
 
@@ -355,6 +462,44 @@ public class ControleurDonnees
             System.out.println("Erreur lors de l'ouverture du fichier des paramètres : " + e.getMessage());
 
         }
+
+    }
+
+    /**
+     * Initialise les nouvelles notions dans la ressource parent
+     * @param rsc Ressource parent
+     */
+    private void chargerNotionsRessource (Ressource rsc) {
+
+        try {
+
+            Scanner sc = new Scanner(new FileInputStream("src/data/DonneesNotions.csv"), StandardCharsets.UTF_8);
+
+            while (sc.hasNextLine()) {
+
+                String ligne = sc.nextLine();
+
+                Scanner scLigne = new Scanner(ligne).useDelimiter(",");
+
+                if (scLigne.hasNext() && scLigne.next().equals(rsc.getUID())) {
+
+                    while (scLigne.hasNext()) {
+
+                        String nomNotion = scLigne.next().replaceAll("[|]", ",");
+
+                        Notion not = new Notion(nomNotion, rsc);
+
+                        rsc.ajouterNotion(not);
+
+                    }
+
+                }
+
+            }
+        } catch (Exception e) {
+            System.out.println("Erreur lecture fichier notions (Récupération) : " + e.getMessage());
+        }
+
 
     }
 

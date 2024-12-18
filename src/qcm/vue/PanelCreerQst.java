@@ -4,20 +4,20 @@ import qcm.metier.*;
 import qcm.Controleur;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
-public class PanelCreerQst extends JPanel implements ActionListener
+public class PanelCreerQst extends JPanel implements ActionListener//, DocumentListener
 {
     private FrameCreerQst           frameParent;
     private Controleur              ctrl;
 
     private JTextField              txtNbPoints;
     private JTextField              txtTempsRep;
-    
-    private JCheckBox               cbUnique;
 
     private JComboBox<String>       cmbRessources;
     private JComboBox<String>       cmbNotions;
@@ -37,9 +37,8 @@ public class PanelCreerQst extends JPanel implements ActionListener
         this.ctrl        = ctrl;
 
         // Initialisation des composants
-        this.txtNbPoints = new JTextField("1.0", 5); // par défaut "1.0" pour le nombre de points
-        this.txtTempsRep = new JTextField("00:30", 5); // par défaut "00:30" pour le temps
-
+        this.txtNbPoints           = new JTextField("1.0", 5); // par défaut "1.0" pour le nombre de points
+        this.txtTempsRep           = new JTextField("00:30", 5); // par défaut "00:30" pour le temps
         this.ressourceLaPlusLongue = "";
 
         this.cmbRessources = new JComboBox<>();
@@ -78,7 +77,7 @@ public class PanelCreerQst extends JPanel implements ActionListener
 
             RoundButton btn = new RoundButton(diff.getTexte(), diff.getCouleur());
             btn.setBackground(diff.getCouleur());
-            btn.setPreferredSize(new Dimension(40, 40));
+            btn.setPreferredSize(new Dimension(45, 45));
             btn.setFont(new Font("Arial", Font.BOLD, 8));
             btn.setForeground(Color.WHITE);
             btn.setHorizontalAlignment(SwingConstants.CENTER);
@@ -86,28 +85,44 @@ public class PanelCreerQst extends JPanel implements ActionListener
             this.lstBtnDiff.add(btn);
         }
 
-        this.cbUnique = new JCheckBox("Choix multiple");
-        this.cbUnique.setVisible(false);
-
         this.pnlBoutons = new JPanel();
         this.pnlBoutons.setLayout(new GridLayout(1,4));
 
         this.btnValider = new JButton("Valider");
 
+
         // Configurer le layout
         this.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5); // Espacement entre les composants
-        gbc.fill = GridBagConstraints.HORIZONTAL; // Pour que les composants prennent toute la largeur de leur cellule
+        gbc.fill   = GridBagConstraints.HORIZONTAL; // Pour que les composants prennent toute la largeur de leur cellule
 
-        // Ligne 1 : Label et champs texte pour nombre de points et temps de réponse
+
+        // Ligne 1 :
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        this.add(new JLabel("Ressource :"), gbc);
+
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        this.add(this.cmbRessources, gbc);
+
+        gbc.gridx = 2;
+        gbc.gridy = 0;
+        this.add(new JLabel("Nombre de points :"), gbc);
+
+        gbc.gridx = 3;
+        gbc.gridy = 0;
+        this.add(this.txtNbPoints, gbc);
+
+        // Ligne 2 :
         gbc.gridx = 0;
         gbc.gridy = 1;
-        this.add(new JLabel("Nombre de points :"), gbc);
+        this.add(new JLabel("Notion :"), gbc);
 
         gbc.gridx = 1;
         gbc.gridy = 1;
-        this.add(txtNbPoints, gbc);
+        this.add(this.cmbNotions, gbc);
 
         gbc.gridx = 2;
         gbc.gridy = 1;
@@ -115,118 +130,88 @@ public class PanelCreerQst extends JPanel implements ActionListener
 
         gbc.gridx = 3;
         gbc.gridy = 1;
-        this.add(txtTempsRep, gbc);
+        this.add(this.txtTempsRep, gbc);
 
-        // Ligne 2 : Label et JComboBox pour Ressource
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        this.add(new JLabel("Ressource :"), gbc);
-
-        gbc.gridx = 1;
-        gbc.gridy = 0;
-        this.add(cmbRessources, gbc);
-
-        // Ligne 3 : Label et JComboBox pour Notion
+        // Ligne 3
         gbc.gridx = 2;
-        gbc.gridy = 0;
-        this.add(new JLabel("Notion :"), gbc);
-
-        gbc.gridx = 3;
-        gbc.gridy = 0;
-        this.add(cmbNotions, gbc);
-
-        // Ligne 4 : Label et boutons de niveaux
-        gbc.gridx = 0;
         gbc.gridy = 2;
         this.add(new JLabel("Difficulté :"), gbc);
 
-        for(JButton btn : lstBtnDiff)
+        for(JButton btn : this.lstBtnDiff)
             this.pnlBoutons.add(btn);
-
-        gbc.gridx = 1;
-        gbc.gridy = 2;
-        this.add(this.pnlBoutons, gbc);
-
-        gbc.gridx = 2;
-        gbc.gridy = 2;
-        this.add(new JLabel("Type de questions : "), gbc);
 
         gbc.gridx = 3;
         gbc.gridy = 2;
+        this.add(this.pnlBoutons, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        this.add(new JLabel("Type de questions : "), gbc);
+
+        gbc.gridx = 1;
+        gbc.gridy = 2;
         this.add(this.cmbTypeQst, gbc);
 
-        //Ligne 5 : Bouton Valider
-        gbc.gridx = 0;
+        //Ligne 4
+        gbc.gridx = 3;
         gbc.gridy = 3;
         this.add(this.btnValider, gbc);
 
-        gbc.gridx = 1;
-        gbc.gridy = 3;
-        this.add(this.cbUnique, gbc);
 
         this.cmbRessources.addActionListener(this);
         this.cmbNotions   .addActionListener(this);
         this.cmbTypeQst   .addActionListener(this);
 
-        for(RoundButton btn : lstBtnDiff)
+        for(RoundButton btn : this.lstBtnDiff)
             btn.addActionListener(this);
 
         this.btnValider.addActionListener(this);
-        this.cbUnique.addActionListener(this);
         verifierTemps();
+
+        //this.txtTempsRep.getDocument().addDocumentListener(this);
     }
 
     public void actionPerformed(ActionEvent e)
     {
-        String typeQ = (String) this.cmbTypeQst.getSelectedItem();
-
-        if("QCM".equals(typeQ)){
-            this.cbUnique.setVisible(true);
-        } else{
-            this.cbUnique.setVisible(false);
-        }
 
         revalidate();
         repaint();
 
-        if (e.getSource() == this.cmbRessources)
-        {
+        if (e.getSource() == this.cmbRessources){
 
-            if (this.cmbRessources.getSelectedIndex() != 0)
-            {
-                this.cmbNotions.removeAllItems();
+            this.cmbNotions.removeAllItems();
+
+            if (this.cmbRessources.getSelectedIndex() != 0){
 
                 Ressource rsc = this.ctrl.getRessource((String) this.cmbRessources.getSelectedItem());
 
                 if (rsc == null) return;
 
-                this.cmbNotions.addItem("-- Choisir un type de question --");
+                this.cmbNotions.addItem("-- Choisir une notion --");
 
                 for (Notion n : rsc.getAlNotion())
                     this.cmbNotions.addItem(n.getNomCourt());
 
                 this.cmbNotions.setEnabled(true);
             }
-
+            else {
+                this.cmbNotions.addItem("-- Choisir une notion --");
+                this.cmbNotions.setEnabled(false);
+            }
         }
 
-        if (e.getSource() instanceof RoundButton)
-        {
+        if (e.getSource() instanceof RoundButton){
             RoundButton btn = (RoundButton) e.getSource();
 
-            // On désactive tous les autres boutons
             for (RoundButton autreBtn : this.lstBtnDiff) {
                 autreBtn.setBackground(Color.LIGHT_GRAY);
                 autreBtn.setSelected(false);
             }
 
-            // On active maintenant le bouton cliqué
             btn.setBackground(btn.getCouleurBase());
             btn.setSelected(true);
-
         }
 
-        // Vérification et envoie des données
         if (e.getSource() == this.btnValider) {
 
             try {
@@ -235,7 +220,6 @@ public class PanelCreerQst extends JPanel implements ActionListener
                 String diff             = "";
                 String ressource        = (String) this.cmbRessources.getSelectedItem();
                 String notion           = (String) this.cmbNotions.getSelectedItem();
-
 
                 for (RoundButton btn : this.lstBtnDiff)
                     if (btn.isSelected()) diff = btn.getTexte();
@@ -255,43 +239,10 @@ public class PanelCreerQst extends JPanel implements ActionListener
                     return;
                 }
 
-                /*
-                if (!tempsReponse.contains(":")) {
-                    this.afficherMessageErreur("Veuillez indiquer un temps de réponse valide (min:sec)");
-                    return;
-                }
-                else {
-                    String [] tabTempsReponse = tempsReponse.split(":");
-                    int       minute          = -1;
-                    int       seconde         = -1;
-
-                    try {
-                        minute  = Integer.parseInt(tabTempsReponse[0]);
-                        seconde = Integer.parseInt(tabTempsReponse[1]);
-                    }
-                    catch (Exception exception) {
-                        exception.getMessage();
-                        this.afficherMessageErreur("Veuillez indiquer un temps de réponse valide (min:sec)");
-                        return;
-                    }
-
-                    if ( minute == -1 || tabTempsReponse[0].length() > 2 || minute < 0 || minute > 59 ) {
-                        this.afficherMessageErreur("Le temps en minute doit être entre 0 et 59");
-                        return;
-                    }
-                    else if ( seconde == -1 || tabTempsReponse[1].length() > 2 || seconde <= 0 || seconde > 59 ) {
-                        this.afficherMessageErreur("Le temps en seconde doit être entre 1 et 59");
-                        return;
-                    }
-                    System.out.println(tabTempsReponse[0].length());
-                }*/
-
-
                 if (diff.isEmpty()) {
                     this.afficherMessageErreur("Veuillez sélectionner une difficulté pour la question");
                     return;
                 }
-
 
                 if (this.cmbTypeQst.getSelectedIndex() == 0) {
                     this.afficherMessageErreur("Veuillez sélectionner un type de question");
@@ -329,7 +280,6 @@ public class PanelCreerQst extends JPanel implements ActionListener
                 new FrameInfosQuestion(this.ctrl, data);
                 this.frameParent.fermerFenetre();
 
-
             } catch (NumberFormatException ne) {
                 this.afficherMessageErreur("Veuillez préciser un nombre de points valide !");
                 System.out.println("Erreur format points : " + ne.getMessage());
@@ -338,9 +288,7 @@ public class PanelCreerQst extends JPanel implements ActionListener
                 ex.printStackTrace();
                 System.out.println("Autre erreur : " +ex.getMessage());
             }
-
         }
-
     }
 
     /**
@@ -373,6 +321,26 @@ public class PanelCreerQst extends JPanel implements ActionListener
 
         return ((minute > 10) ? "" + minute : "0" + minute) + ":" + ((seconde > 10) ? "" + seconde : "0" + seconde);
     }
+
+    /*
+    public void insertUpdate(DocumentEvent e) {
+        verifierEtMettreAJourTemps();
+    }
+
+    public void removeUpdate(DocumentEvent e) {
+        verifierEtMettreAJourTemps();
+    }
+
+    public void changedUpdate(DocumentEvent e) {
+        verifierEtMettreAJourTemps();
+    }
+
+    private void verifierEtMettreAJourTemps() {
+        String nouveauTemps = verifierTemps();
+        if (!nouveauTemps.isEmpty() && !nouveauTemps.equals(this.txtTempsRep.getText())) {
+            this.txtTempsRep.setText(nouveauTemps);
+        }
+    }*/
 }
 
 class RoundButton extends JButton

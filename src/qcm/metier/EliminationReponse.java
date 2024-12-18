@@ -21,6 +21,7 @@ public class EliminationReponse implements Reponse {
 	public void ajouterReponseItem (EliminationReponseItem e) {
 		this.alReponses.add(e);
 	}
+	
 
 	/**
 	 * Récupérer le nombre d'item présent dans la liste

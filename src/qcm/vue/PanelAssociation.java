@@ -300,8 +300,9 @@ public class PanelAssociation extends JPanel implements ActionListener
                 this.lstTxtDefinitions.get(i).setText(ai.getTexte());
                 this.lstTxtReponses.get(i).setText(ai.getReponse().getTexte());
             }
-
         }
+
+        this.txtInfoSupp.setText(q.getReponse().getTexteExplication());
         majIHM();
     }
 }

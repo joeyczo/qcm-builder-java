@@ -25,14 +25,16 @@ public class PanelParametre extends JPanel implements ActionListener
     public PanelParametre(FrameParametres parent, Controleur ctrl)
     {
         this.frameParent = parent;
-        this.ctrl        =   ctrl;
+        this.ctrl        = ctrl;
 
         this.setLayout ( new FlowLayout() );
 
-        String[] tabRessource = new String[this.ctrl.getNbRessource()];
+        String[] tabRessource = new String[this.ctrl.getNbRessource()+1];
 
-        for (int i = 0; i < this.ctrl.getNbRessource(); i++)
-            tabRessource[i] = this.ctrl.getRessource(i).getNomCourt();
+        tabRessource[0] = "-- Choisir une ressource --";
+
+        for (int i = 1; i <= this.ctrl.getNbRessource(); i++)
+            tabRessource[i] = this.ctrl.getRessource(i-1).getNomCourt();
 
         JScrollPane spGrilleDonnees;
 
@@ -47,10 +49,11 @@ public class PanelParametre extends JPanel implements ActionListener
 
         spGrilleDonnees = new JScrollPane( this.tblGrilleDonnees );
 
+        this.btnAjouterNotion.setEnabled(false);
 
+        this.add(this.ddlstRessource);
         this.add(this.btnAjouterRessource);
         this.add(this.btnAjouterNotion);
-        this.add(this.ddlstRessource);
         this.add(spGrilleDonnees);
 
         this.btnAjouterNotion   .addActionListener(this);
@@ -111,17 +114,15 @@ public class PanelParametre extends JPanel implements ActionListener
                 return;
             }
 
-
-            this.ddlstRessource.addItem(ressource.getCode() + " - " + ressource.getNomCourt());
-
-            this.ctrl.ajouterRessource(ressource);
+            this.ctrl          .ajouterRessource(ressource);
+            this.ddlstRessource.addItem(ressource.getNom());
 
             System.out.println("Ressource ajoutée : " + nomRessource);
         }
 
         if (e.getSource() == this.btnAjouterNotion)
         {
-            if (this.ctrl.getNbRessource() != 0)
+            if (this.ctrl.getNbRessource() != 0 && this.ddlstRessource.getSelectedIndex() != 0)
             {
                 String nomNotion = JOptionPane.showInputDialog(this, "Entrez le nom de la notion :", "Ajouter Notion", JOptionPane.PLAIN_MESSAGE);
 
@@ -155,6 +156,7 @@ public class PanelParametre extends JPanel implements ActionListener
                 this.tblGrilleDonnees.setModel(new GrilleDonneesNotion(this.ctrl, ressource));
 
             }
+
         }
 
         if (e.getSource() == this.ddlstRessource) {
@@ -162,6 +164,11 @@ public class PanelParametre extends JPanel implements ActionListener
             Ressource ressource = this.ctrl.getRessource((String) this.ddlstRessource.getSelectedItem());
 
             this.tblGrilleDonnees.setModel(new GrilleDonneesNotion(this.ctrl, ressource));
+
+            if ( this.ddlstRessource.getSelectedIndex() == 0 )
+                this.btnAjouterNotion.setEnabled(false);
+            else
+                this.btnAjouterNotion.setEnabled(true);
 
         }
 

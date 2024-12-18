@@ -84,6 +84,8 @@ public class PanelElim extends JPanel implements ActionListener, DocumentListene
         for ( int cpt = 0; cpt < this.lstBtnSupp.size(); cpt ++)
             this.lstBtnSupp.get(cpt).addActionListener(this);
 
+        if (this.data.qst() != null)
+            this.chargerDonnees();
     }
 
     public void actionPerformed(ActionEvent e)
@@ -176,7 +178,7 @@ public class PanelElim extends JPanel implements ActionListener, DocumentListene
             }
 
             List<Integer> ordreSuppressionMauvaiseRep = new ArrayList<Integer>();
-            Double        pointSoustrait              = 0.0;
+            Double        pointSoustrait;
             Double        sommePointSoustrait         = 0.0;
 
             for (int cpt = 0; cpt < this.lstOrdrePrioQst.size(); cpt ++)
@@ -389,9 +391,10 @@ public class PanelElim extends JPanel implements ActionListener, DocumentListene
 
             if (!this.lstOrdrePrioQst.get(cpt).getText().isEmpty() || !this.lstPointEnMoins.get(cpt).getText().isEmpty() )
             {
-                this.lstBtnValideReponse.get(cpt).setSelected(false);
+                if ( this.lstBtnValideReponse.get(cpt).isSelected())
+                    this.btg.clearSelection();
+
                 this.lstBtnValideReponse.get(cpt).setEnabled(false);
-                System.out.println(this.lstBtnValideReponse.get(cpt).isSelected());
             }
             else
                 this.lstBtnValideReponse.get(cpt).setEnabled(true);
@@ -408,7 +411,9 @@ public class PanelElim extends JPanel implements ActionListener, DocumentListene
 
             if (!this.lstOrdrePrioQst.get(cpt).getText().isEmpty() || !this.lstPointEnMoins.get(cpt).getText().isEmpty() )
             {
-                this.lstBtnValideReponse.get(cpt).setSelected(false);
+                if ( this.lstBtnValideReponse.get(cpt).isSelected())
+                    this.btg.clearSelection();
+
                 this.lstBtnValideReponse.get(cpt).setEnabled(false);
             }
             else
@@ -424,27 +429,20 @@ public class PanelElim extends JPanel implements ActionListener, DocumentListene
 
     }
 
-    /*
     private void chargerDonnees()
     {
         Question q = this.data.qst();
-        this.txtQuestion.setText(q.getTexteQuestion());
-        AssociationReponse associationReponse = (AssociationReponse) q.getReponse();
+        this.txtQst.setText(q.getTexteQuestion());
+        EliminationReponse eliminationReponse = (EliminationReponse) q.getReponse();
 
-        for(int i = 0 ; i < associationReponse.getNbReponses(); i++) {
-            AssociationReponse a = (AssociationReponse) q.getReponse();
-            AssociationReponseItem ai = a.getReponse(i);
-
-            if(i >= 2){
-                this.addDefinition(ai.getTexte());
-                this.addReponse(ai.getReponse().getTexte());
-            } else {
-                this.lstTxtDefinitions.get(i).setText(ai.getTexte());
-                this.lstTxtReponses.get(i).setText(ai.getReponse().getTexte());
-            }
-
+        for(int i = 0 ; i < eliminationReponse.getNbReponse(); i++) {
+            EliminationReponse e = (EliminationReponse) q.getReponse();
+            EliminationReponseItem ei = e.getReponseItem(i);
+            ei.getOrdreSuppression();
+            ei.getPtsSuppression();
         }
+
+        this.txtInfoSupp.setText(q.getReponse().getTexteExplication());
         majIHM();
     }
-    */
 }

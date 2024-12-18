@@ -8,6 +8,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableCellRenderer;
 
 public class PanelGenererEval extends JPanel implements ActionListener
 {
@@ -34,15 +36,15 @@ public class PanelGenererEval extends JPanel implements ActionListener
 
         Ressource premiereRessource = (this.ctrl.getNbRessource() == 0) ? null : this.ctrl.getRessource(0);
 
-        this.panelHaut = new JPanel();
-        this.ddlstRessource    = new JComboBox<>(tabRessource);
+        this.panelHaut        = new JPanel();
+        this.ddlstRessource   = new JComboBox<>(tabRessource);
         this.tblGrilleDonnees = new JTable ( new GrilleDonneesEval(this.ctrl, premiereRessource) );
         this.tblGrilleDonnees.setFillsViewportHeight(true);
 
         this.btnSubmit = new JButton("Généré une nouvelle évaluation");
 
-        rbNon = new JRadioButton("non");
-        rbOui = new JRadioButton("oui");
+        rbNon             = new JRadioButton("non");
+        rbOui             = new JRadioButton("oui");
         ButtonGroup group = new ButtonGroup();
 
         group.add(rbOui);
@@ -55,14 +57,16 @@ public class PanelGenererEval extends JPanel implements ActionListener
         this.panelHaut.add(rbOui);
         this.panelHaut.add(rbNon);
 
-        this.add(this.panelHaut,        BorderLayout.NORTH );
+        this.tblGrilleDonnees.setDefaultRenderer(Object.class, new ColorCellRenderer());
+
+        this.add(this.panelHaut,  BorderLayout.NORTH );
         this.add(spGrilleDonnees, BorderLayout.CENTER);
         this.add(this.btnSubmit,  BorderLayout.SOUTH );
 
-        this.rbOui.addActionListener(this);
-        this.rbNon.addActionListener(this);
+        this.rbOui         .addActionListener(this);
+        this.rbNon         .addActionListener(this);
         this.ddlstRessource.addActionListener(this);
-        this.btnSubmit.addActionListener(this);
+        this.btnSubmit     .addActionListener(this);
     }
 
     public void actionPerformed(ActionEvent e) {
@@ -118,8 +122,6 @@ public class PanelGenererEval extends JPanel implements ActionListener
                 this.ctrl.generationEvaluation(selectedFile.getPath());
 
             }
-
-
         }
 
     }
@@ -134,4 +136,25 @@ public class PanelGenererEval extends JPanel implements ActionListener
         JOptionPane.showMessageDialog(this, message, "Erreur lors de la validation des données", JOptionPane.ERROR_MESSAGE);
 
     }
+
+    /**
+     * Permet de mettre la dernière ligne en Gris pour différencier les valeurs saisie par l'utilisateur des comptes
+     */
+    private class ColorCellRenderer extends DefaultTableCellRenderer
+    {
+        public Component getTableCellRendererComponent(JTable table, Object valeur, boolean selection, boolean estDessus, int ligne, int colonne)
+        {
+            Component c = super.getTableCellRendererComponent(table, valeur, selection, estDessus, ligne, colonne);
+
+            // TODO Finir clement
+            if (ligne == table.getEditingRow() - 1)
+            {
+                c.setBackground(Color.LIGHT_GRAY);
+            }
+
+
+            return c;
+        }
+    }
+
 }
