@@ -83,6 +83,7 @@ public class PanelListeQst extends JPanel implements ActionListener, ItemListene
         }*/
 
         if ( e.getSource() == this.edit ){
+
             Ressource ressource = this.ctrl.getRessource((String) this.ddlstRessource.getSelectedItem());
 
             if ( ressource == null )
@@ -110,7 +111,8 @@ public class PanelListeQst extends JPanel implements ActionListener, ItemListene
             DonneesCreationQuestion data = new DonneesCreationQuestion(qst.getNbPoints(), qst.getTempsReponse(), ressource, notion, qst.getDifficulte(), qst.getTypeQuestion(), qst);
 
             System.out.println("Modification ...");
-            new FrameInfosQuestion(this.ctrl, data);
+            this.ctrl.ouvrirCreerQuestion(data);
+            //new FrameInfosQuestion(this.ctrl, data);
             this.frameListQst.fermerFenetre();
 
         }

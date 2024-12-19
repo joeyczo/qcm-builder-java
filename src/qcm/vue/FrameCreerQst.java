@@ -1,23 +1,26 @@
 package qcm.vue;
 
 import qcm.Controleur;
+import qcm.metier.DonneesCreationQuestion;
 
 import javax.swing.*;
 
 public class FrameCreerQst extends JDialog
 {
-    private PanelCreerQst pnlQuestions;
-    private Controleur    ctrl;
+    private PanelCreerQst           pnlQuestions;
+    private Controleur              ctrl;
+    private DonneesCreationQuestion data;
 
-    public FrameCreerQst(JFrame parent, Controleur ctrl)
+    public FrameCreerQst(JFrame parent, Controleur ctrl, DonneesCreationQuestion data)
     {
-        super(parent, "Créer question", true);
+        super(parent, ((data == null) ? "Créer une nouvelle question" : "Modifier une question"), true);
         this.setSize(1000, 300);
         this.setLocationRelativeTo(null);
 
-        this.ctrl = ctrl;
+        this.ctrl   = ctrl;
+        this.data   = data;
 
-        this.pnlQuestions = new PanelCreerQst(this, ctrl);
+        this.pnlQuestions = new PanelCreerQst(this, ctrl, data);
 
         this.add(this.pnlQuestions);
 

@@ -259,20 +259,36 @@ public class PanelElim extends JPanel implements ActionListener, DocumentListene
             if ( !this.txtInfoSupp.getText().isEmpty() && !this.txtInfoSupp.getText().trim().isEmpty())
                 eliminationReponse.ajouterTexteExplication(this.txtInfoSupp.getText().trim().replaceAll("\n", "\\\\n").replaceAll("\t", "\\\\t"));
 
-            // On crée l'objet question et on l'ajoute à la base de données
-
             String txtQuestion = this.txtQst.getText().trim().replaceAll("\n", "\\\\n").replaceAll("\t", "\\\\t");
 
-            Question question = new Question(txtQuestion, this.data.tempsReponse(), this.data.nbPoints(), this.data.type(), eliminationReponse, this.data.diff(), this.data.notion());
+            // On ajoute la nouvelle question dans la base de données
+            if (this.data.qst() == null) {
 
-            if (!this.ctrl.sauvegarderQuestion(question)) {
-                this.afficherMessageErreur("Impossible de sauvegarder la réponse dans la base de données");
-                return;
+                Question question = new Question(txtQuestion, this.data.tempsReponse(), this.data.nbPoints(), this.data.type(), eliminationReponse, this.data.diff(), this.data.notion());
+
+                if (!this.ctrl.sauvegarderQuestion(question)) {
+                    this.afficherMessageErreur("Impossible de sauvegarder la réponse dans la base de données");
+                    return;
+                }
+
+                this.data.notion().ajouterQuestion(question);
+
+                this.afficherMessageValide("La question a bien été sauvegardée dans la base de données !");
+
+            } else { // On modifie la question dans la base de données
+
+                Question question = new Question(this.data.qst().getUID(), txtQuestion, this.data.tempsReponse(), this.data.nbPoints(), this.data.type(), eliminationReponse, this.data.diff(), this.data.notion());
+
+                if (!this.ctrl.modifierQuestion(question)) {
+                    this.afficherMessageErreur("Impossible de modifier la réponse dans la base de données");
+                    return;
+                }
+
+                this.data.notion().modifierQuestion(question);
+
+                this.afficherMessageValide("La question a bien été modifiée dans la base de données !");
+
             }
-
-            this.data.notion().ajouterQuestion(question);
-
-            this.afficherMessageValide("La question a bien été sauvegardée dans la base de données !");
 
             this.frameParent.fermerFenetre();
 
@@ -438,8 +454,27 @@ public class PanelElim extends JPanel implements ActionListener, DocumentListene
         for(int i = 0 ; i < eliminationReponse.getNbReponse(); i++) {
             EliminationReponse e = (EliminationReponse) q.getReponse();
             EliminationReponseItem ei = e.getReponseItem(i);
-            ei.getOrdreSuppression();
-            ei.getPtsSuppression();
+
+            if(i >= 2){
+                this.add(new JTextArea(ei.getTexte()));
+            } else {
+                this.lstTxtReponses.get(i).setText(ei.getTexte());
+
+                String ordrePrioText = this.lstOrdrePrioQst.get(i).getText();
+                String pointEnMoinsText = this.lstPointEnMoins.get(i).getText();
+
+                if (ordrePrioText != null && !ordrePrioText.isEmpty() && pointEnMoinsText != null && !pointEnMoinsText.isEmpty()) {
+                    int ordrePrio = Integer.parseInt(ordrePrioText);
+                    float pointsEnMoins = Float.parseFloat(pointEnMoinsText);
+
+                    if(ordrePrio != 0 && pointsEnMoins != 0.0f){
+                        this.lstOrdrePrioQst.get(i).setText("" + ei.getOrdreSuppression());
+                        this.lstPointEnMoins.get(i).setText("" + ei.getPtsSuppression());
+                    }
+                } else {
+                    System.out.println("Les champs sont vides ou non valides.");
+                }
+            }
         }
 
         this.txtInfoSupp.setText(q.getReponse().getTexteExplication());

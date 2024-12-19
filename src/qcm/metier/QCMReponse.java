@@ -12,8 +12,12 @@ public class QCMReponse implements Reponse
 		this.alReponses		= new ArrayList<QCMReponseItem>();
 		this.txtExplication	= null;
 	}
-	
-	public List<QCMReponseItem> getReponses(){
+
+	/**
+	 * Retourner l'ensemble de la liste des réponses
+	 * @return La liste complète des items des réponses
+	 */
+	public List<QCMReponseItem> getReponsesItem(){
 		return this.alReponses;
 	}
 

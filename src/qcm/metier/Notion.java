@@ -99,18 +99,30 @@ public class Notion
     }
 
     /**
-     * Modifier une question à un indice i
-     * @param i Indice de la question à modifier
+     * Modifier une question. L'index sera le même dans la liste
      * @param q Nouvelles données pour la question
      * @return True si la question a été modifié, sinon false
      */
-    public boolean modifierQuestion ( int i, Question q ) {
+    public boolean modifierQuestion ( Question q ) {
 
-        if (i < 0 || i >= this.getNbQuestions()) 	return false;
-        if (this.alQuestions.get(i) == null)		return false;
+        int indice = -1;
 
-        this.alQuestions.remove(i);
-        this.alQuestions.add(i , q);
+        for (int i = 0; i < this.alQuestions.size(); i++) {
+
+            Question qst = this.alQuestions.get(i);
+
+            if (qst.getUID().equals(q.getUID())) {
+                indice = i;
+                break;
+            }
+
+        }
+
+        if (indice == -1)                               return false;
+        if (this.alQuestions.get(indice) == null)		return false;
+
+        this.alQuestions.remove(indice);
+        this.alQuestions.add(indice , q);
 
         return true;
 

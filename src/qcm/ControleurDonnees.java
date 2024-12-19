@@ -3,15 +3,11 @@ package qcm;
 import qcm.metier.*;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.FileOutputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
 public class ControleurDonnees
@@ -152,8 +148,6 @@ public class ControleurDonnees
             /*  ----------------------------------  */
 
             while (sc.hasNextLine()) {
-                
-                System.out.println("NOUVELLE LIGNE");
 
                 String ligne = sc.nextLine();
 
@@ -185,8 +179,6 @@ public class ControleurDonnees
 
             if (!modifie) {
 
-                System.out.println("o");
-
                 sRet += r.getUID() + ",";
 
                 for ( int i = 0; i < r.getNbNotion(); i++) {
@@ -200,8 +192,6 @@ public class ControleurDonnees
                 sRet += "\n";
 
             }
-
-            System.out.println(sRet);
 
             /*  ----------------------------------  */
             /*	      Sauvegarde des données        */
@@ -315,6 +305,25 @@ public class ControleurDonnees
 
             pw.close();
 
+            return this.sauvegarderDonneesQuestion(q);
+
+        } catch (Exception e) {
+            System.out.println("Erreur de fichier : " + e.getMessage());
+            return false;
+        }
+
+    }
+
+    /**
+     * Sauvegarder les données de la question dans le fichier TXT
+     * Contient également les réponses et données des réponses
+     * @param q L'objet question afin de récupérer les données
+     * @return True si le fichier a été sauvegardé, sinon false
+     */
+    private boolean sauvegarderDonneesQuestion ( Question q ) {
+
+        try {
+
             /*  -----------------------------------------  */
             /*	  Écriture de la question au format TXT    */
             /*  -----------------------------------------  */
@@ -340,7 +349,7 @@ public class ControleurDonnees
 
                 QCMReponse reponse = (QCMReponse) q.getReponse();
 
-                for (QCMReponseItem item : reponse.getReponses()) {
+                for (QCMReponseItem item : reponse.getReponsesItem()) {
 
                     questionEnTxt += "\n{REPONSEQCM}\n";
 
@@ -393,7 +402,66 @@ public class ControleurDonnees
             return true;
 
         } catch (Exception e) {
-            System.out.println("Erreur de fichier : " + e.getMessage());
+            System.out.println("Erreur");
+            return false;
+        }
+
+    }
+
+    /**
+     * Modifier une question dans la base de données
+     * @param q Question à modifier (L'UID doit correspondre à une question existante)
+     * @return True si elle a pu être modifiée, sinon false
+     */
+    public boolean modifierQuestion ( Question q ) {
+
+        String sRet = "";
+
+        try {
+
+            Scanner sc = new Scanner(new FileInputStream("src/data/app/DonneesQuestions.csv"), StandardCharsets.UTF_8);
+
+            while (sc.hasNextLine()) {
+
+                String ligne = sc.nextLine();
+
+                Scanner scLigne = new Scanner(ligne).useDelimiter(",");
+                
+                if (scLigne.next().equals(q.getUID())) {
+
+                    String nomRessource = q.getNotion().getRessource().getNom().replaceAll(",", "|");
+                    String nomNotion    = q.getNotion().getNom().replaceAll(",", "|");
+
+                    sRet += q.getUID()                  + "," +
+                            q.getDifficulte()           + "," +
+                            q.getTypeQuestion()         + "," +
+                            nomRessource                + "," +
+                            nomNotion                   + "," +
+                            q.getTempsReponse()         + "," +
+                            q.getNbPoints();
+
+                    if (sc.hasNextLine()) sRet += "\n";
+
+                } else {
+
+                    sRet += ligne + "\n";
+
+                }
+
+            }
+
+            PrintWriter pw = new PrintWriter(new FileOutputStream("src/data/app/DonneesQuestions.csv"));
+
+            pw.print(sRet);
+
+            pw.close();
+
+            System.out.println("MODIFICATION QUESTION " + q.getUID());
+
+            return this.sauvegarderDonneesQuestion(q);
+
+        } catch (Exception e) {
+            System.out.println("Erreur modification fichier question : " + e.getMessage());
             return false;
         }
 
@@ -521,8 +589,8 @@ public class ControleurDonnees
                 String  uidQuestion = scLigne.next();
                 String  difficulte  = scLigne.next();
                 String  typeQst     = scLigne.next();
-                String  ressource   = scLigne.next();
-                String  nomNotion   = scLigne.next();
+                String  ressource   = scLigne.next().replaceAll("[|]", ",");
+                String  nomNotion   = scLigne.next().replaceAll("[|]", ",");
                 String  tempsRsp    = scLigne.next();
                 String  ptsRsp      = scLigne.next();
 
@@ -557,7 +625,7 @@ public class ControleurDonnees
 
                 Reponse rsp = this.getReponseFichier(uidQuestion, typeQuestion);
 
-                Question nouvelleQuestion = new Question(txtQuestion, tempsRsp, nbPoints, typeQuestion, rsp, difficulteQuestion, notion);
+                Question nouvelleQuestion = new Question(uidQuestion, txtQuestion, tempsRsp, nbPoints, typeQuestion, rsp, difficulteQuestion, notion);
 
                 notion.ajouterQuestion(nouvelleQuestion);
 
@@ -681,7 +749,7 @@ public class ControleurDonnees
                         Scanner donneesElimination = new Scanner(sc.nextLine()).useDelimiter(",");
 
                         int     ordreSuppression    = Integer.parseInt(donneesElimination.next());
-                        int     ptsSuppression      = Integer.parseInt(donneesElimination.next());
+                        float   ptsSuppression      = Float.parseFloat(donneesElimination.next());
                         boolean reponse             = donneesElimination.next().equals("1");
                         String  txtQuestion         = sc.nextLine().replaceAll("\\\\n", "\n").replaceAll("\\\\t", "\t");
 

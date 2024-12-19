@@ -84,7 +84,7 @@ public class Accueil extends JFrame implements ActionListener
             this.frameParametres = new FrameParametres(this, this.ctrl);
 
         if(e.getSource() == this.btnCreerQuestion)
-            this.frameCreerQuestion = new FrameCreerQst(this, this.ctrl);
+            this.frameCreerQuestion = new FrameCreerQst(this, this.ctrl, null);
 
         if(e.getSource() == this.btnCreerEval)
             this.frameGenererEval = new FrameGenererEval(this, this.ctrl);

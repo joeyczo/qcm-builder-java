@@ -115,10 +115,22 @@ public class Controleur {
         return this.gestionDonnees.getQuestionUID(n, uid);
     }
 
+    public boolean modifierQuestion ( Question q ) {
+        return this.ctrlDonnees.modifierQuestion(q);
+    }
+
 
     /*  --------------------------  */
     /*	  Lancement du programme    */
     /*  --------------------------  */
+
+    /**
+     * Ouvrir la fenêtre de création de question pour la modification avec les données de la question
+     * @param data Données de la question
+     */
+    public void ouvrirCreerQuestion(DonneesCreationQuestion data) {
+        new FrameCreerQst(this.accueil, this, data);
+    }
 
 	public static void main(String[] args) {
 		new Controleur();

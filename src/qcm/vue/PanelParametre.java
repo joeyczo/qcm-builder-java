@@ -38,10 +38,8 @@ public class PanelParametre extends JPanel implements ActionListener
 
         JScrollPane spGrilleDonnees;
 
-        Ressource premiereRessource = (this.ctrl.getNbRessource() == 0) ? null : this.ctrl.getRessource(0);
-
         this.ddlstRessource   = new JComboBox<>(tabRessource);
-        this.tblGrilleDonnees = new JTable ( new GrilleDonneesNotion(this.ctrl, premiereRessource) );
+        this.tblGrilleDonnees = new JTable ( new GrilleDonneesNotion(this.ctrl, null) );
         this.tblGrilleDonnees.setFillsViewportHeight(true);
         
         this.btnAjouterRessource = new JButton("Ajouter une ressource");

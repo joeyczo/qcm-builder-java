@@ -169,9 +169,10 @@ public class PanelQCMMulti extends JPanel implements ActionListener
             if ( !this.txtInfoSupp.getText().isEmpty() && !this.txtInfoSupp.getText().trim().isEmpty())
                 qcmReponse.ajouterTexteExplication(this.txtInfoSupp.getText().trim().replaceAll("\n", "\\\\n").replaceAll("\t", "\\\\t"));
 
-            if ( this.data.qst() == null )
-            {
-                String txtQuestion = this.txtQst.getText().trim().replaceAll("\n", "\\\\n").replaceAll("\t", "\\\\t");
+            String txtQuestion = this.txtQst.getText().trim().replaceAll("\n", "\\\\n").replaceAll("\t", "\\\\t");
+
+            // Ajout de la nouvelle question dans la base de données
+            if ( this.data.qst() == null ) {
 
                 Question nouvelleQst = new Question(txtQuestion, this.data.tempsReponse(), this.data.nbPoints(), this.data.type(), qcmReponse, this.data.diff(), this.data.notion());
 
@@ -184,10 +185,19 @@ public class PanelQCMMulti extends JPanel implements ActionListener
 
                 this.afficherMessageValide("La question a bien été sauvegardée dans la base de données");
 
-                System.out.println("Les questions dans la ressource " + this.data.ressource().getNom() + " pour la notion " + this.data.notion().getNom() + " sont : ");
+            } else { // Modification de la question dans la base de données
 
-                for (int cpt = 0; cpt < this.data.notion().getNbQuestions(); cpt++)
-                    System.out.println(this.data.notion().getQuestion(cpt));
+                Question nouvelleQst = new Question(this.data.qst().getUID(), txtQuestion, this.data.tempsReponse(), this.data.nbPoints(), this.data.type(), qcmReponse, this.data.diff(), this.data.notion());
+
+                if (!this.ctrl.modifierQuestion(nouvelleQst)) {
+                    this.afficherMessageErreur("Erreur lors de la modification de la question dans la base de données");
+                    return;
+                }
+
+                this.data.notion().modifierQuestion(nouvelleQst);
+
+                this.afficherMessageValide("La question a bien été modifiée dans la base de données");
+
             }
 
             this.frameParent.fermerFenetre();

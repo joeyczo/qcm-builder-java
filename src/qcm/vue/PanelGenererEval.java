@@ -57,8 +57,6 @@ public class PanelGenererEval extends JPanel implements ActionListener
         this.panelHaut.add(rbOui);
         this.panelHaut.add(rbNon);
 
-        this.tblGrilleDonnees.setDefaultRenderer(Object.class, new ColorCellRenderer());
-
         this.add(this.panelHaut,  BorderLayout.NORTH );
         this.add(spGrilleDonnees, BorderLayout.CENTER);
         this.add(this.btnSubmit,  BorderLayout.SOUTH );
@@ -126,7 +124,6 @@ public class PanelGenererEval extends JPanel implements ActionListener
 
     }
 
-
     /**
      * Afficher un message d'erreur au client
      * @param message Message à afficher
@@ -137,24 +134,5 @@ public class PanelGenererEval extends JPanel implements ActionListener
 
     }
 
-    /**
-     * Permet de mettre la dernière ligne en Gris pour différencier les valeurs saisie par l'utilisateur des comptes
-     */
-    private class ColorCellRenderer extends DefaultTableCellRenderer
-    {
-        public Component getTableCellRendererComponent(JTable table, Object valeur, boolean selection, boolean estDessus, int ligne, int colonne)
-        {
-            Component c = super.getTableCellRendererComponent(table, valeur, selection, estDessus, ligne, colonne);
-
-            // TODO Finir clement
-            if (ligne == table.getEditingRow() - 1)
-            {
-                c.setBackground(Color.LIGHT_GRAY);
-            }
-
-
-            return c;
-        }
-    }
 
 }

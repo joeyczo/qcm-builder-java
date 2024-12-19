@@ -1,13 +1,14 @@
 package qcm.vue;
 
 import qcm.Controleur;
+import qcm.metier.DonneesCreationQuestion;
 
 import javax.swing.*;
 
 public class FrameGenererEval extends JDialog{
 
-    private PanelGenererEval pnlEval;
-    private Controleur       ctrl;
+    private PanelGenererEval        pnlEval;
+    private Controleur              ctrl;
 
     public FrameGenererEval(JFrame parent, Controleur ctrl) {
 

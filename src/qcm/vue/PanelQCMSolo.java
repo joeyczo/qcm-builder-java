@@ -8,6 +8,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class PanelQCMSolo extends JPanel implements ActionListener
 {
@@ -36,8 +37,14 @@ public class PanelQCMSolo extends JPanel implements ActionListener
         this.lstBtnValideReponse = new ArrayList<JRadioButton>();
         this.lstScrollTexte      = new ArrayList<JScrollPane>();
 
-        this.txtQst            = new JTextArea (5, 1);
-        this.txtInfoSupp       = new JTextArea (10, 10);
+        JTextArea jTextAreaQst = new JTextArea (4, 1);
+        jTextAreaQst.setFont(new Font("Arial", Font.PLAIN, 16));
+
+        JTextArea jTextAreaInfo = new JTextArea (10, 10);
+        jTextAreaInfo.setFont(new Font("Arial", Font.PLAIN, 16));
+
+        this.txtQst            = jTextAreaQst;
+        this.txtInfoSupp       = jTextAreaInfo;
         this.btnAjouter        = new JButton   ();
         this.btnInfoSupp       = new JButton   ();
         this.btnEnregistrer    = new JButton   ("Enregistrer");
@@ -53,8 +60,11 @@ public class PanelQCMSolo extends JPanel implements ActionListener
         if ( data.qst() == null )
             for( int cpt = 0; cpt < 2; cpt ++)
             {
+                JTextArea jTextAreaRep = new JTextArea (3, 1);
+                jTextAreaRep.setFont(new Font("Arial", Font.PLAIN, 16));
+
                 this.lstBtnSupp         .add(new JButton());
-                this.lstTxtReponses     .add(new JTextArea(5, 1));
+                this.lstTxtReponses     .add(jTextAreaRep);
                 this.lstScrollTexte     .add(new JScrollPane(this.lstTxtReponses.getLast(), JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED));
                 JRadioButton radioBouton = new JRadioButton();
                 this.lstBtnValideReponse.add(radioBouton);
@@ -81,8 +91,11 @@ public class PanelQCMSolo extends JPanel implements ActionListener
     {
         if ( e.getSource() == this.btnAjouter )
         {
+            JTextArea jTextAreaRep = new JTextArea (3, 1);
+            jTextAreaRep.setFont(new Font("Arial", Font.PLAIN, 16));
+
             this.lstBtnSupp         .add(new JButton());
-            this.lstTxtReponses     .add(new JTextArea (5, 1));
+            this.lstTxtReponses     .add(jTextAreaRep);
             this.lstScrollTexte     .add(new JScrollPane(this.lstTxtReponses.getLast(), JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED));
             JRadioButton radioBouton = new JRadioButton();
             this.lstBtnValideReponse.add(radioBouton);
@@ -164,10 +177,13 @@ public class PanelQCMSolo extends JPanel implements ActionListener
             if ( !this.txtInfoSupp.getText().isEmpty() && !this.txtInfoSupp.getText().trim().isEmpty())
                 qcmReponse.ajouterTexteExplication(this.txtInfoSupp.getText().trim().replaceAll("\n", "\\\\n").replaceAll("\t", "\\\\t"));
 
+            String txtQuestion = this.txtQst.getText().trim().replaceAll("\n", "\\\\n").replaceAll("\t", "\\\\t");
 
+
+            // Ici, on ajoute la question dans la base de données
             if ( this.data.qst() == null )
             {
-                Question nouvelleQst = new Question(this.txtQst.getText().trim().replaceAll("\n", "\\\\n").replaceAll("\t", "\\\\t"), this.data.tempsReponse(), this.data.nbPoints(), this.data.type(), qcmReponse, this.data.diff(), this.data.notion());
+                Question nouvelleQst = new Question(txtQuestion, this.data.tempsReponse(), this.data.nbPoints(), this.data.type(), qcmReponse, this.data.diff(), this.data.notion());
 
                 if (!this.ctrl.sauvegarderQuestion(nouvelleQst)) {
                     this.afficherMessageErreur("Erreur lors de la sauvegarde de la question dans la base de données");
@@ -175,18 +191,23 @@ public class PanelQCMSolo extends JPanel implements ActionListener
                 }
 
                 this.data.notion().ajouterQuestion(nouvelleQst);
+
+                this.afficherMessageValide("La question a bien été sauvegardée dans la base de données");
+
+            } else { // Ici on modifie la question dans la base de données
+
+                Question nouvelleQst = new Question(this.data.qst().getUID(), txtQuestion, this.data.tempsReponse(), this.data.nbPoints(), this.data.type(), qcmReponse, this.data.diff(), this.data.notion());
+
+                if (!this.ctrl.modifierQuestion(nouvelleQst)) {
+                    this.afficherMessageErreur("Erreur lors de la modification de la question dans la base de données");
+                    return;
+                }
+
+                this.data.notion().modifierQuestion(nouvelleQst);
+
+                this.afficherMessageValide("La question a bien été modifié dans la base de données");
+
             }
-
-            // TODO Enregistrer les modifications de la question (Plus clair)
-
-
-            System.out.println("Les questions dans la ressource " + this.data.ressource().getNom() + " pour la notion " + this.data.notion().getNom() + " sont : ");
-
-            this.afficherMessageValide("La question a bien été sauvegardée dans la base de données");
-
-            for ( int cpt = 0; cpt < this.data.notion().getNbQuestions(); cpt ++)
-                System.out.println(this.data.notion().getQuestion(cpt));
-
 
             this.frameParent.fermerFenetre();
 
@@ -220,7 +241,9 @@ public class PanelQCMSolo extends JPanel implements ActionListener
 
         gbc.gridx = 0;
         gbc.gridy = 0;
-        this.add(new JLabel("Question"), gbc);
+        JLabel labelQst = new JLabel("Question");
+        labelQst.setFont(new Font("Arial", Font.PLAIN, 16));
+        this.add(labelQst, gbc);
 
         gbc.gridy     = 1;
         gbc.gridwidth = 6;
@@ -301,8 +324,11 @@ public class PanelQCMSolo extends JPanel implements ActionListener
 
         for ( int cpt = 0; cpt < qcmReponse.getNbReponse(); cpt ++)
         {
+            JTextArea jTextAreaRep = new JTextArea (3, 1);
+            jTextAreaRep.setFont(new Font("Arial", Font.PLAIN, 16));
+
             this.lstBtnSupp         .add(new JButton());
-            this.lstTxtReponses     .add(new JTextArea (5, 1));
+            this.lstTxtReponses     .add(jTextAreaRep);
             this.lstScrollTexte     .add(new JScrollPane(this.lstTxtReponses.getLast(), JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED));
             JRadioButton radioBouton = new JRadioButton();
             this.lstBtnValideReponse.add(radioBouton);
