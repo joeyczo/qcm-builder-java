@@ -27,4 +27,8 @@ public class FrameGenererEval extends JDialog{
 
     }
 
+    public void fermerFenetre() {
+        this.dispose();
+    }
+
 }

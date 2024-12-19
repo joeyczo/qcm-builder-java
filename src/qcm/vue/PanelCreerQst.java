@@ -179,9 +179,8 @@ public class PanelCreerQst extends JPanel implements ActionListener
 
     public void actionPerformed(ActionEvent e)
     {
-
-        revalidate();
-        repaint();
+        this.revalidate();
+        this.repaint();
 
         if (e.getSource() == this.ddlstRessource){
 

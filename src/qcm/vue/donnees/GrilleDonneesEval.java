@@ -28,6 +28,8 @@ public class GrilleDonneesEval extends AbstractTableModel
         for(int i=0; i<this.ctrl.getNbNotion(r); i++)
             lstNotions.add(this.ctrl.getNotion(r, i));
 
+        if (r == null) r = new Ressource("t", "test");
+
         this.nbLigne = this.ctrl.getNbNotion(r) + 1;
 
         this.tabEntetes = new String[]{"Nom notion", "Select", "TF", "F", "M", "D", "∑"};

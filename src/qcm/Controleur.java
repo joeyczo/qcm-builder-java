@@ -16,7 +16,7 @@ public class Controleur {
 		this.accueil		= new Accueil(this);
 		this.gestionDonnees = new GestionDonnees(this);
         this.ctrlDonnees    = new ControleurDonnees (this);
-        this.generationEvals = new GenerationEvals();
+        this.generationEvals = new GenerationEvals(this);
 
         this.ctrlDonnees.chargerDonnees();
 
@@ -99,8 +99,12 @@ public class Controleur {
         return this.generationEvals.getNbQuestions();
     }
 
-    public void generationEvaluation ( String path ) {
-        this.generationEvals.genererEvaluation(path);
+    public void generationEvaluation ( boolean eval, String path ) {
+        this.generationEvals.genererEvaluation(eval, path);
+    }
+
+    public void changerRessourceEval ( Ressource r ) {
+        this.generationEvals.changerRessource(r);
     }
 
     /*  ------------------------------  */

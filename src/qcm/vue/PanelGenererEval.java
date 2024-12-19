@@ -20,7 +20,6 @@ public class PanelGenererEval extends JPanel implements ActionListener
     private FrameGenererEval    frameParent;
     private JTable              tblGrilleDonnees;
     private JPanel              panelHaut;
-    private String[]            tabLbl;
 
     private Controleur ctrl;
 
@@ -29,17 +28,17 @@ public class PanelGenererEval extends JPanel implements ActionListener
         this.setLayout ( new BorderLayout() );
         this.ctrl = ctrl;
 
-        String[] tabRessource = new String[this.ctrl.getNbRessource()];
-
-        for ( int i = 0; i < this.ctrl.getNbRessource(); i++)
-            tabRessource[i] = this.ctrl.getRessource(i).getNom();
-
-        Ressource premiereRessource = (this.ctrl.getNbRessource() == 0) ? null : this.ctrl.getRessource(0);
-
         this.panelHaut        = new JPanel();
-        this.ddlstRessource   = new JComboBox<>(tabRessource);
-        this.tblGrilleDonnees = new JTable ( new GrilleDonneesEval(this.ctrl, premiereRessource) );
+        this.ddlstRessource   = new JComboBox<>();
+        this.tblGrilleDonnees = new JTable ( new GrilleDonneesEval(this.ctrl, null) );
         this.tblGrilleDonnees.setFillsViewportHeight(true);
+        this.tblGrilleDonnees.setRowHeight(30);
+
+
+        this.ddlstRessource.addItem("-- Sélectionnez une ressource --");
+
+        for (int i = 0; i < this.ctrl.getNbRessource(); i++)
+            this.ddlstRessource.addItem(this.ctrl.getRessource(i).getNom());
 
         this.btnSubmit = new JButton("Généré une nouvelle évaluation");
 
@@ -57,9 +56,9 @@ public class PanelGenererEval extends JPanel implements ActionListener
         this.panelHaut.add(rbOui);
         this.panelHaut.add(rbNon);
 
-        this.add(this.panelHaut,  BorderLayout.NORTH );
+        this.add(this.panelHaut , BorderLayout.NORTH );
         this.add(spGrilleDonnees, BorderLayout.CENTER);
-        this.add(this.btnSubmit,  BorderLayout.SOUTH );
+        this.add(this.btnSubmit , BorderLayout.SOUTH );
 
         this.rbOui         .addActionListener(this);
         this.rbNon         .addActionListener(this);
@@ -71,7 +70,14 @@ public class PanelGenererEval extends JPanel implements ActionListener
 
 
         if (e.getSource() == this.ddlstRessource) {
+
+            if (this.ddlstRessource.getSelectedIndex() == 0) {
+                this.tblGrilleDonnees.setModel(new GrilleDonneesEval(this.ctrl, null));
+                return;
+            }
+
             Ressource ressource = this.ctrl.getRessource((String) this.ddlstRessource.getSelectedItem());
+            this.ctrl.changerRessourceEval(ressource);
             this.tblGrilleDonnees.setModel(new GrilleDonneesEval(this.ctrl, ressource));
             this.tblGrilleDonnees.revalidate();
             this.tblGrilleDonnees.repaint();
@@ -117,7 +123,11 @@ public class PanelGenererEval extends JPanel implements ActionListener
             if (returnValue == JFileChooser.APPROVE_OPTION) {
 
                 File selectedFile = desti.getSelectedFile();
-                this.ctrl.generationEvaluation(selectedFile.getPath());
+
+                boolean estEvalue = this.rbOui.isSelected();
+
+                this.ctrl.generationEvaluation(estEvalue, selectedFile.getPath());
+                this.frameParent.fermerFenetre();
 
             }
         }

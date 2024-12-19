@@ -1,10 +1,7 @@
 package qcm.vue;
 
 import qcm.Controleur;
-import qcm.metier.DonneesCreationQuestion;
-import qcm.metier.EliminationReponse;
-import qcm.metier.EliminationReponseItem;
-import qcm.metier.Question;
+import qcm.metier.*;
 
 import java.awt.*;
 import java.awt.event.ActionListener;
@@ -14,7 +11,6 @@ import java.util.List;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-
 
 public class PanelElim extends JPanel implements ActionListener, DocumentListener
 {
@@ -50,28 +46,41 @@ public class PanelElim extends JPanel implements ActionListener, DocumentListene
         this.lstOrdrePrioQst     = new ArrayList<JTextField>();
         this.lstPointEnMoins     = new ArrayList<JTextField>();
 
+        JTextArea jTextAreaQst = new JTextArea (4, 1);
+        jTextAreaQst.setFont(new Font("Arial", Font.PLAIN, 16));
 
-        this.txtQst         = new JTextArea  (5, 1);
-        this.txtInfoSupp    = new JTextArea  (10, 10);
+        JTextArea jTextAreaInfo = new JTextArea (10, 10);
+        jTextAreaInfo.setFont(new Font("Arial", Font.PLAIN, 16));
+
+
+        this.txtQst         = jTextAreaQst;
+        this.txtInfoSupp    = jTextAreaInfo;
         this.scrollPane     = new JScrollPane(this.txtQst, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         this.btnEnregistrer = new JButton    ("Enregistrer");
         this.btnAdd         = new JButton    (new ImageIcon("src/data/img/add.png"));
         this.btnInfoSupp    = new JButton    (new ImageIcon("src/data/img/edit.png"));
         this.btg            = new ButtonGroup();
 
-        for( int cpt = 0; cpt < 2; cpt ++)
-        {
-            this.lstBtnSupp         .add(new JButton());
-            this.lstTxtReponses     .add(new JTextArea(5, 1));
-            this.lstScrollTexte     .add(new JScrollPane(this.lstTxtReponses.getLast(), JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED));
-            this.lstOrdrePrioQst    .add(new JTextField(3));
-            this.lstPointEnMoins    .add(new JTextField(3));
-            JRadioButton radioBouton = new JRadioButton();
-            this.lstBtnValideReponse.add(radioBouton);
-            this.btg.add(radioBouton);
+        if(data.qst() == null){
+            for( int cpt = 0; cpt < 2; cpt ++) {
+                JTextArea jTextAreaRep = new JTextArea (3, 1);
+                jTextAreaRep.setFont(new Font("Arial", Font.PLAIN, 16));
 
-            this.lstOrdrePrioQst.get(cpt).getDocument().addDocumentListener(this);
-            this.lstPointEnMoins.get(cpt).getDocument().addDocumentListener(this);
+                this.lstBtnSupp         .add(new JButton());
+                this.lstTxtReponses     .add(jTextAreaRep);
+                this.lstScrollTexte     .add(new JScrollPane(this.lstTxtReponses.getLast(), JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED));
+                this.lstOrdrePrioQst    .add(new JTextField(3));
+                this.lstPointEnMoins    .add(new JTextField(3));
+                JRadioButton radioBouton = new JRadioButton();
+                this.lstBtnValideReponse.add(radioBouton);
+                this.btg.add(radioBouton);
+
+                this.lstOrdrePrioQst.get(cpt).getDocument().addDocumentListener(this);
+                this.lstPointEnMoins.get(cpt).getDocument().addDocumentListener(this);
+            }
+        }else{
+            this.ajoutTextePourModif();
+            this.ajoutElementModifier();
         }
 
         this.majIHM();
@@ -83,17 +92,17 @@ public class PanelElim extends JPanel implements ActionListener, DocumentListene
 
         for ( int cpt = 0; cpt < this.lstBtnSupp.size(); cpt ++)
             this.lstBtnSupp.get(cpt).addActionListener(this);
-
-        if (this.data.qst() != null)
-            this.chargerDonnees();
     }
 
     public void actionPerformed(ActionEvent e)
     {
         if (e.getSource() == this.btnAdd)
         {
+            JTextArea jTextAreaRep = new JTextArea (3, 1);
+            jTextAreaRep.setFont(new Font("Arial", Font.PLAIN, 16));
+
             this.lstBtnSupp         .add(new JButton());
-            this.lstTxtReponses     .add(new JTextArea (5, 1));
+            this.lstTxtReponses     .add(jTextAreaRep);
             this.lstScrollTexte     .add(new JScrollPane(this.lstTxtReponses.getLast(), JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED));
             this.lstOrdrePrioQst    .add(new JTextField(3));
             this.lstPointEnMoins    .add(new JTextField(3));
@@ -326,7 +335,9 @@ public class PanelElim extends JPanel implements ActionListener, DocumentListene
 
         gbc.gridx = 0;
         gbc.gridy = 0;
-        this.add(new JLabel("Question"), gbc);
+        JLabel labelQst = new JLabel("Question");
+        labelQst.setFont(new Font("Arial", Font.PLAIN, 16));
+        this.add(labelQst, gbc);
 
         gbc.gridy     = 1;
         gbc.gridwidth = 6;
@@ -337,7 +348,6 @@ public class PanelElim extends JPanel implements ActionListener, DocumentListene
 
         for( int cpt = 0; cpt < this.lstTxtReponses.size(); cpt ++)
         {
-
             gbc.gridwidth  = 1;
             gbc.gridheight = 2;
             gbc.ipadx      = 0;
@@ -370,8 +380,6 @@ public class PanelElim extends JPanel implements ActionListener, DocumentListene
             gbc.gridheight = 2;
             gbc.gridy      = 2 + ( cpt * 2 );
             this.add(this.lstBtnValideReponse.get(cpt), gbc);
-
-
         }
 
         gbc.gridheight = 1;
@@ -400,41 +408,34 @@ public class PanelElim extends JPanel implements ActionListener, DocumentListene
     }
 
     @Override
-    public void insertUpdate(DocumentEvent e) {
-
+    public void insertUpdate(DocumentEvent e)
+    {
         for ( int cpt = 0; cpt < this.lstOrdrePrioQst.size(); cpt ++)
         {
-
             if (!this.lstOrdrePrioQst.get(cpt).getText().isEmpty() || !this.lstPointEnMoins.get(cpt).getText().isEmpty() )
             {
                 if ( this.lstBtnValideReponse.get(cpt).isSelected())
                     this.btg.clearSelection();
-
                 this.lstBtnValideReponse.get(cpt).setEnabled(false);
             }
             else
                 this.lstBtnValideReponse.get(cpt).setEnabled(true);
-
         }
-
     }
 
     @Override
-    public void removeUpdate(DocumentEvent e) {
-
+    public void removeUpdate(DocumentEvent e)
+    {
         for ( int cpt = 0; cpt < this.lstOrdrePrioQst.size(); cpt ++)
         {
-
             if (!this.lstOrdrePrioQst.get(cpt).getText().isEmpty() || !this.lstPointEnMoins.get(cpt).getText().isEmpty() )
             {
                 if ( this.lstBtnValideReponse.get(cpt).isSelected())
                     this.btg.clearSelection();
-
                 this.lstBtnValideReponse.get(cpt).setEnabled(false);
             }
             else
                 this.lstBtnValideReponse.get(cpt).setEnabled(true);
-
         }
 
         this.majIHM();
@@ -445,39 +446,57 @@ public class PanelElim extends JPanel implements ActionListener, DocumentListene
 
     }
 
-    private void chargerDonnees()
+    public void ajoutTextePourModif()
+    {
+        EliminationReponse elimReponse = (EliminationReponse) this.data.qst().getReponse();
+
+        for ( int cpt = 0; cpt < elimReponse.getNbReponse(); cpt ++)
+        {
+            JTextArea jTextAreaRep = new JTextArea (3, 1);
+            jTextAreaRep.setFont(new Font("Arial", Font.PLAIN, 16));
+
+            this.lstBtnSupp         .add(new JButton());
+            this.lstTxtReponses     .add(jTextAreaRep);
+            this.lstScrollTexte     .add(new JScrollPane(this.lstTxtReponses.getLast(), JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED));
+            this.lstBtnValideReponse.add(new JRadioButton());
+            this.lstOrdrePrioQst    .add(new JTextField(3));
+            this.lstPointEnMoins    .add(new JTextField(3));
+            this.btg.add(this.lstBtnValideReponse.getLast());
+            this.lstBtnValideReponse.getLast().addActionListener(this);
+        }
+    }
+
+    public void ajoutElementModifier()
     {
         Question q = this.data.qst();
-        this.txtQst.setText(q.getTexteQuestion());
+        this.txtQst.setText(this.data.qst().getTexteQuestion());
         EliminationReponse eliminationReponse = (EliminationReponse) q.getReponse();
+        this.txtInfoSupp.setText(q.getReponse().getTexteExplication());
 
-        for(int i = 0 ; i < eliminationReponse.getNbReponse(); i++) {
+        System.out.println(eliminationReponse.getNbReponse());
+
+        for ( int cpt = 0; cpt < eliminationReponse.getNbReponse(); cpt++){
             EliminationReponse e = (EliminationReponse) q.getReponse();
-            EliminationReponseItem ei = e.getReponseItem(i);
+            EliminationReponseItem ei = e.getReponseItem(cpt);
+            this.lstTxtReponses.get(cpt).setText(ei.getTexte());
+            this.lstBtnValideReponse.get(cpt).setSelected(ei.isBonneReponse());
+            
+            if(ei.getOrdreSuppression() != 0) {
+                this.lstOrdrePrioQst.get(cpt).setText("" + ei.getOrdreSuppression());
+                this.lstBtnValideReponse.get(cpt).setEnabled(false);
+            }
 
-            if(i >= 2){
-                this.add(new JTextArea(ei.getTexte()));
-            } else {
-                this.lstTxtReponses.get(i).setText(ei.getTexte());
+            if(ei.getPtsSuppression() != 0.0f) {
+                this.lstPointEnMoins.get(cpt).setText("" + ei.getPtsSuppression());
+                this.lstBtnValideReponse.get(cpt).setEnabled(false);
+            }
 
-                String ordrePrioText = this.lstOrdrePrioQst.get(i).getText();
-                String pointEnMoinsText = this.lstPointEnMoins.get(i).getText();
-
-                if (ordrePrioText != null && !ordrePrioText.isEmpty() && pointEnMoinsText != null && !pointEnMoinsText.isEmpty()) {
-                    int ordrePrio = Integer.parseInt(ordrePrioText);
-                    float pointsEnMoins = Float.parseFloat(pointEnMoinsText);
-
-                    if(ordrePrio != 0 && pointsEnMoins != 0.0f){
-                        this.lstOrdrePrioQst.get(i).setText("" + ei.getOrdreSuppression());
-                        this.lstPointEnMoins.get(i).setText("" + ei.getPtsSuppression());
-                    }
-                } else {
-                    System.out.println("Les champs sont vides ou non valides.");
-                }
+            if(this.lstBtnValideReponse.get(cpt).isSelected()){
+                this.lstPointEnMoins.get(cpt).setEnabled(false);
+                this.lstOrdrePrioQst.get(cpt).setEnabled(false);
             }
         }
-
-        this.txtInfoSupp.setText(q.getReponse().getTexteExplication());
+        //TODO finir le réglage de la sélection
         majIHM();
     }
 }

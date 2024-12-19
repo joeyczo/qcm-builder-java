@@ -40,11 +40,17 @@ public class PanelQCMMulti extends JPanel implements ActionListener
         this.lstBtnValideReponse = new ArrayList<JCheckBox>();
         this.lstScrollTexte      = new ArrayList<JScrollPane>();
 
-        this.txtQst            = new JTextArea (5, 1);
-        this.txtInfoSupp       = new JTextArea (10,10);
-        this.btnAjouter        = new JButton   ();
-        this.btnInfoSupp       = new JButton   ();
-        this.btnEnregistrer    = new JButton   ("Enregistrer");
+        JTextArea jTextAreaQst = new JTextArea (4, 1);
+        jTextAreaQst.setFont(new Font("Arial", Font.PLAIN, 16));
+
+        JTextArea jTextAreaInfo = new JTextArea (10, 10);
+        jTextAreaInfo.setFont(new Font("Arial", Font.PLAIN, 16));
+
+        this.txtQst            = jTextAreaQst;
+        this.txtInfoSupp       = jTextAreaInfo;
+        this.btnAjouter        = new JButton();
+        this.btnInfoSupp       = new JButton();
+        this.btnEnregistrer    = new JButton("Enregistrer");
         this.btnAjouterFichier = new JButton();
         this.scrollTexte       = new JScrollPane(this.txtQst, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         this.data              = data;
@@ -55,9 +61,12 @@ public class PanelQCMMulti extends JPanel implements ActionListener
         if ( data.qst() == null )
             for( int cpt = 0; cpt < 2; cpt ++)
             {
-                this.lstBtnSupp.add(new JButton());
-                this.lstTxtReponses.add(new JTextArea(5, 1));
-                this.lstScrollTexte.add(new JScrollPane(this.lstTxtReponses.getLast(), JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED));
+                JTextArea jTextAreaRep = new JTextArea (3, 1);
+                jTextAreaRep.setFont(new Font("Arial", Font.PLAIN, 16));
+
+                this.lstBtnSupp         .add(new JButton());
+                this.lstTxtReponses     .add(jTextAreaRep);
+                this.lstScrollTexte     .add(new JScrollPane(this.lstTxtReponses.getLast(), JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED));
                 this.lstBtnValideReponse.add(new JCheckBox());
             }
         else
@@ -83,8 +92,11 @@ public class PanelQCMMulti extends JPanel implements ActionListener
 
         if ( e.getSource() == this.btnAjouter )
         {
+            JTextArea jTextAreaRep = new JTextArea (3, 1);
+            jTextAreaRep.setFont(new Font("Arial", Font.PLAIN, 16));
+
             this.lstBtnSupp         .add(new JButton());
-            this.lstTxtReponses     .add(new JTextArea (5, 1));
+            this.lstTxtReponses     .add(jTextAreaRep);
             this.lstScrollTexte     .add(new JScrollPane(this.lstTxtReponses.getLast(), JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED));
             this.lstBtnValideReponse.add(new JCheckBox());
 
@@ -234,7 +246,9 @@ public class PanelQCMMulti extends JPanel implements ActionListener
 
         gbc.gridx = 0;
         gbc.gridy = 0;
-        this.add(new JLabel("Question"), gbc);
+        JLabel labelQst = new JLabel("Question");
+        labelQst.setFont(new Font("Arial", Font.PLAIN, 16));
+        this.add(labelQst, gbc);
 
         gbc.gridy     = 1;
         gbc.gridwidth = 6;
@@ -320,8 +334,11 @@ public class PanelQCMMulti extends JPanel implements ActionListener
 
         for ( int cpt = 0; cpt < qcmReponse.getNbReponse(); cpt ++)
         {
+            JTextArea jTextAreaRep = new JTextArea (3, 1);
+            jTextAreaRep.setFont(new Font("Arial", Font.PLAIN, 16));
+
             this.lstBtnSupp         .add(new JButton());
-            this.lstTxtReponses     .add(new JTextArea (5, 1));
+            this.lstTxtReponses     .add(jTextAreaRep);
             this.lstScrollTexte     .add(new JScrollPane(this.lstTxtReponses.getLast(), JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED));
             this.lstBtnValideReponse.add(new JCheckBox());
 

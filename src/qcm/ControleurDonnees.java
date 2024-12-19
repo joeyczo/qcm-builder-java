@@ -625,6 +625,14 @@ public class ControleurDonnees
 
                 Reponse rsp = this.getReponseFichier(uidQuestion, typeQuestion);
 
+                /*if (typeQuestion == TypeQuestion.ELIMINATION) {
+
+                    EliminationReponse eliminationReponse = (EliminationReponse) rsp;
+
+                    System.out.println(eliminationReponse.getNbReponse());
+
+                }*/
+
                 Question nouvelleQuestion = new Question(uidQuestion, txtQuestion, tempsRsp, nbPoints, typeQuestion, rsp, difficulteQuestion, notion);
 
                 notion.ajouterQuestion(nouvelleQuestion);

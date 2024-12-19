@@ -45,9 +45,9 @@ public class PanelQCMSolo extends JPanel implements ActionListener
 
         this.txtQst            = jTextAreaQst;
         this.txtInfoSupp       = jTextAreaInfo;
-        this.btnAjouter        = new JButton   ();
-        this.btnInfoSupp       = new JButton   ();
-        this.btnEnregistrer    = new JButton   ("Enregistrer");
+        this.btnAjouter        = new JButton();
+        this.btnInfoSupp       = new JButton();
+        this.btnEnregistrer    = new JButton("Enregistrer");
         this.btnAjouterFichier = new JButton();
         this.scrollTexte       = new JScrollPane(this.txtQst, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         this.data              = data;

@@ -1,22 +1,39 @@
 package qcm.metier;
 
 
+import qcm.Controleur;
+import qcm.vue.FrameVisuEval;
+
+import java.lang.reflect.Array;
 import java.util.*;
 
 public class GenerationEvals {
 
-    private Map<Notion, Map<DifficulteQuestion, Integer>>  mapNotions;
+    private Map<Notion, Map<DifficulteQuestion, Integer>>   mapNotions;
+    private Controleur                                      ctrl;
+    private Ressource                                       ressource;
 
-    public GenerationEvals() {
+    public GenerationEvals(Controleur ctrl) {
 
         this.mapNotions = new HashMap<>();
+        this.ctrl       = ctrl;
+        this.ressource  = null;
 
     }
     
     public void resetGeneration() {
 
         this.mapNotions = new HashMap<>();
+        this.ressource  = null;
 
+    }
+
+    /**
+     * Modifier la ressource parent de l'évaluation
+     * @param ressource Nouvelle ressource
+     */
+    public void changerRessource ( Ressource ressource ) {
+        this.ressource = ressource;
     }
 
     /**
@@ -117,16 +134,57 @@ public class GenerationEvals {
 
     /**
      * Permets de générer une évaluation ainsi que tous les fichiers
+     * @param evalue Indique si le questionnaire est évalué ou non
      * @param path Lien vers la destination
      */
-    public void genererEvaluation ( String path ) {
+    public void genererEvaluation ( boolean evalue, String path ) {
 
         System.out.println("Génération en cours ...");
 
         // Vérification du nombre de question
         if (this.getNbQuestions() < 0) return;
 
-        // TODO : Générer les questions
+        // Listes qui contient toutes les notions
+        ArrayList<Question> alQuestion = new ArrayList<>();
+
+        for (Notion n : this.mapNotions.keySet()) {
+
+            // Toutes les Questions de la notion
+            ArrayList<Question> ensQuestion = new ArrayList<>();
+
+            for ( int i = 0; i < n.getNbQuestions(); i++)
+                ensQuestion.add(n.getQuestion(i));
+
+            // On mélange la liste de toutes les questions
+            Collections.shuffle(ensQuestion);
+
+            for (DifficulteQuestion diff : this.mapNotions.get(n).keySet()) {
+
+                int nbQuestionsDiff = this.mapNotions.get(n).get(diff);
+                int nbQuestionGen   = 0;
+
+                System.out.println(nbQuestionsDiff + " questions pour la diff " + diff + " et la notion " + n.getNom());
+
+                for ( Question q : ensQuestion) {
+
+                    if (q.getDifficulte() == diff && nbQuestionGen < nbQuestionsDiff) {
+                        alQuestion.add(q);
+                        nbQuestionGen++;
+                    }
+
+                }
+
+            }
+
+        }
+
+        // On mélange une dernière fois la liste pour mélanger l'ordre des questions et les difficultés
+        Collections.shuffle(alQuestion);
+
+
+        Evalutation eval = new Evalutation(this.getNbQuestions(), evalue, this.ressource, alQuestion, path);
+
+        new FrameVisuEval(this.ctrl, eval);
 
     }
 

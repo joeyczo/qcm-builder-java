@@ -14,9 +14,10 @@ public class PanelParametre extends JPanel implements ActionListener
 
     private FrameParametres     frameParent;
 
+    private JPanel              panelHaut;
+
     private JTable              tblGrilleDonnees;
     private JComboBox<String>   ddlstRessource;
-
     private JButton             btnAjouterRessource;
     private JButton             btnAjouterNotion;
 
@@ -27,7 +28,7 @@ public class PanelParametre extends JPanel implements ActionListener
         this.frameParent = parent;
         this.ctrl        = ctrl;
 
-        this.setLayout ( new FlowLayout() );
+        this.setLayout ( new BorderLayout() );
 
         String[] tabRessource = new String[this.ctrl.getNbRessource()+1];
 
@@ -38,21 +39,26 @@ public class PanelParametre extends JPanel implements ActionListener
 
         JScrollPane spGrilleDonnees;
 
+        this.panelHaut        = new JPanel();
+
         this.ddlstRessource   = new JComboBox<>(tabRessource);
         this.tblGrilleDonnees = new JTable ( new GrilleDonneesNotion(this.ctrl, null) );
         this.tblGrilleDonnees.setFillsViewportHeight(true);
-        
+        this.tblGrilleDonnees.setRowHeight(30);
+
+
         this.btnAjouterRessource = new JButton("Ajouter une ressource");
         this.btnAjouterNotion    = new JButton("Ajouter une notion");
-
-        spGrilleDonnees = new JScrollPane( this.tblGrilleDonnees );
+        spGrilleDonnees          = new JScrollPane( this.tblGrilleDonnees );
 
         this.btnAjouterNotion.setEnabled(false);
 
-        this.add(this.ddlstRessource);
-        this.add(this.btnAjouterRessource);
-        this.add(this.btnAjouterNotion);
-        this.add(spGrilleDonnees);
+        this.panelHaut.add(this.ddlstRessource);
+        this.panelHaut.add(this.btnAjouterRessource);
+        this.panelHaut.add(this.btnAjouterNotion);
+
+        this.add(this.panelHaut  , BorderLayout.NORTH);
+        this.add(spGrilleDonnees , BorderLayout.CENTER);
 
         this.btnAjouterNotion   .addActionListener(this);
         this.btnAjouterRessource.addActionListener(this);

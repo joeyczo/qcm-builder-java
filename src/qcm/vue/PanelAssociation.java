@@ -10,34 +10,40 @@ import java.util.ArrayList;
 
 public class PanelAssociation extends JPanel implements ActionListener
 {
-    private JTextArea txtQuestion;
+    private JTextArea   txtQuestion;
     private JScrollPane scQuestion;
 
     private DonneesCreationQuestion data;
-    private Controleur ctrl;
-    private FrameInfosQuestion frameParent;
+    private Controleur              ctrl;
+    private FrameInfosQuestion      frameParent;
 
     private ArrayList<JTextArea> lstTxtReponses;
     private ArrayList<JTextArea> lstTxtDefinitions;
-    private ArrayList<JButton> lstBtnSupprimerGauche;
+    private ArrayList<JButton>   lstBtnSupprimerGauche;
 
-    private JButton btnAjouter;
-    private JButton btnExplication;
-    private JButton btnEnregistrer;
+    private JButton   btnAjouter;
+    private JButton   btnExplication;
+    private JButton   btnEnregistrer;
     private JTextArea txtInfoSupp;
 
     public PanelAssociation(DonneesCreationQuestion data, Controleur ctrl, FrameInfosQuestion frameInfosQuestion)
     {
-        this.data = data;
-        this.ctrl = ctrl;
+        this.data        = data;
+        this.ctrl        = ctrl;
         this.frameParent = frameInfosQuestion;
 
-        this.txtQuestion = new JTextArea("Ajouter une question", 10, 20);
-        this.txtInfoSupp = new JTextArea(10, 10);
-        this.scQuestion = new JScrollPane(this.txtQuestion, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        JTextArea jTextAreaQst = new JTextArea (4, 1);
+        jTextAreaQst.setFont(new Font("Arial", Font.PLAIN, 16));
 
-        this.lstTxtReponses = new ArrayList<>();
-        this.lstTxtDefinitions = new ArrayList<>();
+        JTextArea jTextAreaInfo = new JTextArea (10, 10);
+        jTextAreaInfo.setFont(new Font("Arial", Font.PLAIN, 16));
+
+        this.txtQuestion = jTextAreaQst;
+        this.txtInfoSupp = jTextAreaInfo;
+        this.scQuestion  = new JScrollPane(this.txtQuestion, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+
+        this.lstTxtReponses        = new ArrayList<>();
+        this.lstTxtDefinitions     = new ArrayList<>();
         this.lstBtnSupprimerGauche = new ArrayList<>();
 
         this.btnAjouter = new JButton();
@@ -56,18 +62,18 @@ public class PanelAssociation extends JPanel implements ActionListener
 
         this.btnEnregistrer = new JButton("Enregistrer");
 
-        addDefinition("");
-        addReponse("");
-        addDefinition("");
-        addReponse("");
+        this.addDefinition("");
+        this.addReponse   ("");
+        this.addDefinition("");
+        this.addReponse   ("");
 
         this.setLayout(new GridBagLayout());
 
-        this.btnAjouter.addActionListener(this);
+        this.btnAjouter    .addActionListener(this);
         this.btnExplication.addActionListener(this);
         this.btnEnregistrer.addActionListener(this);
 
-        majIHM();
+        this.majIHM();
 
         if (this.data.qst() != null)
             this.chargerDonnees();
@@ -77,9 +83,9 @@ public class PanelAssociation extends JPanel implements ActionListener
     public void actionPerformed(ActionEvent e)
     {
         if (e.getSource() == this.btnAjouter) {
-            addDefinition("");
-            addReponse("");
-            majIHM();
+            this.addDefinition("");
+            this.addReponse("");
+            this.majIHM();
         }
 
         if (e.getSource() == this.btnExplication) {
@@ -194,8 +200,9 @@ public class PanelAssociation extends JPanel implements ActionListener
 
     private void addReponse(String text)
     {
-        JTextArea newReponse = new JTextArea(text, 5, 20);
-        JScrollPane scReponse = new JScrollPane(newReponse, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        JTextArea   newReponse = new JTextArea(text, 5, 20);
+        newReponse.setFont(new Font("Arial", Font.PLAIN, 16));
+        JScrollPane scReponse  = new JScrollPane(newReponse, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
         this.lstTxtReponses.add(newReponse);
     }
@@ -203,6 +210,7 @@ public class PanelAssociation extends JPanel implements ActionListener
     private void addDefinition(String text)
     {
         JTextArea newDefinition = new JTextArea(text, 5, 20);
+        newDefinition.setFont(new Font("Arial", Font.PLAIN, 16));
         JScrollPane scDefinition = new JScrollPane(newDefinition, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
         JButton btnSupprimerGauche = new JButton();
@@ -241,8 +249,9 @@ public class PanelAssociation extends JPanel implements ActionListener
         // Label "Question"
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.gridwidth = 4; // Étendre sur toute la largeur (modification)
-        this.add(new JLabel("Question :"), gbc);
+        JLabel labelQst = new JLabel("Question");
+        labelQst.setFont(new Font("Arial", Font.PLAIN, 16));
+        this.add(labelQst, gbc);
 
         // Zone de texte pour la question
         gbc.gridx = 0;
