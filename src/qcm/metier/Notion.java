@@ -145,6 +145,22 @@ public class Notion
     }
 
     /**
+     * Supprimer une Question à l'aide de l'objet question
+     * @param q Question à supprimer
+     * @return True si la question a été supprimé, sinon false
+     */
+    public boolean supprimerQuestion ( Question q ) {
+
+        if (q == null)                                               return false;
+        if (this.alQuestions.get(this.getIndiceQuestion(q)) == null) return false;
+
+        this.alQuestions.remove(q);
+
+        return true;
+
+    }
+
+    /**
      * Récupérer l'indice d'une question dans la liste
      * @param q Question à récupérer
      * @return L'indince de la question dans la liste, sinon -1

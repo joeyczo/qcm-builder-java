@@ -33,6 +33,7 @@ public class PanelGenererEval extends JPanel implements ActionListener
         this.tblGrilleDonnees = new JTable ( new GrilleDonneesEval(this.ctrl, null) );
         this.tblGrilleDonnees.setFillsViewportHeight(true);
         this.tblGrilleDonnees.setRowHeight(30);
+        this.tblGrilleDonnees.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
 
         this.ddlstRessource.addItem("-- Sélectionnez une ressource --");
@@ -77,6 +78,7 @@ public class PanelGenererEval extends JPanel implements ActionListener
             }
 
             Ressource ressource = this.ctrl.getRessource((String) this.ddlstRessource.getSelectedItem());
+            // TODO : Réparer les ressources qui ne fonctionnent pas
             this.ctrl.changerRessourceEval(ressource);
             this.tblGrilleDonnees.setModel(new GrilleDonneesEval(this.ctrl, ressource));
             this.tblGrilleDonnees.revalidate();

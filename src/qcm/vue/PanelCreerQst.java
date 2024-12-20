@@ -30,6 +30,9 @@ public class PanelCreerQst extends JPanel implements ActionListener
 
     private JPanel                  pnlBoutons;
 
+    private Font                    fontGeneraleGras;
+    private Font                    fontGenerale;
+
     private String                  ressourceLaPlusLongue;
 
     public PanelCreerQst(FrameCreerQst parent, Controleur ctrl, DonneesCreationQuestion data)
@@ -38,21 +41,29 @@ public class PanelCreerQst extends JPanel implements ActionListener
         this.ctrl           = ctrl;
         this.data           = data;
 
+        this.fontGeneraleGras = new Font("Arial", Font.BOLD , 16);
+        this.fontGenerale     = new Font("Arial", Font.PLAIN, 16);
+
         // Initialisation des composants
-        this.txtNbPoints           = new JTextField("1.0", 5); // par défaut "1.0" pour le nombre de points
-        this.txtTempsRep           = new JTextField("00:30", 5); // par défaut "00:30" pour le temps
+        this.txtNbPoints = new JTextField("1.0", 5); // par défaut "1.0" pour le nombre de points
+        this.txtNbPoints.setFont(this.fontGenerale);
+        this.txtTempsRep = new JTextField("00:30", 5); // par défaut "00:30" pour le temps
+        this.txtTempsRep.setFont(this.fontGenerale);
+
         this.ressourceLaPlusLongue = "";
+
 
         this.ddlstRessource = new JComboBox<>();
         for (int i = 0; i < this.ddlstRessource.getItemCount(); i++)
             this.ddlstTypeQuestion.selectWithKeyChar(ddlstTypeQuestion.getItemAt(i).charAt(0));
-
+        this.ddlstRessource.setFont(this.fontGeneraleGras);
 
         this.ddlstRessource.addItem("-- Choisir une ressource --");
 
         this.ddlstNotions    = new JComboBox<>();
         for (int i = 0; i < this.ddlstNotions.getItemCount(); i++)
             this.ddlstTypeQuestion.selectWithKeyChar(ddlstTypeQuestion.getItemAt(i).charAt(0));
+        this.ddlstNotions.setFont(this.fontGeneraleGras);
 
         this.ddlstNotions.addItem("-- Choisir une notion --");
 
@@ -60,6 +71,7 @@ public class PanelCreerQst extends JPanel implements ActionListener
         this.ddlstTypeQuestion = new JComboBox<>();
         for (int i = 0; i < this.ddlstTypeQuestion.getItemCount(); i++)
             this.ddlstTypeQuestion.selectWithKeyChar(ddlstTypeQuestion.getItemAt(i).charAt(0));
+        this.ddlstTypeQuestion.setFont(this.fontGeneraleGras);
 
         this.ddlstTypeQuestion.addItem("-- Choisir un type de question --");
 
@@ -91,6 +103,7 @@ public class PanelCreerQst extends JPanel implements ActionListener
         this.pnlBoutons.setLayout(new GridLayout(1,4));
 
         this.btnValider = new JButton("Valider");
+        this.btnValider.setFont(this.fontGeneraleGras);
 
 
         // Configurer le layout
@@ -103,7 +116,9 @@ public class PanelCreerQst extends JPanel implements ActionListener
         // Ligne 1 :
         gbc.gridx = 0;
         gbc.gridy = 0;
-        this.add(new JLabel("Ressource :"), gbc);
+        JLabel labelRessource = new JLabel("Ressource :");
+        labelRessource.setFont(this.fontGeneraleGras);
+        this.add(labelRessource, gbc);
 
         gbc.gridx = 1;
         gbc.gridy = 0;
@@ -111,7 +126,9 @@ public class PanelCreerQst extends JPanel implements ActionListener
 
         gbc.gridx = 2;
         gbc.gridy = 0;
-        this.add(new JLabel("Nombre de points :"), gbc);
+        JLabel labelPoints = new JLabel("Nombre de points :");
+        labelPoints.setFont(this.fontGeneraleGras);
+        this.add(labelPoints, gbc);
 
         gbc.gridx = 3;
         gbc.gridy = 0;
@@ -120,7 +137,9 @@ public class PanelCreerQst extends JPanel implements ActionListener
         // Ligne 2 :
         gbc.gridx = 0;
         gbc.gridy = 1;
-        this.add(new JLabel("Notion :"), gbc);
+        JLabel labelNotion = new JLabel("Notion :");
+        labelNotion.setFont(this.fontGeneraleGras);
+        this.add(labelNotion, gbc);
 
         gbc.gridx = 1;
         gbc.gridy = 1;
@@ -128,16 +147,32 @@ public class PanelCreerQst extends JPanel implements ActionListener
 
         gbc.gridx = 2;
         gbc.gridy = 1;
-        this.add(new JLabel("Temps de réponse (min:sec) :"), gbc);
+        JLabel labelTemps = new JLabel("Temps de réponse (min:sec) :");
+        labelTemps.setFont(this.fontGeneraleGras);
+        this.add(labelTemps, gbc);
 
         gbc.gridx = 3;
         gbc.gridy = 1;
         this.add(this.txtTempsRep, gbc);
 
         // Ligne 3
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        JLabel labelType = new JLabel("Type de questions :");
+        labelType.setFont(this.fontGeneraleGras);
+        this.add(labelType, gbc);
+        this.add(new JLabel(" "), gbc);
+
+        gbc.gridx = 1;
+        gbc.gridy = 2;
+        this.add(this.ddlstTypeQuestion, gbc);
+
+
         gbc.gridx = 2;
         gbc.gridy = 2;
-        this.add(new JLabel("Difficulté :"), gbc);
+        JLabel labelDifficulte = new JLabel("Difficulté :");
+        labelDifficulte.setFont(this.fontGeneraleGras);
+        this.add(labelDifficulte, gbc);
 
         for(JButton btn : this.lstBtnDiff)
             this.pnlBoutons.add(btn);
@@ -146,13 +181,6 @@ public class PanelCreerQst extends JPanel implements ActionListener
         gbc.gridy = 2;
         this.add(this.pnlBoutons, gbc);
 
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-        this.add(new JLabel("Type de questions : "), gbc);
-
-        gbc.gridx = 1;
-        gbc.gridy = 2;
-        this.add(this.ddlstTypeQuestion, gbc);
 
         //Ligne 4
         gbc.gridx = 3;
@@ -160,17 +188,15 @@ public class PanelCreerQst extends JPanel implements ActionListener
         this.add(this.btnValider, gbc);
 
 
-        this.ddlstRessource.addActionListener(this);
-        this.ddlstNotions   .addActionListener(this);
-        this.ddlstTypeQuestion   .addActionListener(this);
+        this.ddlstRessource   .addActionListener(this);
+        this.ddlstNotions     .addActionListener(this);
+        this.ddlstTypeQuestion.addActionListener(this);
 
         for(RoundButton btn : this.lstBtnDiff)
             btn.addActionListener(this);
 
         this.btnValider.addActionListener(this);
-        verifierTemps();
-
-        //this.txtTempsRep.getDocument().addDocumentListener(this);
+        this.verifierTemps();
 
         // Charger les données
         if (this.data != null)

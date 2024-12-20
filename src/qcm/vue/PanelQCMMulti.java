@@ -29,6 +29,9 @@ public class PanelQCMMulti extends JPanel implements ActionListener
     private DonneesCreationQuestion data;
     private JPanel                  pnl;
     private FrameInfosQuestion      frameParent;
+    private Font                    fontGenerale;
+    private Font                    fontGeneraleGras;
+
 
 
 
@@ -39,12 +42,15 @@ public class PanelQCMMulti extends JPanel implements ActionListener
         this.lstTxtReponses      = new ArrayList<JTextArea>();
         this.lstBtnValideReponse = new ArrayList<JCheckBox>();
         this.lstScrollTexte      = new ArrayList<JScrollPane>();
+        this.fontGenerale        = new Font("Arial", Font.PLAIN, 16);
+        this.fontGeneraleGras    = new Font("Arial", Font.BOLD, 16);
+
 
         JTextArea jTextAreaQst = new JTextArea (4, 1);
-        jTextAreaQst.setFont(new Font("Arial", Font.PLAIN, 16));
+        jTextAreaQst.setFont(this.fontGenerale);
 
         JTextArea jTextAreaInfo = new JTextArea (10, 10);
-        jTextAreaInfo.setFont(new Font("Arial", Font.PLAIN, 16));
+        jTextAreaInfo.setFont(this.fontGenerale);
 
         this.txtQst            = jTextAreaQst;
         this.txtInfoSupp       = jTextAreaInfo;
@@ -62,7 +68,7 @@ public class PanelQCMMulti extends JPanel implements ActionListener
             for( int cpt = 0; cpt < 2; cpt ++)
             {
                 JTextArea jTextAreaRep = new JTextArea (3, 1);
-                jTextAreaRep.setFont(new Font("Arial", Font.PLAIN, 16));
+                jTextAreaRep.setFont(this.fontGenerale);
 
                 this.lstBtnSupp         .add(new JButton());
                 this.lstTxtReponses     .add(jTextAreaRep);
@@ -74,6 +80,8 @@ public class PanelQCMMulti extends JPanel implements ActionListener
             this.ajoutTextePourModif();
             this.ajoutElementModifier();
         }
+
+        this.btnEnregistrer.setFont(this.fontGeneraleGras);
 
         this.majIHM();
 
@@ -93,7 +101,7 @@ public class PanelQCMMulti extends JPanel implements ActionListener
         if ( e.getSource() == this.btnAjouter )
         {
             JTextArea jTextAreaRep = new JTextArea (3, 1);
-            jTextAreaRep.setFont(new Font("Arial", Font.PLAIN, 16));
+            jTextAreaRep.setFont(this.fontGenerale);
 
             this.lstBtnSupp         .add(new JButton());
             this.lstTxtReponses     .add(jTextAreaRep);
@@ -247,7 +255,7 @@ public class PanelQCMMulti extends JPanel implements ActionListener
         gbc.gridx = 0;
         gbc.gridy = 0;
         JLabel labelQst = new JLabel("Question");
-        labelQst.setFont(new Font("Arial", Font.PLAIN, 16));
+        labelQst.setFont(this.fontGeneraleGras);
         this.add(labelQst, gbc);
 
         gbc.gridy     = 1;
@@ -335,7 +343,7 @@ public class PanelQCMMulti extends JPanel implements ActionListener
         for ( int cpt = 0; cpt < qcmReponse.getNbReponse(); cpt ++)
         {
             JTextArea jTextAreaRep = new JTextArea (3, 1);
-            jTextAreaRep.setFont(new Font("Arial", Font.PLAIN, 16));
+            jTextAreaRep.setFont(this.fontGenerale);
 
             this.lstBtnSupp         .add(new JButton());
             this.lstTxtReponses     .add(jTextAreaRep);

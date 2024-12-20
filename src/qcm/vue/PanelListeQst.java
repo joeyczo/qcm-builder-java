@@ -12,17 +12,17 @@ import java.awt.event.*;
 
 public class PanelListeQst extends JPanel implements ActionListener
 {
-    private FrameListeQst frameListQst;
+    private FrameListeQst       frameListQst;
 
-    private JPanel            panelHaut;
-    private JTable            tblGrilleDonnees;
-    private JComboBox<String> ddlstRessource;
-    private JComboBox<String> ddlstNotion;
+    private JPanel              panelHaut;
+    private JTable              tblGrilleDonnees;
+    private JComboBox<String>   ddlstRessource;
+    private JComboBox<String>   ddlstNotion;
 
-    private JButton edit;
-    private JButton delete;
+    private JButton             btnModifier;
+    private JButton             btnSupprmer;
 
-    private Controleur ctrl;
+    private Controleur          ctrl;
 
     public PanelListeQst(FrameListeQst parent, Controleur ctrl)
     {
@@ -49,22 +49,23 @@ public class PanelListeQst extends JPanel implements ActionListener
         this.tblGrilleDonnees = new JTable ( new GrilleDonneesQuestion(this.ctrl, null) );
         this.tblGrilleDonnees.setFillsViewportHeight(true);
         this.tblGrilleDonnees.setRowHeight(30);
+        this.tblGrilleDonnees.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
-        this.edit   = new JButton("Modifier la question");
-        this.delete = new JButton("Supprimer la question");
+        this.btnModifier   = new JButton("Modifier la question");
+        this.btnSupprmer = new JButton("Supprimer la question");
 
         spGrilleDonnees = new JScrollPane( this.tblGrilleDonnees );
 
         this.panelHaut.add(this.ddlstRessource);
         this.panelHaut.add(this.ddlstNotion);
-        this.panelHaut.add(this.edit);
-        this.panelHaut.add(this.delete);
+        this.panelHaut.add(this.btnModifier);
+        this.panelHaut.add(this.btnSupprmer);
 
         this.add(this.panelHaut , BorderLayout.NORTH );
         this.add(spGrilleDonnees, BorderLayout.CENTER);
 
-        this.delete        .addActionListener(this);
-        this.edit          .addActionListener(this);
+        this.btnSupprmer        .addActionListener(this);
+        this.btnModifier          .addActionListener(this);
         this.ddlstRessource.addActionListener(this);
         this.ddlstNotion   .addActionListener(this);
     }
@@ -123,7 +124,7 @@ public class PanelListeQst extends JPanel implements ActionListener
 
         }
 
-        if ( e.getSource() == this.edit ){
+        if ( e.getSource() == this.btnModifier ) {
 
             Ressource ressource = this.ctrl.getRessource((String) this.ddlstRessource.getSelectedItem());
 
@@ -149,12 +150,24 @@ public class PanelListeQst extends JPanel implements ActionListener
 
             Question qst = this.ctrl.getQuestionUID(notion,(String) this.tblGrilleDonnees.getValueAt(this.tblGrilleDonnees.getSelectedRow(), 0));
 
+            if (qst == null) {
+                JOptionPane.showMessageDialog(this, "Impossible de récupérer la question dans la base de données", "Erreur lors de la modification des données", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
             DonneesCreationQuestion data = new DonneesCreationQuestion(qst.getNbPoints(), qst.getTempsReponse(), ressource, notion, qst.getDifficulte(), qst.getTypeQuestion(), qst);
 
-            System.out.println("Modification ...");
             this.ctrl.ouvrirCreerQuestion(data);
-            //new FrameInfosQuestion(this.ctrl, data);
             this.frameListQst.fermerFenetre();
+
+        }
+
+        if (e.getSource() == this.btnSupprmer) {
+
+            int resultat = JOptionPane.showConfirmDialog(this, "Voulez-vous vraiment supprimer cette question ?", "Supprimer la question de la base de données ?", JOptionPane.YES_NO_OPTION);
+
+            if (resultat == 0)
+                this.confirmeeSupprimerQuestion();
 
         }
     }
@@ -166,6 +179,42 @@ public class PanelListeQst extends JPanel implements ActionListener
     private void afficherMessageErreur(String message) {
 
         JOptionPane.showMessageDialog(this, message, "Erreur lors de la validation des données", JOptionPane.ERROR_MESSAGE);
+
+    }
+
+    private void confirmeeSupprimerQuestion() {
+
+        Ressource ressource = this.ctrl.getRessource((String) this.ddlstRessource.getSelectedItem());
+
+        if ( ressource == null )
+        {
+            JOptionPane.showMessageDialog(this, "Il n'y aucune ressource de sélectionnée", "Erreur lors de la suppression des données", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        Notion notion = this.ctrl.getNotion(ressource, (String) this.ddlstNotion.getSelectedItem());
+
+        if ( notion == null )
+        {
+            JOptionPane.showMessageDialog(this, "Il n'y aucune notion de sélectionnée", "Erreur lors de la suppression des données", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        if ( this.tblGrilleDonnees.getSelectedRowCount() != 1 )
+        {
+            JOptionPane.showMessageDialog(this, "Il doit y avoir une case de sélectionnée", "Erreur lors de la suppression des données", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        Question qst = this.ctrl.getQuestionUID(notion,(String) this.tblGrilleDonnees.getValueAt(this.tblGrilleDonnees.getSelectedRow(), 0));
+
+        if (qst == null) {
+            JOptionPane.showMessageDialog(this, "Impossible de récupérer la question dans la base de données", "Erreur lors de la suppression des données", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        this.ctrl.supprimerQuestion(notion, qst);
+        this.tblGrilleDonnees.setModel(new GrilleDonneesQuestion(this.ctrl, notion));
 
     }
 

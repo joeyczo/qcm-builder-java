@@ -26,17 +26,24 @@ public class PanelAssociation extends JPanel implements ActionListener
     private JButton   btnEnregistrer;
     private JTextArea txtInfoSupp;
 
+    private Font      fontGenerale;
+    private Font      fontGeneraleGras;
+
+
     public PanelAssociation(DonneesCreationQuestion data, Controleur ctrl, FrameInfosQuestion frameInfosQuestion)
     {
-        this.data        = data;
-        this.ctrl        = ctrl;
-        this.frameParent = frameInfosQuestion;
+        this.data             = data;
+        this.ctrl             = ctrl;
+        this.frameParent      = frameInfosQuestion;
+        this.fontGenerale     = new Font("Arial", Font.PLAIN, 16);
+        this.fontGeneraleGras = new Font("Arial", Font.BOLD , 16);
+
 
         JTextArea jTextAreaQst = new JTextArea (4, 1);
-        jTextAreaQst.setFont(new Font("Arial", Font.PLAIN, 16));
+        jTextAreaQst.setFont(this.fontGenerale);
 
         JTextArea jTextAreaInfo = new JTextArea (10, 10);
-        jTextAreaInfo.setFont(new Font("Arial", Font.PLAIN, 16));
+        jTextAreaInfo.setFont(this.fontGenerale);
 
         this.txtQuestion = jTextAreaQst;
         this.txtInfoSupp = jTextAreaInfo;
@@ -72,6 +79,8 @@ public class PanelAssociation extends JPanel implements ActionListener
         this.btnAjouter    .addActionListener(this);
         this.btnExplication.addActionListener(this);
         this.btnEnregistrer.addActionListener(this);
+
+        this.btnEnregistrer.setFont(this.fontGeneraleGras);
 
         this.majIHM();
 
@@ -201,7 +210,7 @@ public class PanelAssociation extends JPanel implements ActionListener
     private void addReponse(String text)
     {
         JTextArea   newReponse = new JTextArea(text, 5, 20);
-        newReponse.setFont(new Font("Arial", Font.PLAIN, 16));
+        newReponse.setFont(this.fontGenerale);
         JScrollPane scReponse  = new JScrollPane(newReponse, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
         this.lstTxtReponses.add(newReponse);
@@ -210,7 +219,7 @@ public class PanelAssociation extends JPanel implements ActionListener
     private void addDefinition(String text)
     {
         JTextArea newDefinition = new JTextArea(text, 5, 20);
-        newDefinition.setFont(new Font("Arial", Font.PLAIN, 16));
+        newDefinition.setFont(this.fontGenerale);
         JScrollPane scDefinition = new JScrollPane(newDefinition, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
         JButton btnSupprimerGauche = new JButton();
@@ -250,7 +259,7 @@ public class PanelAssociation extends JPanel implements ActionListener
         gbc.gridx = 0;
         gbc.gridy = 0;
         JLabel labelQst = new JLabel("Question");
-        labelQst.setFont(new Font("Arial", Font.PLAIN, 16));
+        labelQst.setFont(this.fontGeneraleGras);
         this.add(labelQst, gbc);
 
         // Zone de texte pour la question

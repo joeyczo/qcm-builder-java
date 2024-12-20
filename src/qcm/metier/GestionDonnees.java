@@ -196,4 +196,15 @@ public class GestionDonnees {
 
     }
 
+    /**
+     * Supprimer une question dans la liste des questions de la ressource
+     * @param n Notion parent de la question
+     * @param q Question à supprimer
+     */
+    public boolean supprimerQuestion( Notion n, Question q ) {
+
+        return n.supprimerQuestion(q);
+
+    }
+
 }

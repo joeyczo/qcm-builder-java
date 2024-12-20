@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Questionnaire</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
+</head>
+
+<header>
+    <div class="nbquestion">
+        <strong><p id="nbquestion-label"></p></strong>
+    </div>
+    <div class="progress-question">
+        <div id="progress-bar-question"></div>
+    </div>
+    <div class="difficulty">
+        <span id="difficulty-indicator"></span>
+        <p id="difficulty-label"></p>
+    </div>
+</header>
+
+<body>
+
+    <div class="card" id="card">
+        <div class="time">
+            <!--<img src="images/timer.png" alt="time">-->
+            <div class="difficulty">
+                <span id="difficulty-indicator"></span>
+                <p id="difficulty-label"></p>
+            </div>
+            <div class="progress">
+                <div id="progress-bar"></div>
+            </div>
+            <div class="timer">
+                <span id="timer">30s</span>
+            </div>
+        </div>
+        
+        <main class="question-container">
+            <img id="question-icon" src="./assets/multi_icon.png">
+            <p id="type-question"></p>
+            <h1 id="question-title"></h1>
+            <section id="image-container"></section>
+            <section id="answers">
+            </section>
+            <button class="elim-button"></button>
+        </main>
+    </div>
+    <div class="accueil-card">
+        <h1 id="title-accueil"></h1>
+        <p id="infos"></p>
+        <button id="start-quest">Démarrer le questionnaire</button>
+    </div>
+    
+    <section id="result" class="hidden">
+		<h1 id="result-title"></h1>
+		<h2 id="goodrep">La bonne réponse était :</h2>
+		<div id="correct-answer"></div>
+		<p id="explanation"></p>
+		<h3 id="points"></h3>
+	</section>
+    
+    <section style="margin-bottom: 100px;">
+    </section>
+
+    <footer>
+        <button id="previous">Précedent</button>
+		<button id="confirm" disabled>Valider</button>
+        <!--<button id="explain" disabled></button>-->
+		<button id="next-question" disabled><img id="timer-img" src="/assets/timer.png">Suivant</button>
+    </footer>
+
+	<section id="end-page" class="hidden">
+		<h1>Félicitations, vous avez terminé le quiz!</h1>
+		<p id="final-score"></p>
+		<button id="restart-quiz">Recommencer</button>
+	</section>
+</body>
+</html>

@@ -37,53 +37,7 @@ public class ControleurDonnees
     public boolean sauvegarder() {
 
         // Sauvegarde des Ressources et des Notions
-        this.sauvegarderRessources();
-
-        return true;
-        /*
-
-
-        String sRet     = "";
-        boolean sauves  = false;
-
-        *//*  -----------------------------  *//*
-        *//*	  Sauvegarde des ressources    *//*
-        *//*  -----------------------------  *//*
-
-        for (int i = 0; i < this.ctrl.getNbRessource(); i++) {
-            Ressource rsc = this.ctrl.getRessource(i);
-
-            sRet += rsc.getNom().replaceAll(",", "|");
-
-            String donnesNotions = this.sauvegardeNotion(rsc);
-
-            if (!donnesNotions.isEmpty())
-                sRet += "," + donnesNotions;
-
-            sRet += "\n";
-        }
-
-
-        *//*  ----------------------------------  *//*
-        *//*	  Écriture du fichier de données    *//*
-        *//*  ----------------------------------  *//*
-
-        try {
-
-            PrintWriter pw = new PrintWriter(new FileOutputStream(""));
-
-            pw.println(sRet);
-
-            pw.close();
-
-            sauves = true;
-
-
-        } catch (Exception e) {
-            System.out.println("Problème lors de la création du fichier :" + e.getMessage());
-        }
-
-        return sauves;*/
+        return this.sauvegarderRessources();
 
     }
 
@@ -91,7 +45,7 @@ public class ControleurDonnees
      * Nouvelle méthode permettant de sauvegarder les ressources et les notions
      * (Deux tables séparées)
      */
-    private void sauvegarderRessources () {
+    private boolean sauvegarderRessources () {
 
         String sRet = "";
 
@@ -117,8 +71,11 @@ public class ControleurDonnees
 
             pw.close();
 
+            return true;
+
         } catch (Exception e) {
             System.out.println("Erreur sauvegarde fichier de données Ressource : " + e.getMessage());
+            return false;
         }
 
     }
@@ -209,27 +166,6 @@ public class ControleurDonnees
             System.out.println("Erreur fichier de sauvegarde des données notions : " + e.getMessage());
 
         }
-
-    }
-
-    /**
-     * Méthode permettant de sauvegarder les Notions dans un fichier CSV
-     * @param rsc Ressource parent des Notion
-     * @return Les données
-     * @deprecated
-     */
-    private String sauvegardeNotion(Ressource rsc) {
-
-        String sRet = "";
-
-        if (rsc == null) return "";
-
-        int nbNotion = this.ctrl.getNbNotion(rsc);
-
-        for (int i = 0; i < nbNotion; i++)
-            sRet += this.ctrl.getNotion(rsc, i).getNom().replaceAll(",", "|") + (((i+1)!=nbNotion)?",":"");
-
-        return sRet;
 
     }
 
@@ -462,6 +398,43 @@ public class ControleurDonnees
 
         } catch (Exception e) {
             System.out.println("Erreur modification fichier question : " + e.getMessage());
+            return false;
+        }
+
+    }
+
+
+    public boolean supprimerQuestion ( Question q ) {
+
+        String sRet = "";
+
+        try {
+
+            Scanner sc = new Scanner(new FileInputStream("src/data/app/DonneesQuestions.csv"), StandardCharsets.UTF_8);
+
+            while (sc.hasNextLine()) {
+
+                String ligne = sc.nextLine();
+
+                Scanner scLigne = new Scanner(ligne).useDelimiter(",");
+                
+                if (!scLigne.next().equals(q.getUID())) 
+                    sRet += ligne + "\n";
+
+            }
+
+            Files.delete(Paths.get("src", "data", "app", q.getUID()+".txt"));
+
+            PrintWriter pw = new PrintWriter(new FileOutputStream("src/data/app/DonneesQuestions.csv"));
+
+            pw.print(sRet);
+
+            pw.close();
+
+            return true;
+
+        } catch (Exception e) {
+            System.out.println("Erreur suppression Question : " +e.getMessage());
             return false;
         }
 

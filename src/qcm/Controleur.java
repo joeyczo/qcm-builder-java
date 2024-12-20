@@ -91,7 +91,7 @@ public class Controleur {
         return this.generationEvals.getNotionSelected();
     }
 
-    public boolean ajouterDifficulteQuestion (Notion n, DifficulteQuestion d, Integer i) {
+    public Integer ajouterDifficulteQuestion (Notion n, DifficulteQuestion d, Integer i) {
         return this.generationEvals.ajouterDifficulteQuestion(n, d, i);
     }
 
@@ -107,9 +107,13 @@ public class Controleur {
         this.generationEvals.changerRessource(r);
     }
 
-    /*  ------------------------------  */
-    /*	 Méthodes créations questions   */
-    /*  ------------------------------  */
+    public boolean exporterEval ( Evalutation e ) {
+        return this.generationEvals.exporterEvaluation(e);
+    }
+
+    /*  ---------------------------------  */
+    /*	 Méthodes gestions des questions   */
+    /*  ---------------------------------  */
 
     public boolean sauvegarderQuestion ( Question q ) {
         return this.ctrlDonnees.sauvegarderQuestion(q);
@@ -121,6 +125,13 @@ public class Controleur {
 
     public boolean modifierQuestion ( Question q ) {
         return this.ctrlDonnees.modifierQuestion(q);
+    }
+
+    public boolean supprimerQuestion ( Notion n, Question q ) {
+        if (this.ctrlDonnees.supprimerQuestion(q))
+            return this.gestionDonnees.supprimerQuestion(n ,q);
+
+        return false;
     }
 
 

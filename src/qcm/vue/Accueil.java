@@ -17,10 +17,13 @@ public class Accueil extends JFrame implements ActionListener
 
     private JLabel lblTitre;
 
-    private FrameParametres frameParametres;
-    private FrameCreerQst   frameCreerQuestion;
+    private FrameParametres  frameParametres;
+    private FrameCreerQst    frameCreerQuestion;
     private FrameGenererEval frameGenererEval;
-    private FrameListeQst   frameListeQst;
+    private FrameListeQst    frameListeQst;
+
+    private Font             fontGenerale;
+
 
     private Controleur      ctrl;
 
@@ -28,7 +31,8 @@ public class Accueil extends JFrame implements ActionListener
     public Accueil(Controleur ctrl)
     {
 
-        this.ctrl = ctrl;
+        this.ctrl             = ctrl;
+        this.fontGenerale     = new Font("Arial", Font.BOLD, 16);
 
         this.setTitle("Accueil");
         this.setSize(800, 600);
@@ -42,15 +46,20 @@ public class Accueil extends JFrame implements ActionListener
         gbc.gridx              = 0;
         gbc.gridy              = GridBagConstraints.RELATIVE;
 
-        this.lblTitre = new JLabel("QCM Builder");
-        this.lblTitre.setFont(new Font("Arial", Font.BOLD, 30));
-
-        this.btnCreerEval     = new JButton("Générer une évaluation");
+        this.lblTitre         = new JLabel ("QCM Builder");
         this.btnCreerQuestion = new JButton("Créer une question");
+        this.btnCreerEval     = new JButton("Générer une évaluation");
         this.btnListeQst      = new JButton("Liste des Questions");
         this.btnParametres    = new JButton("Paramètres");
 
-        Dimension btnSize = new Dimension(200, 50);
+        this.lblTitre        .setFont(new Font("Arial", Font.BOLD, 30));
+        this.btnCreerQuestion.setFont(this.fontGenerale);
+        this.btnCreerEval    .setFont(this.fontGenerale);
+        this.btnListeQst     .setFont(this.fontGenerale);
+        this.btnParametres   .setFont(this.fontGenerale);
+
+
+        Dimension btnSize = new Dimension(600, 50);
         this.btnCreerQuestion.setPreferredSize(btnSize);
         this.btnCreerEval    .setPreferredSize(btnSize);
         this.btnParametres   .setPreferredSize(btnSize);
@@ -63,9 +72,9 @@ public class Accueil extends JFrame implements ActionListener
 
         this.pnlBtns.add(lblTitre);
         this.pnlBtns.add(btnCreerQuestion, gbc);
-        this.pnlBtns.add(btnCreerEval, gbc);
-        this.pnlBtns.add(btnListeQst, gbc);
-        this.pnlBtns.add(btnParametres, gbc);
+        this.pnlBtns.add(btnCreerEval    , gbc);
+        this.pnlBtns.add(btnListeQst     , gbc);
+        this.pnlBtns.add(btnParametres   , gbc);
 
         this.add(pnlBtns);
 

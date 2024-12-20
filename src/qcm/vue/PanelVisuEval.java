@@ -43,11 +43,12 @@ public class PanelVisuEval extends JPanel implements ActionListener {
         for (Question q : eval.ensQuestion())
             nbPoints += q.getNbPoints();
         
-        String txtLabel         =    "<html><ul style=\"font-size: 11px;\">"                        +
+        String txtLabel         =    "<html><ul style=\"font-size: 12px;\">"                        +
                                     "<li>Nombre de questions : " + eval.nbQuestions() + "</li>"     +
                                     "<li>Questionnaire chronométré : " + estChrono + "   </li>"     +
-                                    "<li>Nombre de points : " + nbPoints + "</li>" +
-                                    "</ul><br><hr><ul style=\"font-size: 11px;\">" + txtQuestions + "</ul></html>";
+                                    "<li>Nombre de points : " + nbPoints + "</li>"                  +
+                                    "<li>Ressource : " + eval.ressource().getNom() + "</li>"        +
+                                    "</ul><br><hr style=\"width: 100vw;\"><ul style=\"font-size: 12px;\">" + txtQuestions + "</ul></html>";
 
         labelNbQst.setText(txtLabel);
 
@@ -57,7 +58,8 @@ public class PanelVisuEval extends JPanel implements ActionListener {
         this.add(labelNbQst);
         this.add(panelButtons, BorderLayout.SOUTH);
 
-        this.btnAnnuler.addActionListener(this);
+        this.btnAnnuler  .addActionListener(this);
+        this.btnConfirmer.addActionListener(this);
 
     }
 
@@ -66,6 +68,13 @@ public class PanelVisuEval extends JPanel implements ActionListener {
 
         if (e.getSource() == this.btnAnnuler) {
             this.frameParent.fermerFenetre();
+        }
+
+        if (e.getSource() == this.btnConfirmer) {
+            if (this.ctrl.exporterEval(this.evalutation)) {
+                JOptionPane.showMessageDialog(this, "L'évaluation a bien été exportée !", "Évaluation générée", JOptionPane.INFORMATION_MESSAGE);
+                this.frameParent.fermerFenetre();
+            }
         }
 
     }
@@ -82,9 +91,9 @@ public class PanelVisuEval extends JPanel implements ActionListener {
             
             String txtQuestion = q.getTexteQuestion().replaceAll("\n", ".").replaceAll("\t", "");
 
-            if (txtQuestion.length() > 50) txtQuestion = txtQuestion.substring(0, 50);
+            if (txtQuestion.length() > 85) txtQuestion = txtQuestion.substring(0, 85) + "...";
 
-            sRet += "<li style=\"margin: 10px 0;\">Notion : <b>" + q.getNotion().getNom()
+            sRet += "<li style=\"margin: 10px 0;width: 100%;\">Notion : <b>" + q.getNotion().getNom()
                     + "</b> - Nb Points : <i>" + q.getNbPoints()
                     +"</i> - Difficulté : <i style=\"color: " + q.getDifficulte().getCouleurHtml() + "\"> " + q.getDifficulte() +"</i> "
                     + " - Type de question : " + q.getTypeQuestion().getNomType() +

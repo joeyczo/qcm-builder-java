@@ -4,7 +4,14 @@ package qcm.metier;
 import qcm.Controleur;
 import qcm.vue.FrameVisuEval;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.PrintWriter;
 import java.lang.reflect.Array;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 public class GenerationEvals {
@@ -33,6 +40,7 @@ public class GenerationEvals {
      * @param ressource Nouvelle ressource
      */
     public void changerRessource ( Ressource ressource ) {
+        System.out.println("Nouvelle ressource : " + this.ressource.getNom());
         this.ressource = ressource;
     }
 
@@ -75,12 +83,20 @@ public class GenerationEvals {
      * @param n Notion à ajouter la question
      * @param diff Difficulté de la notion
      * @param num Nombre de questions à ajouter
-     * @return Savoir si le nombre de questions a pu être ajouté
+     * @return Le plus grand nombre de question qu'il est possible d'ajouter
      */
-    public boolean ajouterDifficulteQuestion (Notion n, DifficulteQuestion diff, Integer num) {
+    public Integer ajouterDifficulteQuestion (Notion n, DifficulteQuestion diff, Integer num) {
 
-        if (!this.mapNotions.containsKey(n))    return false;
-        if (n.getNbQuestions(diff) < num)       return false;
+        if (!this.mapNotions.containsKey(n))    return 0;
+
+
+        if (n.getNbQuestions(diff) < num) {
+
+            int maxQst = n.getNbQuestions(diff);
+
+            return this.ajouterDifficulteQuestion(n, diff, maxQst);
+
+        }
 
         Map<DifficulteQuestion, Integer> mapNotion = this.mapNotions.get(n);
 
@@ -90,7 +106,7 @@ public class GenerationEvals {
 
         this.mapNotions.put(n, mapNotion);
 
-        return true;
+        return num;
     }
 
 
@@ -185,6 +201,51 @@ public class GenerationEvals {
         Evalutation eval = new Evalutation(this.getNbQuestions(), evalue, this.ressource, alQuestion, path);
 
         new FrameVisuEval(this.ctrl, eval);
+
+    }
+
+    /**
+     * Exporter l'évaluation vers le fichier après la visualisation
+     * @param e Données de l'évaluation
+     */
+    public boolean exporterEvaluation( Evalutation e ) {
+
+        Path cheminGeneration   = Paths.get(e.pathExp());
+        Path cheminGenJS        = Paths.get(e.pathExp(), "script.js");
+
+        if (e == null) return false;
+
+        try {
+
+
+            // Génération du JavaScript
+
+            String sJs = "";
+
+            sJs += "const ressource = `" + e.ressource().getNom() + "`";
+
+            sJs += "const questions = " + GenererJSON.genererJson(e);
+
+            Scanner sc = new Scanner(new FileInputStream("src/data/web/script.js"), StandardCharsets.UTF_8);
+
+            while (sc.hasNextLine())
+                sJs += sc.nextLine() + "\n";
+
+            Files.createDirectory(cheminGeneration);
+
+            PrintWriter pw = new PrintWriter(new FileOutputStream(cheminGenJS.toString()));
+
+            pw.print(sJs);
+
+            pw.close();
+
+            return true;
+
+
+        } catch (Exception ex) {
+            System.out.println("Erreur génération des fichiers de l'évaluation" + ex.getMessage());
+            return false;
+        }
 
     }
 

@@ -45,6 +45,7 @@ public class PanelParametre extends JPanel implements ActionListener
         this.tblGrilleDonnees = new JTable ( new GrilleDonneesNotion(this.ctrl, null) );
         this.tblGrilleDonnees.setFillsViewportHeight(true);
         this.tblGrilleDonnees.setRowHeight(30);
+        this.tblGrilleDonnees.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
 
         this.btnAjouterRessource = new JButton("Ajouter une ressource");

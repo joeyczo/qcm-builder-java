@@ -26,11 +26,14 @@ public class PanelElim extends JPanel implements ActionListener, DocumentListene
     private ArrayList<JTextField>   lstOrdrePrioQst;
     private ArrayList<JTextField>   lstPointEnMoins;
 
-
     private JButton           btnEnregistrer, btnAdd,btnInfoSupp;
     private JTextArea         txtQst, txtInfoSupp;
     private JScrollPane       scrollPane;
     private ButtonGroup       btg;
+
+    private Font              fontGenerale;
+    private Font              fontGeneraleGras;
+
 
     public PanelElim( DonneesCreationQuestion data, FrameInfosQuestion parent, Controleur ctrl )
     {
@@ -46,11 +49,15 @@ public class PanelElim extends JPanel implements ActionListener, DocumentListene
         this.lstOrdrePrioQst     = new ArrayList<JTextField>();
         this.lstPointEnMoins     = new ArrayList<JTextField>();
 
+        this.fontGenerale        = new Font("Arial", Font.PLAIN, 16);
+        this.fontGeneraleGras    = new Font("Arial", Font.BOLD , 16);
+
+
         JTextArea jTextAreaQst = new JTextArea (4, 1);
-        jTextAreaQst.setFont(new Font("Arial", Font.PLAIN, 16));
+        jTextAreaQst.setFont(this.fontGenerale);
 
         JTextArea jTextAreaInfo = new JTextArea (10, 10);
-        jTextAreaInfo.setFont(new Font("Arial", Font.PLAIN, 16));
+        jTextAreaInfo.setFont(this.fontGenerale);
 
 
         this.txtQst         = jTextAreaQst;
@@ -64,7 +71,7 @@ public class PanelElim extends JPanel implements ActionListener, DocumentListene
         if(data.qst() == null){
             for( int cpt = 0; cpt < 2; cpt ++) {
                 JTextArea jTextAreaRep = new JTextArea (3, 1);
-                jTextAreaRep.setFont(new Font("Arial", Font.PLAIN, 16));
+                jTextAreaRep.setFont(this.fontGenerale);
 
                 this.lstBtnSupp         .add(new JButton());
                 this.lstTxtReponses     .add(jTextAreaRep);
@@ -83,12 +90,13 @@ public class PanelElim extends JPanel implements ActionListener, DocumentListene
             this.ajoutElementModifier();
         }
 
+        this.btnEnregistrer.setFont(this.fontGeneraleGras);
+
         this.majIHM();
 
         this.btnEnregistrer.addActionListener(this);
         this.btnAdd        .addActionListener(this);
         this.btnInfoSupp   .addActionListener(this);
-
 
         for ( int cpt = 0; cpt < this.lstBtnSupp.size(); cpt ++)
             this.lstBtnSupp.get(cpt).addActionListener(this);
@@ -96,10 +104,9 @@ public class PanelElim extends JPanel implements ActionListener, DocumentListene
 
     public void actionPerformed(ActionEvent e)
     {
-        if (e.getSource() == this.btnAdd)
-        {
+        if (e.getSource() == this.btnAdd){
             JTextArea jTextAreaRep = new JTextArea (3, 1);
-            jTextAreaRep.setFont(new Font("Arial", Font.PLAIN, 16));
+            jTextAreaRep.setFont(this.fontGenerale);
 
             this.lstBtnSupp         .add(new JButton());
             this.lstTxtReponses     .add(jTextAreaRep);
@@ -119,11 +126,9 @@ public class PanelElim extends JPanel implements ActionListener, DocumentListene
         }
 
         for ( int cpt = 0; cpt < this.lstBtnSupp.size(); cpt ++)
-            if (e.getSource() == this.lstBtnSupp.get(cpt))
-            {
+            if (e.getSource() == this.lstBtnSupp.get(cpt)){
                 // Bloque la suppression s'il y a moins de 2 cases après la suppression
-                if ( this.lstBtnSupp.size() > 2 )
-                {
+                if ( this.lstBtnSupp.size() > 2 ) {
                     this.lstBtnSupp         .remove(cpt);
                     this.lstTxtReponses     .remove(cpt);
                     this.lstScrollTexte     .remove(cpt);
@@ -132,18 +137,13 @@ public class PanelElim extends JPanel implements ActionListener, DocumentListene
                     this.lstPointEnMoins    .remove(cpt);
 
                     this.majIHM();
-                }
-                else
-                {
+                } else{
                     JOptionPane.showMessageDialog(this,  "Erreur : Il doit y avoir au minimum 2 réponses possible", "Erreur Suppression ", JOptionPane.ERROR_MESSAGE);
                 }
                 return;
-
             }
 
-        if(e.getSource() == this.btnInfoSupp)
-        {
-
+        if(e.getSource() == this.btnInfoSupp){
             System.out.println("CLIQUE SUR LE BOUTON");
 
             JScrollPane scrollPane = new JScrollPane(this.txtInfoSupp);
@@ -159,29 +159,41 @@ public class PanelElim extends JPanel implements ActionListener, DocumentListene
             return;
         }
 
+        for (int i = 0; i < this.lstBtnValideReponse.size(); i++) {
+            if(e.getSource() == this.lstBtnValideReponse.get(i)){
+                this.lstOrdrePrioQst.get(i).setEnabled(false);
+                this.lstPointEnMoins.get(i).setEnabled(false);
+            }
+            if(!this.lstBtnValideReponse.get(i).isSelected()){
+                this.lstOrdrePrioQst.get(i).setEnabled(true);
+                this.lstPointEnMoins.get(i).setEnabled(true);
+            }
+        }
+
         if ( e.getSource() == this.btnEnregistrer)
         {
-
-            if ( this.txtQst.getText().isEmpty() || this.txtQst.getText().trim().isEmpty() )
-            {
+            if ( this.txtQst.getText().isEmpty() || this.txtQst.getText().trim().isEmpty() ) {
                 this.afficherMessageErreur("Erreur : Aucun texte n'est entré pour la question");
                 return;
             }
 
             for (JTextArea lstTxtReponse : this.lstTxtReponses)
-                if (lstTxtReponse.getText().isEmpty() || lstTxtReponse.getText().trim().isEmpty())
-                {
+                if (lstTxtReponse.getText().isEmpty() || lstTxtReponse.getText().trim().isEmpty()){
                     this.afficherMessageErreur("Erreur : Aucun texte n'est entré pour l'une des réponse");
                     return;
                 }
 
             int cptBoutonValide = 0;
             for (JRadioButton jRadioButton : this.lstBtnValideReponse)
-                if (jRadioButton.isSelected())
+                if (jRadioButton.isSelected()){
                     cptBoutonValide++;
+                    for (int i = 0; i < this.lstBtnValideReponse.toArray().length; i++) {
+                        this.lstOrdrePrioQst.get(i).setEnabled(false);
+                        this.lstPointEnMoins.get(i).setEnabled(false);
+                    }
+                }
 
-            if ( cptBoutonValide == 0 )
-            {
+            if ( cptBoutonValide == 0 ){
                 this.afficherMessageErreur("Erreur : Il faut au moins sélectionner un réponse valide");
                 return;
             }
@@ -190,12 +202,9 @@ public class PanelElim extends JPanel implements ActionListener, DocumentListene
             Double        pointSoustrait;
             Double        sommePointSoustrait         = 0.0;
 
-            for (int cpt = 0; cpt < this.lstOrdrePrioQst.size(); cpt ++)
-            {
-                try
-                {
-                    if ( !(this.lstOrdrePrioQst.get(cpt).getText().trim().isEmpty() && this.lstPointEnMoins.get(cpt).getText().trim().isEmpty()) )
-                    {
+            for (int cpt = 0; cpt < this.lstOrdrePrioQst.size(); cpt ++){
+                try{
+                    if ( !(this.lstOrdrePrioQst.get(cpt).getText().trim().isEmpty() && this.lstPointEnMoins.get(cpt).getText().trim().isEmpty()) ){
 
                         System.out.println(this.lstOrdrePrioQst.get(cpt).getText());
                         System.out.println(this.lstPointEnMoins.get(cpt).getText());
@@ -205,23 +214,18 @@ public class PanelElim extends JPanel implements ActionListener, DocumentListene
 
                         if ( pointSoustrait < 0 )
                             sommePointSoustrait += pointSoustrait;
-                        else
-                        {
+                        else{
                             this.afficherMessageErreur("Erreur : Le nombre de point à enlevé doit être négatif -> (-0.5)");
                             return;
                         }
 
 
-                        if ( this.data.nbPoints() + sommePointSoustrait < 0 )
-                        {
+                        if ( this.data.nbPoints() + sommePointSoustrait < 0 ){
                             this.afficherMessageErreur("Erreur : Trop de points sont enlevé");
                             return;
                         }
                     }
-
-                }
-                catch (Exception exception)
-                {
+                } catch (Exception exception){
                     System.out.println(exception.getMessage());
                     this.afficherMessageErreur("Erreur : Soit les deux cases de priorité d'ordre et point en moins doivent contenir des données soit aucune");
                     return;
@@ -231,17 +235,12 @@ public class PanelElim extends JPanel implements ActionListener, DocumentListene
             // Trie dans l'ordre croissant l'ordre des suppressions
             ordreSuppressionMauvaiseRep.sort(Comparator.naturalOrder());
 
-            for (int cpt = 1; cpt <= ordreSuppressionMauvaiseRep.size(); cpt++)
-            {
-
-                if ( ordreSuppressionMauvaiseRep.get(cpt-1) != cpt )
-                {
+            for (int cpt = 1; cpt <= ordreSuppressionMauvaiseRep.size(); cpt++) {
+                if ( ordreSuppressionMauvaiseRep.get(cpt-1) != cpt ) {
                     this.afficherMessageErreur("Erreur : La saisie de l'ordre de suppression est incorrect");
                     return;
                 }
             }
-               
-
             // On crée l'objet réponse
 
             EliminationReponse eliminationReponse = new EliminationReponse();
@@ -262,7 +261,6 @@ public class PanelElim extends JPanel implements ActionListener, DocumentListene
                 eliminationReponse.ajouterReponseItem(item);
 
                 i++;
-
             }
 
             if ( !this.txtInfoSupp.getText().isEmpty() && !this.txtInfoSupp.getText().trim().isEmpty())
@@ -271,7 +269,7 @@ public class PanelElim extends JPanel implements ActionListener, DocumentListene
             String txtQuestion = this.txtQst.getText().trim().replaceAll("\n", "\\\\n").replaceAll("\t", "\\\\t");
 
             // On ajoute la nouvelle question dans la base de données
-            if (this.data.qst() == null) {
+            if (this.data.qst() == null){
 
                 Question question = new Question(txtQuestion, this.data.tempsReponse(), this.data.nbPoints(), this.data.type(), eliminationReponse, this.data.diff(), this.data.notion());
 
@@ -296,15 +294,18 @@ public class PanelElim extends JPanel implements ActionListener, DocumentListene
                 this.data.notion().modifierQuestion(question);
 
                 this.afficherMessageValide("La question a bien été modifiée dans la base de données !");
-
             }
-
             this.frameParent.fermerFenetre();
-
-
         }
 
-
+        for (int i = 0; i < this.lstOrdrePrioQst.size(); i++) {
+            if(!this.lstOrdrePrioQst.get(i).getText().isEmpty() || !this.lstPointEnMoins.get(i).getText().isEmpty()){
+                this.lstBtnValideReponse.get(i).setEnabled(false);
+            }
+            if(!this.lstOrdrePrioQst.get(i).getText().isEmpty() && this.lstPointEnMoins.get(i).getText().isEmpty()){
+                this.lstBtnValideReponse.get(i).setEnabled(true);
+            }
+        }
     }
 
     /**
@@ -336,7 +337,7 @@ public class PanelElim extends JPanel implements ActionListener, DocumentListene
         gbc.gridx = 0;
         gbc.gridy = 0;
         JLabel labelQst = new JLabel("Question");
-        labelQst.setFont(new Font("Arial", Font.PLAIN, 16));
+        labelQst.setFont(this.fontGeneraleGras);
         this.add(labelQst, gbc);
 
         gbc.gridy     = 1;
@@ -399,8 +400,7 @@ public class PanelElim extends JPanel implements ActionListener, DocumentListene
         this.btnInfoSupp.setCursor(new Cursor(Cursor.HAND_CURSOR));
         this.add(btnInfoSupp, gbc);
 
-
-        gbc.gridx      = 2;
+        gbc.gridx     = 5;
         this.add(btnEnregistrer, gbc);
 
         this.revalidate();
@@ -453,7 +453,7 @@ public class PanelElim extends JPanel implements ActionListener, DocumentListene
         for ( int cpt = 0; cpt < elimReponse.getNbReponse(); cpt ++)
         {
             JTextArea jTextAreaRep = new JTextArea (3, 1);
-            jTextAreaRep.setFont(new Font("Arial", Font.PLAIN, 16));
+            jTextAreaRep.setFont(this.fontGenerale);
 
             this.lstBtnSupp         .add(new JButton());
             this.lstTxtReponses     .add(jTextAreaRep);
@@ -495,8 +495,11 @@ public class PanelElim extends JPanel implements ActionListener, DocumentListene
                 this.lstPointEnMoins.get(cpt).setEnabled(false);
                 this.lstOrdrePrioQst.get(cpt).setEnabled(false);
             }
+            if(this.lstOrdrePrioQst.get(cpt).getText().isEmpty() && this.lstPointEnMoins.get(cpt).getText().isEmpty()){
+                this.lstBtnValideReponse.get(cpt).setEnabled(true);
+            }
         }
-        //TODO finir le réglage de la sélection
+
         majIHM();
     }
 }
