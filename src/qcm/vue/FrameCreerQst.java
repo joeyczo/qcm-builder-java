@@ -16,6 +16,7 @@ public class FrameCreerQst extends JDialog
         super(parent, ((data == null) ? "Créer une nouvelle question" : "Modifier une question"), true);
         this.setSize(1000, 300);
         this.setLocationRelativeTo(null);
+        this.setResizable(false);
 
         this.ctrl   = ctrl;
         this.data   = data;

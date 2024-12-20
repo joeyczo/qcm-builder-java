@@ -1,0 +1,20 @@
+{TEXTEQST}
+Associez les éléments suivants :
+{TEXTEEXPLICATION}
+Et maintenant c'est l'explication !!\nDONC CA MARCHE AUSSI
+{ASSOCIATION}
+Carrément ordinaireml,okkoo\n\n\n\n\n\n\n                                                                                             ok
+{REPONSE}
+super
+{ASSOCIATION}
+Est-ce que ça marche
+{REPONSE}
+Bah ouais ?
+{ASSOCIATION}
+Super
+{REPONSE}
+Maintenant il faut associer les élements
+{ASSOCIATION}
+Ca va marcher en HTML/CSS
+{REPONSE}
+Et javascript !!!

@@ -1,0 +1,16 @@
+{TEXTEQST}
+Ceci est une nouvelle question avec le nouveau modèle de données qui devrait marcher\nLa modification va maintenant fonctionner !
+{TEXTEEXPLICATION}
+Ceci est un texte d'excplication\nSELECT\t*\nFROM\ttableau;\nOOOHHH CA FONCTIONNE\ntrop cool
+{REPONSEQCM}
+0
+Est-ce que ça va marcher ?
+{REPONSEQCM}
+0
+Si tout fonctionne bien je suis content !!
+{REPONSEQCM}
+1
+Et la est-ce que ça marche ?\nAprès je vais retester
+{REPONSEQCM}
+0
+zezeze

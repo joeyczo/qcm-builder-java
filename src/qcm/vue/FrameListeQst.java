@@ -16,9 +16,9 @@ public class FrameListeQst extends JDialog
         super(parent, "Liste des questions", true);
 
         this.ctrl = ctrl;
-        this.setSize(800, 600);
+        this.setSize(1000, 600);
         this.setLocationRelativeTo(null);
-        this.setResizable(false);
+        this.setResizable(true);
 
         this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 

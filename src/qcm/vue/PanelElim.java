@@ -14,7 +14,6 @@ import javax.swing.event.DocumentListener;
 
 public class PanelElim extends JPanel implements ActionListener, DocumentListener
 {
-
     private FrameInfosQuestion      frameParent;
     private Controleur              ctrl;
     private DonneesCreationQuestion data;
@@ -297,15 +296,6 @@ public class PanelElim extends JPanel implements ActionListener, DocumentListene
             }
             this.frameParent.fermerFenetre();
         }
-
-        for (int i = 0; i < this.lstOrdrePrioQst.size(); i++) {
-            if(!this.lstOrdrePrioQst.get(i).getText().isEmpty() || !this.lstPointEnMoins.get(i).getText().isEmpty()){
-                this.lstBtnValideReponse.get(i).setEnabled(false);
-            }
-            if(!this.lstOrdrePrioQst.get(i).getText().isEmpty() && this.lstPointEnMoins.get(i).getText().isEmpty()){
-                this.lstBtnValideReponse.get(i).setEnabled(true);
-            }
-        }
     }
 
     /**
@@ -326,7 +316,6 @@ public class PanelElim extends JPanel implements ActionListener, DocumentListene
 
     public void majIHM()
     {
-
         this.removeAll();
 
         this.setLayout(new GridBagLayout());
@@ -400,8 +389,16 @@ public class PanelElim extends JPanel implements ActionListener, DocumentListene
         this.btnInfoSupp.setCursor(new Cursor(Cursor.HAND_CURSOR));
         this.add(btnInfoSupp, gbc);
 
-        gbc.gridx     = 5;
-        this.add(btnEnregistrer, gbc);
+        gbc.gridx = 1;
+        gbc.gridy = 2 + ( this.lstTxtReponses.size() * 2 );;
+        gbc.gridwidth = 3; // Étendre sur 3 colonnes
+        gbc.weightx = 1.0; // Remplit l'espace restant
+        gbc.fill = GridBagConstraints.HORIZONTAL; // Remplissage horizontal
+        JPanel pnl = new JPanel();
+        pnl.setLayout(new BorderLayout());
+        pnl.add(this.btnInfoSupp, BorderLayout.WEST);
+        pnl.add(this.btnEnregistrer, BorderLayout.EAST);
+        this.add(pnl, gbc);
 
         this.revalidate();
         this.repaint();
@@ -412,7 +409,7 @@ public class PanelElim extends JPanel implements ActionListener, DocumentListene
     {
         for ( int cpt = 0; cpt < this.lstOrdrePrioQst.size(); cpt ++)
         {
-            if (!this.lstOrdrePrioQst.get(cpt).getText().isEmpty() || !this.lstPointEnMoins.get(cpt).getText().isEmpty() )
+            if (!this.lstOrdrePrioQst.get(cpt).getText().trim().isEmpty() || !this.lstPointEnMoins.get(cpt).getText().trim().isEmpty() )
             {
                 if ( this.lstBtnValideReponse.get(cpt).isSelected())
                     this.btg.clearSelection();
@@ -428,7 +425,7 @@ public class PanelElim extends JPanel implements ActionListener, DocumentListene
     {
         for ( int cpt = 0; cpt < this.lstOrdrePrioQst.size(); cpt ++)
         {
-            if (!this.lstOrdrePrioQst.get(cpt).getText().isEmpty() || !this.lstPointEnMoins.get(cpt).getText().isEmpty() )
+            if (!this.lstOrdrePrioQst.get(cpt).getText().trim().isEmpty() || !this.lstPointEnMoins.get(cpt).getText().trim().isEmpty() )
             {
                 if ( this.lstBtnValideReponse.get(cpt).isSelected())
                     this.btg.clearSelection();
@@ -437,8 +434,6 @@ public class PanelElim extends JPanel implements ActionListener, DocumentListene
             else
                 this.lstBtnValideReponse.get(cpt).setEnabled(true);
         }
-
-        this.majIHM();
     }
 
     @Override
@@ -458,48 +453,47 @@ public class PanelElim extends JPanel implements ActionListener, DocumentListene
             this.lstBtnSupp         .add(new JButton());
             this.lstTxtReponses     .add(jTextAreaRep);
             this.lstScrollTexte     .add(new JScrollPane(this.lstTxtReponses.getLast(), JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED));
-            this.lstBtnValideReponse.add(new JRadioButton());
             this.lstOrdrePrioQst    .add(new JTextField(3));
             this.lstPointEnMoins    .add(new JTextField(3));
-            this.btg.add(this.lstBtnValideReponse.getLast());
-            this.lstBtnValideReponse.getLast().addActionListener(this);
+            JRadioButton radioBouton = new JRadioButton();
+            this.lstBtnValideReponse.add(radioBouton);
+            this.btg                .add(radioBouton);
+
+            this.lstOrdrePrioQst.getLast().getDocument().addDocumentListener(this);
+            this.lstPointEnMoins.getLast().getDocument().addDocumentListener(this);
+            this.lstBtnSupp     .getLast().addActionListener(this);
         }
     }
 
     public void ajoutElementModifier()
     {
-        Question q = this.data.qst();
+
+        EliminationReponse eliminationReponse = (EliminationReponse) data.qst().getReponse();
+
         this.txtQst.setText(this.data.qst().getTexteQuestion());
-        EliminationReponse eliminationReponse = (EliminationReponse) q.getReponse();
-        this.txtInfoSupp.setText(q.getReponse().getTexteExplication());
+        this.txtInfoSupp.setText(eliminationReponse.getTexteExplication());
 
-        System.out.println(eliminationReponse.getNbReponse());
+        for ( int cpt = 0; cpt < eliminationReponse.getNbReponse(); cpt ++)
+        {
+            EliminationReponseItem item = eliminationReponse.getReponseItem(cpt);
 
-        for ( int cpt = 0; cpt < eliminationReponse.getNbReponse(); cpt++){
-            EliminationReponse e = (EliminationReponse) q.getReponse();
-            EliminationReponseItem ei = e.getReponseItem(cpt);
-            this.lstTxtReponses.get(cpt).setText(ei.getTexte());
-            this.lstBtnValideReponse.get(cpt).setSelected(ei.isBonneReponse());
-            
-            if(ei.getOrdreSuppression() != 0) {
-                this.lstOrdrePrioQst.get(cpt).setText("" + ei.getOrdreSuppression());
+            this.lstTxtReponses .get(cpt).setText( item.getTexte() );
+
+            if ( item.getPtsSuppression() != 0 )
+            {
                 this.lstBtnValideReponse.get(cpt).setEnabled(false);
+                this.lstPointEnMoins.get(cpt).setText( String.valueOf(item.getPtsSuppression()));
             }
 
-            if(ei.getPtsSuppression() != 0.0f) {
-                this.lstPointEnMoins.get(cpt).setText("" + ei.getPtsSuppression());
+            if ( item.getPtsSuppression() != 0.0 )
+            {
                 this.lstBtnValideReponse.get(cpt).setEnabled(false);
+                this.lstOrdrePrioQst.get(cpt).setText(String.valueOf(item.getOrdreSuppression()));
             }
 
-            if(this.lstBtnValideReponse.get(cpt).isSelected()){
-                this.lstPointEnMoins.get(cpt).setEnabled(false);
-                this.lstOrdrePrioQst.get(cpt).setEnabled(false);
-            }
-            if(this.lstOrdrePrioQst.get(cpt).getText().isEmpty() && this.lstPointEnMoins.get(cpt).getText().isEmpty()){
-                this.lstBtnValideReponse.get(cpt).setEnabled(true);
-            }
+            if ( item.isBonneReponse() )
+                this.lstBtnValideReponse.get(cpt).setSelected(true);
+
         }
-
-        majIHM();
     }
 }

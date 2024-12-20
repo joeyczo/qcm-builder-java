@@ -10,13 +10,13 @@ public class AssociationReponse implements Reponse
 		this.txtExplication	= null;
 	}
 	
-	public ArrayList<AssociationReponseItem> getReponses(){ return this.alReponses;}
+	public ArrayList<AssociationReponseItem> getReponsesItem(){ return this.alReponses;}
 
 	public int getNbReponses () {
 		return this.alReponses.size();
 	}
 
-	public AssociationReponseItem getReponse ( int indince ) {
+	public AssociationReponseItem getReponseItem(int indince ) {
 		return this.alReponses.get(indince);
 	}
 

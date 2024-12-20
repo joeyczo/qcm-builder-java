@@ -158,7 +158,7 @@ public class PanelCreerQst extends JPanel implements ActionListener
         // Ligne 3
         gbc.gridx = 0;
         gbc.gridy = 2;
-        JLabel labelType = new JLabel("Type de questions :");
+        JLabel labelType = new JLabel("Type de question :");
         labelType.setFont(this.fontGeneraleGras);
         this.add(labelType, gbc);
         this.add(new JLabel(" "), gbc);
@@ -196,7 +196,6 @@ public class PanelCreerQst extends JPanel implements ActionListener
             btn.addActionListener(this);
 
         this.btnValider.addActionListener(this);
-        this.verifierTemps();
 
         // Charger les données
         if (this.data != null)
@@ -251,6 +250,7 @@ public class PanelCreerQst extends JPanel implements ActionListener
                 String diff             = "";
                 String ressource        = (String) this.ddlstRessource.getSelectedItem();
                 String notion           = (String) this.ddlstNotions.getSelectedItem();
+                String tempsCorrect     = this.verifierTemps();
 
                 for (RoundButton btn : this.lstBtnDiff)
                     if (btn.isSelected()) diff = btn.getTexte();
@@ -277,6 +277,11 @@ public class PanelCreerQst extends JPanel implements ActionListener
 
                 if (this.ddlstTypeQuestion.getSelectedIndex() == 0) {
                     this.afficherMessageErreur("Veuillez sélectionner un type de question");
+                    return;
+                }
+
+                if (tempsCorrect == null) {
+                    this.afficherMessageErreur("Le format du temps est incorrect ! (min:sec)");
                     return;
                 }
 
@@ -309,21 +314,24 @@ public class PanelCreerQst extends JPanel implements ActionListener
 
                 // Ici on ajoute une nouvelle question
                 if (this.data == null) {
-                    dataQuestions = new DonneesCreationQuestion(nbPoints, verifierTemps(), rsc, not, difficulte, type, null);
+                    dataQuestions = new DonneesCreationQuestion(nbPoints, tempsCorrect, rsc, not, difficulte, type, null);
                 } else { // Ici on modifie une question existante
                     System.out.println("MODIFICATION");
-                    dataQuestions = new DonneesCreationQuestion(nbPoints, verifierTemps(), rsc, not, difficulte, type, this.data.qst());
+                    dataQuestions = new DonneesCreationQuestion(nbPoints, tempsCorrect, rsc, not, difficulte, type, this.data.qst());
                 }
                 new FrameInfosQuestion(this.ctrl, dataQuestions);
                 this.frameParent.fermerFenetre();
 
             } catch (NumberFormatException ne) {
+
                 this.afficherMessageErreur("Veuillez préciser un nombre de points valide !");
                 System.out.println("Erreur format points : " + ne.getMessage());
+
             } catch (Exception ex) {
+
                 this.afficherMessageErreur("Une erreur inconnu vient de se produire");
-                ex.printStackTrace();
                 System.out.println("Autre erreur : " +ex.getMessage());
+
             }
         }
     }
@@ -337,46 +345,44 @@ public class PanelCreerQst extends JPanel implements ActionListener
         JOptionPane.showMessageDialog(this, message, "Erreur lors de la validation des données", JOptionPane.ERROR_MESSAGE);
     }
 
-    private String verifierTemps()
-    {
-        String temps = this.txtTempsRep.getText();
-        int minute, seconde;
-        int index = temps.indexOf(':');
+    private String verifierTemps() {
 
-        if(index != -1){
-            seconde = Integer.parseInt(temps.substring(index + 1));
-            minute = Integer.parseInt(temps.substring(0, index));
+        try {
 
-            while(seconde > 59){
-                minute++;
-                seconde -= 60;
-            }
-        } else{
-            this.afficherMessageErreur("Erreur : le format valide pour le temps est le suivant -> mm:ss");
-            return "";
+            String  temps = this.txtTempsRep.getText();
+            boolean modif = false;
+            int     index = temps.indexOf(':');
+            int     minute, seconde;
+
+            if(index != -1){
+                seconde = Integer.parseInt(temps.substring(index + 1));
+                minute = Integer.parseInt(temps.substring(0, index));
+
+                if ( minute == 0 && seconde == 0 )
+                    return null;
+
+                if (  minute < 0 || seconde < 0)
+                    return null;
+
+                while(seconde > 59){
+                    modif = true;
+                    minute++;
+                    seconde -= 60;
+                }
+            } else
+                return null;
+
+            String tempsFinal = ((minute > 10) ? "" + minute : "0" + minute) + ":" + ((seconde > 10) ? "" + seconde : "0" + seconde);
+
+            if ( modif )
+                JOptionPane.showMessageDialog(this,"Modification de temps " +  temps + " en " + tempsFinal, "Transformation du timer en valeur valide", JOptionPane.INFORMATION_MESSAGE);
+
+            return temps;
+            
+        } catch (Exception e) {
+            return null;
         }
-
-        return ((minute > 10) ? "" + minute : "0" + minute) + ":" + ((seconde > 10) ? "" + seconde : "0" + seconde);
     }
-
-    /*public void insertUpdate(DocumentEvent e) {
-        verifierEtMettreAJourTemps();
-    }
-
-    public void removeUpdate(DocumentEvent e) {
-        verifierEtMettreAJourTemps();
-    }
-
-    public void changedUpdate(DocumentEvent e) {
-        verifierEtMettreAJourTemps();
-    }
-
-    private void verifierEtMettreAJourTemps() {
-        String nouveauTemps = verifierTemps();
-        if (!nouveauTemps.isEmpty() && !nouveauTemps.equals(this.txtTempsRep.getText())) {
-            this.txtTempsRep.setText(nouveauTemps);
-        }
-    }*/
 
     /**
      * Charger les données de la question dans le formulaire

@@ -1,0 +1,22 @@
+{TEXTEQST}
+Question qui sera très difficile \nComment sont gérés les textes à plusieurs lignes\tet avec des tabs dans l'affichage ?\nSELECT\t*\nFROM\tetudiants\nWHERE\televes = true;
+{ASSOCIATION}
+Définition 1
+{REPONSE}
+Associatin 1
+{ASSOCIATION}
+SUPER\nTROP BIEN
+{REPONSE}
+Ca marche super nickel\nSuper
+{ASSOCIATION}
+Trop parfait !
+{REPONSE}
+ouais ouais
+{ASSOCIATION}
+Associé
+{REPONSE}
+Association
+{ASSOCIATION}
+Encore une autre
+{REPONSE}
+Et une dernière

@@ -1,0 +1,14 @@
+{TEXTEQST}
+Nouvelle question multiple
+{REPONSEQCM}
+0
+Choix 1 pas bon
+{REPONSEQCM}
+0
+Choix 2 pas bon
+{REPONSEQCM}
+1
+Choix 3 bon
+{REPONSEQCM}
+1
+Choix 4 bon

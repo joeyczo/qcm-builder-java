@@ -5,6 +5,7 @@ import qcm.metier.*;
 import qcm.vue.donnees.GrilleDonneesQuestion;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
 import java.awt.event.*;
 //TODO : faire les trois tables et gérer avec le double clic quelles questions afficher
@@ -20,20 +21,26 @@ public class PanelListeQst extends JPanel implements ActionListener
     private JComboBox<String>   ddlstNotion;
 
     private JButton             btnModifier;
-    private JButton             btnSupprmer;
+    private JButton             btnSupprimer;
+
+    private Font                fontGeneraleGras;
+    private Font                fontGenerale;
 
     private Controleur          ctrl;
 
     public PanelListeQst(FrameListeQst parent, Controleur ctrl)
     {
-        this.frameListQst = parent;
+        this.frameListQst     = parent;
+        this.ctrl             = ctrl;
+        this.fontGeneraleGras = new Font("Arial", Font.BOLD , 16);
+        this.fontGenerale     = new Font("Arial", Font.PLAIN, 16);
+
+
         this.setLayout ( new BorderLayout() );
-        this.ctrl = ctrl;
 
         String[] tabRessource = new String[this.ctrl.getNbRessource()+1];
 
         tabRessource[0] = "-- Choisir une ressource --";
-
         for (int i = 1; i <= this.ctrl.getNbRessource(); i++)
             tabRessource[i] = this.ctrl.getRessource(i-1).getNomCourt();
 
@@ -52,20 +59,28 @@ public class PanelListeQst extends JPanel implements ActionListener
         this.tblGrilleDonnees.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         this.btnModifier   = new JButton("Modifier la question");
-        this.btnSupprmer = new JButton("Supprimer la question");
+        this.btnSupprimer  = new JButton("Supprimer la question");
 
         spGrilleDonnees = new JScrollPane( this.tblGrilleDonnees );
 
         this.panelHaut.add(this.ddlstRessource);
         this.panelHaut.add(this.ddlstNotion);
         this.panelHaut.add(this.btnModifier);
-        this.panelHaut.add(this.btnSupprmer);
+        this.panelHaut.add(this.btnSupprimer);
 
         this.add(this.panelHaut , BorderLayout.NORTH );
         this.add(spGrilleDonnees, BorderLayout.CENTER);
 
-        this.btnSupprmer        .addActionListener(this);
-        this.btnModifier          .addActionListener(this);
+        this.tblGrilleDonnees.getTableHeader().setFont(this.fontGeneraleGras);
+        this.tblGrilleDonnees.setFont(this.fontGenerale);
+        this.ddlstRessource  .setFont(this.fontGeneraleGras);
+        this.ddlstNotion     .setFont(this.fontGeneraleGras);
+        this.btnModifier     .setFont(this.fontGeneraleGras);
+        this.btnSupprimer    .setFont(this.fontGeneraleGras);
+
+
+        this.btnSupprimer  .addActionListener(this);
+        this.btnModifier   .addActionListener(this);
         this.ddlstRessource.addActionListener(this);
         this.ddlstNotion   .addActionListener(this);
     }
@@ -162,7 +177,7 @@ public class PanelListeQst extends JPanel implements ActionListener
 
         }
 
-        if (e.getSource() == this.btnSupprmer) {
+        if (e.getSource() == this.btnSupprimer) {
 
             int resultat = JOptionPane.showConfirmDialog(this, "Voulez-vous vraiment supprimer cette question ?", "Supprimer la question de la base de données ?", JOptionPane.YES_NO_OPTION);
 

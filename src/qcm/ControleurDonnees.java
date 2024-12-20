@@ -300,7 +300,7 @@ public class ControleurDonnees
 
                 AssociationReponse reponse = (AssociationReponse) q.getReponse();
 
-                for (AssociationReponseItem item : reponse.getReponses()) {
+                for (AssociationReponseItem item : reponse.getReponsesItem()) {
 
                     questionEnTxt += "\n{ASSOCIATION}\n";
 

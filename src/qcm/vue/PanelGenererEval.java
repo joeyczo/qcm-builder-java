@@ -1,4 +1,5 @@
 package qcm.vue;
+
 import qcm.Controleur;
 import qcm.metier.Ressource;
 import qcm.vue.donnees.GrilleDonneesEval;
@@ -11,60 +12,93 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 
-public class PanelGenererEval extends JPanel implements ActionListener
-{
-    private JButton             btnSubmit;
-    private JComboBox<String>   ddlstRessource;
-    private JRadioButton        rbOui, rbNon;
+public class PanelGenererEval extends JPanel implements ActionListener {
+    private JButton btnSubmit;
+    private JComboBox<String> ddlstRessource;
+    private JRadioButton rbOui, rbNon;
 
-    private FrameGenererEval    frameParent;
-    private JTable              tblGrilleDonnees;
-    private JPanel              panelHaut;
+    private FrameGenererEval frameParent;
+    private JTable tblGrilleDonnees;
+    private JPanel panelHaut;
+
+    private Font fontGeneraleGras;
 
     private Controleur ctrl;
 
-    public PanelGenererEval(FrameGenererEval parent, Controleur ctrl ){
+    public PanelGenererEval(FrameGenererEval parent, Controleur ctrl) {
         this.frameParent = parent;
-        this.setLayout ( new BorderLayout() );
         this.ctrl = ctrl;
+        this.fontGeneraleGras = new Font("Arial", Font.BOLD, 16);
 
-        this.panelHaut        = new JPanel();
-        this.ddlstRessource   = new JComboBox<>();
-        this.tblGrilleDonnees = new JTable ( new GrilleDonneesEval(this.ctrl, null) );
+        this.panelHaut = new JPanel();
+        this.ddlstRessource = new JComboBox<>();
+        this.tblGrilleDonnees = new JTable(new GrilleDonneesEval(this.ctrl, null));
+
+        this.setLayout(new BorderLayout());
+
         this.tblGrilleDonnees.setFillsViewportHeight(true);
         this.tblGrilleDonnees.setRowHeight(30);
         this.tblGrilleDonnees.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        /*this.tblGrilleDonnees.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
+
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int col) {
+
+                System.out.println(row + " : " + col);
+                Component lbl = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, col);
+
+                //System.out.println(row + " / " + (PanelGenererEval.this.tblGrilleDonnees.getRowCount() - 2));
+                //System.out.println(col);
+
+                lbl.setForeground(Color.BLUE);
+
+                *//*if (row == table.getRowCount() - 1)
+                    lbl.setBackground(Color.LIGHT_GRAY);*//*
+
+                return lbl;
+
+            }
+
+        });*/
 
 
         this.ddlstRessource.addItem("-- Sélectionnez une ressource --");
 
         for (int i = 0; i < this.ctrl.getNbRessource(); i++)
-            this.ddlstRessource.addItem(this.ctrl.getRessource(i).getNom());
+            this.ddlstRessource.addItem(this.ctrl.getRessource(i).getNomCourt());
 
-        this.btnSubmit = new JButton("Généré une nouvelle évaluation");
+        this.btnSubmit = new JButton("Générer une nouvelle évaluation");
 
-        rbNon             = new JRadioButton("non");
-        rbOui             = new JRadioButton("oui");
+        rbNon = new JRadioButton("non");
+        rbOui = new JRadioButton("oui");
         ButtonGroup group = new ButtonGroup();
 
         group.add(rbOui);
         group.add(rbNon);
 
-        JScrollPane spGrilleDonnees = new JScrollPane( this.tblGrilleDonnees );
+        JScrollPane spGrilleDonnees = new JScrollPane(this.tblGrilleDonnees);
 
         this.panelHaut.add(this.ddlstRessource);
         this.panelHaut.add(new JLabel(new ImageIcon("src/data/img/time.png")));
         this.panelHaut.add(rbOui);
         this.panelHaut.add(rbNon);
 
-        this.add(this.panelHaut , BorderLayout.NORTH );
+        this.add(this.panelHaut, BorderLayout.NORTH);
         this.add(spGrilleDonnees, BorderLayout.CENTER);
-        this.add(this.btnSubmit , BorderLayout.SOUTH );
+        this.add(this.btnSubmit, BorderLayout.SOUTH);
 
-        this.rbOui         .addActionListener(this);
-        this.rbNon         .addActionListener(this);
+        this.tblGrilleDonnees.getTableHeader().setFont(this.fontGeneraleGras);
+        this.tblGrilleDonnees.setFont(this.fontGeneraleGras);
+        this.ddlstRessource.setFont(this.fontGeneraleGras);
+        this.rbNon.setFont(this.fontGeneraleGras);
+        this.rbOui.setFont(this.fontGeneraleGras);
+        this.btnSubmit.setFont(this.fontGeneraleGras);
+
+        this.rbOui.addActionListener(this);
+        this.rbNon.addActionListener(this);
         this.ddlstRessource.addActionListener(this);
-        this.btnSubmit     .addActionListener(this);
+        this.btnSubmit.addActionListener(this);
+
+
     }
 
     public void actionPerformed(ActionEvent e) {
@@ -93,10 +127,10 @@ public class PanelGenererEval extends JPanel implements ActionListener
             /*	 Vérification données   */
             /*  ----------------------  */
 
-            Ressource   rsc  = this.ctrl.getRessource((String) this.ddlstRessource.getSelectedItem());
-            boolean     time = this.rbOui.isSelected();
-            int         nbSe = this.ctrl.getNotionsSelected();
-            int         nbQs = this.ctrl.getNbQuestions();
+            Ressource rsc = this.ctrl.getRessource((String) this.ddlstRessource.getSelectedItem());
+            boolean time = this.rbOui.isSelected();
+            int nbSe = this.ctrl.getNotionsSelected();
+            int nbQs = this.ctrl.getNbQuestions();
 
             if (rsc == null) {
                 this.afficherMessageErreur("Impossible de récupérer la ressource !");
@@ -117,9 +151,9 @@ public class PanelGenererEval extends JPanel implements ActionListener
                 this.afficherMessageErreur("Le nombre de question généré doît être supérieur à 0 !");
                 return;
             }
-            
+
             System.out.println("QST : " + nbQs);
-            
+
             JFileChooser desti = new JFileChooser();
             int returnValue = desti.showSaveDialog(this);
             if (returnValue == JFileChooser.APPROVE_OPTION) {
@@ -128,6 +162,7 @@ public class PanelGenererEval extends JPanel implements ActionListener
 
                 boolean estEvalue = this.rbOui.isSelected();
 
+                this.ctrl.changerRessourceEval(rsc);
                 this.ctrl.generationEvaluation(estEvalue, selectedFile.getPath());
                 this.frameParent.fermerFenetre();
 
@@ -138,6 +173,7 @@ public class PanelGenererEval extends JPanel implements ActionListener
 
     /**
      * Afficher un message d'erreur au client
+     *
      * @param message Message à afficher
      */
     private void afficherMessageErreur(String message) {

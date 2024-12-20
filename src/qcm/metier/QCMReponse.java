@@ -34,7 +34,7 @@ public class QCMReponse implements Reponse
 	 * @param indice Indince pour récupérer la réponse
 	 * @return L'objet, sinon null si il n'existe pas
 	 */
-	public QCMReponseItem getReponse(int indice) {
+	public QCMReponseItem getReponseItem(int indice) {
 
 		if (indice < 0 || indice >= this.getNbReponse()) return null;
 

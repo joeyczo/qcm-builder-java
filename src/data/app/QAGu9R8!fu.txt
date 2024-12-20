@@ -1,0 +1,19 @@
+{TEXTEQST}
+Quel type en java permet de mettre le nombre suivant :\n???? test = 0.05f
+{TEXTEEXPLICATION}
+C'est un float, parce qu'il y a le "F" à la fin
+{REPONSEQCM}
+0
+int
+{REPONSEQCM}
+0
+Integer
+{REPONSEQCM}
+1
+float
+{REPONSEQCM}
+0
+boolean
+{REPONSEQCM}
+0
+String

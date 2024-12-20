@@ -1,7 +1,5 @@
 
 
-//Instanciation des questions
-
 const qcm = "qcm";
 const liaison = "liaison";
 const elimination = "elimination";
@@ -107,7 +105,7 @@ function displayAccueil() {
     card[0].style.display = "none";
     header.style.display = "none";
     document.querySelector("footer").style.display = "none";
-
+    
     titre.textContent   = ressource;
     dureeNb.textContent = questions.length + " questions" + " - " + tempsTotal;
 }
@@ -124,7 +122,6 @@ function demarrerQuestionnaire() {
     startQuestionnaire.classList.add("hidden");
     accueil[0].style.display = "none";
 
-    
     loadQuestion();
     confirmButton.addEventListener("click", handleAnswerValidation);
     nextButton.addEventListener("click", goToNextQuestion);
@@ -135,12 +132,6 @@ function demarrerQuestionnaire() {
 
 function loadQuestion() {
 
-    /*if (currentQuestion === questions.length - 1) {
-        nextButton.textContent = "Terminer";
-    } else {
-        nextButton.textContent = "Suivant";
-    }*/
-   
     updateProgressQuestionBar();
     
     let question = questions[currentQuestion];
@@ -198,7 +189,6 @@ function loadQuestion() {
     timerImg.classList.add("hidden");
     if (currentQuestion + 1 < questions.length && questions[currentQuestion + 1].time !== null && questions[currentQuestion + 1].time !== 0) {
         timerImg.classList.remove("hidden");
-        console.log("Timer img affiché");
     }
 }
 
@@ -315,6 +305,8 @@ function displayRegularQuestion(question) {
 
         handleAnswerValidation();
     }
+
+    if(exam) prevButton.disabled = true;
 }
 
 function displayElimQuestion(question) {    
@@ -522,7 +514,7 @@ function afficheResultat() {
 
     resultSection.classList.remove("hidden");
     nextButton.disabled = false;
-    prevButton.disabled = currentQuestion === 0;
+    if (!exam) prevButton.disabled = currentQuestion === 0;
 }
 
 function goToNextQuestion() {
@@ -768,83 +760,53 @@ function handleLiaisonValidation(leftText, rightText) {
     selectedRight = null;
 
     // Dessiner un trait entre les boutons sélectionnés
-const leftButton = Array.from(buttons).find(button => button.textContent === leftText);
-const rightButton = Array.from(buttons).find(button => button.textContent === rightText);
+    const leftButton = Array.from(buttons).find(button => button.textContent === leftText);
+    const rightButton = Array.from(buttons).find(button => button.textContent === rightText);
 
-if (leftButton && rightButton) {
-    const line = document.createElement("div");
-    line.classList.add("line");
+    if (leftButton && rightButton) {
+        const line = document.createElement("div");
+        line.classList.add("line");
 
-    const leftRect = leftButton.getBoundingClientRect();
-    const rightRect = rightButton.getBoundingClientRect();
+        const leftRect = leftButton.getBoundingClientRect();
+        const rightRect = rightButton.getBoundingClientRect();
 
-    // Calculer les points de départ et d'arrivée sur les bords
-    const dx = rightRect.left - leftRect.left;
-    const dy = rightRect.top - leftRect.top;
+        const leftCenterX = leftRect.left + leftRect.width / 2;
+        const leftCenterY = leftRect.top + leftRect.height / 2;
+        const rightCenterX = rightRect.left + rightRect.width / 2;
+        const rightCenterY = rightRect.top + rightRect.height / 2;
 
-    let leftX, leftY, rightX, rightY;
+        const length = Math.sqrt(Math.pow(rightCenterX - leftCenterX, 2) + Math.pow(rightCenterY - leftCenterY, 2));
+        const angle = Math.atan2(rightCenterY - leftCenterY, rightCenterX - leftCenterX) * 180 / Math.PI;
 
-    if (Math.abs(dx) > Math.abs(dy)) {
-        // Lignes horizontales
-        leftX = dx > 0 ? leftRect.right : leftRect.left;
-        leftY = leftRect.top + leftRect.height / 2;
-        rightX = dx > 0 ? rightRect.left : rightRect.right;
-        rightY = rightRect.top + rightRect.height / 2;
-    } else {
-        // Lignes verticales
-        leftX = leftRect.left + leftRect.width / 2;
-        leftY = dy > 0 ? leftRect.bottom : leftRect.top;
-        rightX = rightRect.left + rightRect.width / 2;
-        rightY = dy > 0 ? rightRect.top : rightRect.bottom;
+        line.style.width = `${length}px`;
+        line.style.transform = `rotate(${angle}deg)`;
+        line.style.position = 'absolute';
+        line.style.top = `${leftCenterY}px`;
+        line.style.left = `${leftCenterX}px`;
+        line.style.transformOrigin = '0 0';
+        line.style.border = '1px solid black';
+
+        answersContainer.appendChild(line);
+
+        // Rendre la ligne responsive
+        window.addEventListener('resize', () => {
+            const newLeftRect = leftButton.getBoundingClientRect();
+            const newRightRect = rightButton.getBoundingClientRect();
+
+            const newLeftCenterX = newLeftRect.left + newLeftRect.width / 2;
+            const newLeftCenterY = newLeftRect.top + newLeftRect.height / 2;
+            const newRightCenterX = newRightRect.left + newRightRect.width / 2;
+            const newRightCenterY = newRightRect.top + newRightRect.height / 2;
+
+            const newLength = Math.sqrt(Math.pow(newRightCenterX - newLeftCenterX, 2) + Math.pow(newRightCenterY - newLeftCenterY, 2));
+            const newAngle = Math.atan2(newRightCenterY - newLeftCenterY, newRightCenterX - newLeftCenterX) * 180 / Math.PI;
+
+            line.style.width = `${newLength}px`;
+            line.style.transform = `rotate(${newAngle}deg)`;
+            line.style.top = `${newLeftCenterY}px`;
+            line.style.left = `${newLeftCenterX}px`;
+        });
     }
-
-    // Calculer la longueur et l'angle
-    const length = Math.sqrt(Math.pow(rightX - leftX, 2) + Math.pow(rightY - leftY, 2));
-    const angle = Math.atan2(rightY - leftY, rightX - leftX) * 180 / Math.PI;
-
-    // Appliquer les styles à la ligne
-    line.style.width = `${length}px`;
-    line.style.transform = `rotate(${angle}deg)`;
-    line.style.position = 'absolute';
-    line.style.top = `${leftY}px`;
-    line.style.left = `${leftX}px`;
-    line.style.transformOrigin = '0 0';
-    line.style.border = '1px solid black';
-
-    answersContainer.appendChild(line);
-
-    // Rendre la ligne responsive
-    window.addEventListener('resize', () => {
-        const newLeftRect = leftButton.getBoundingClientRect();
-        const newRightRect = rightButton.getBoundingClientRect();
-
-        const newDx = newRightRect.left - newLeftRect.left;
-        const newDy = newRightRect.top - newLeftRect.top;
-
-        if (Math.abs(newDx) > Math.abs(newDy)) {
-            // Lignes horizontales
-            leftX = newDx > 0 ? newLeftRect.right : newLeftRect.left;
-            leftY = newLeftRect.top + newLeftRect.height / 2;
-            rightX = newDx > 0 ? newRightRect.left : newRightRect.right;
-            rightY = newRightRect.top + newRightRect.height / 2;
-        } else {
-            // Lignes verticales
-            leftX = newLeftRect.left + newLeftRect.width / 2;
-            leftY = newDy > 0 ? newLeftRect.bottom : newLeftRect.top;
-            rightX = newRightRect.left + newRightRect.width / 2;
-            rightY = newDy > 0 ? newRightRect.top : newRightRect.bottom;
-        }
-
-        const newLength = Math.sqrt(Math.pow(rightX - leftX, 2) + Math.pow(rightY - leftY, 2));
-        const newAngle = Math.atan2(rightY - leftY, rightX - leftX) * 180 / Math.PI;
-
-        line.style.width = `${newLength}px`;
-        line.style.transform = `rotate(${newAngle}deg)`;
-        line.style.top = `${leftY}px`;
-        line.style.left = `${leftX}px`;
-    });
-}
-
 }
 
 
@@ -858,7 +820,7 @@ function handleLiaisonFin(type) {
 
     resultSection.classList.remove("hidden");
     nextButton.disabled = false;
-    prevButton.disabled = currentQuestion === 0;
+    if (!exam) prevButton.disabled = currentQuestion === 0;
 
 
     //Désactiver tous les boutons
@@ -984,7 +946,7 @@ function startTimer() {
         if (timeLeft <= 0) {
             timeLeft = 0;
             clearInterval(timerInterval);
-            handleTimeOut();
+            if (exam) handleTimeOut();
         }
 
         timerElement.textContent = `${timeLeft.toFixed(0)}s`;
@@ -1032,7 +994,7 @@ function handleTimeOut() {
 
     resultSection.classList.remove("hidden");
     affichagePoints.textContent = "+0 points";
-    prevButton.disabled = currentQuestion === 0;
+    if (!exam) prevButton.disabled = currentQuestion === 0;
     
     
     //Sauvegarde de la réponse
@@ -1117,23 +1079,23 @@ function mettreAJourDifficulte(question) {
     switch (question.difficulte) {
         case tresFacile:
             difficulte.textContent = tresFacile;
-            indicDifficulte.style.backgroundColor = "lightgreen";
-            card[0].style.boxShadow = "0 0 20px 10px rgba(144, 238, 144, 0.2)";
-            break;
-        case facile:
-            difficulte.textContent = facile;
             indicDifficulte.style.backgroundColor = "green";
             card[0].style.boxShadow = "0 0 20px 10px rgba(0, 255, 0, 0.2)";
             break;
-        case moyen:
-            difficulte.textContent = moyen;
+        case facile:
+            difficulte.textContent = facile;
             indicDifficulte.style.backgroundColor = "yellow";
             card[0].style.boxShadow = "0 0 20px 10px rgba(255, 255, 0, 0.2)";
             break;
-        case difficile:
-            difficulte.textContent = difficile;
+        case moyen:
+            difficulte.textContent = moyen;
             indicDifficulte.style.backgroundColor = "red";
             card[0].style.boxShadow = "0 0 20px 10px rgba(255, 0, 0, 0.2)";
+            break;
+        case difficile:
+            difficulte.textContent = difficile;
+            indicDifficulte.style.backgroundColor = "black";
+            card[0].style.boxShadow = "0 0 20px 10px rgba(255, 183, 183, 0.2)";
             break;
     }
 }

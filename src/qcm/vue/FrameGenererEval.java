@@ -16,7 +16,7 @@ public class FrameGenererEval extends JDialog{
 
         this.ctrl = ctrl;
 
-        this.setSize(800, 600);
+        this.setSize(1000, 600);
         this.setLocationRelativeTo(null);
 
         this.pnlEval = new PanelGenererEval(this,ctrl);

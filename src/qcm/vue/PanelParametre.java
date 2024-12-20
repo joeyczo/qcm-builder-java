@@ -21,6 +21,9 @@ public class PanelParametre extends JPanel implements ActionListener
     private JButton             btnAjouterRessource;
     private JButton             btnAjouterNotion;
 
+    private Font                fontGenerale;
+    private Font                fontGeneraleGras;
+
     private Controleur          ctrl;
 
     public PanelParametre(FrameParametres parent, Controleur ctrl)
@@ -28,12 +31,14 @@ public class PanelParametre extends JPanel implements ActionListener
         this.frameParent = parent;
         this.ctrl        = ctrl;
 
+        this.fontGenerale     = new Font("Arial",Font.PLAIN,16);
+        this.fontGeneraleGras = new Font("Arial",Font.BOLD ,16);
+
         this.setLayout ( new BorderLayout() );
 
         String[] tabRessource = new String[this.ctrl.getNbRessource()+1];
 
         tabRessource[0] = "-- Choisir une ressource --";
-
         for (int i = 1; i <= this.ctrl.getNbRessource(); i++)
             tabRessource[i] = this.ctrl.getRessource(i-1).getNomCourt();
 
@@ -64,6 +69,12 @@ public class PanelParametre extends JPanel implements ActionListener
         this.btnAjouterNotion   .addActionListener(this);
         this.btnAjouterRessource.addActionListener(this);
         this.ddlstRessource     .addActionListener(this);
+
+        this.tblGrilleDonnees   .getTableHeader().setFont(this.fontGeneraleGras);
+        this.tblGrilleDonnees   .setFont(this.fontGenerale);
+        this.ddlstRessource     .setFont(this.fontGeneraleGras);
+        this.btnAjouterNotion   .setFont(this.fontGeneraleGras);
+        this.btnAjouterRessource.setFont(this.fontGeneraleGras);
     }
 
     /*  ------------------  */
@@ -72,26 +83,33 @@ public class PanelParametre extends JPanel implements ActionListener
 
     public void actionPerformed(ActionEvent e)
     {
-        JTextField txtCode      = new JTextField(5);
-        JTextField txtRessource = new JTextField(5);
-        JPanel     panelTemp    = new JPanel();
-
-        String nomRessource;
-        String code;
-
-        panelTemp.add(new JLabel("code:"));
-        panelTemp.add(txtCode);
-        panelTemp.add(Box.createHorizontalStrut(15));
-        panelTemp.add(new JLabel("nom ressource:"));
-        panelTemp.add(txtRessource);
-
 
         if (e.getSource() == this.btnAjouterRessource)
         {
+            JTextField txtCode      = new JTextField(5);
+            JTextField txtRessource = new JTextField(15);
+            JLabel     lblCode      = new JLabel("Code:");
+            JLabel     lblRessource = new JLabel("Nom ressource:");
+            JPanel     panelTemp    = new JPanel();
+
+            String nomRessource;
+            String code;
+
+            txtCode     .setFont(this.fontGenerale);
+            txtRessource.setFont(this.fontGenerale);
+            lblCode     .setFont(this.fontGeneraleGras);
+            lblRessource.setFont(this.fontGeneraleGras);
+
+            panelTemp.add(lblCode);
+            panelTemp.add(txtCode);
+            panelTemp.add(Box.createHorizontalStrut(15));
+            panelTemp.add(lblRessource);
+            panelTemp.add(txtRessource);
+
             int resultat = JOptionPane.showConfirmDialog (null, panelTemp,
                     "Ajouter Ressource", JOptionPane.OK_CANCEL_OPTION);
 
-            if (resultat == JOptionPane.CANCEL_OPTION)
+            if (resultat == JOptionPane.CANCEL_OPTION || resultat == JOptionPane.CLOSED_OPTION)
                 return;
 
 
@@ -129,12 +147,29 @@ public class PanelParametre extends JPanel implements ActionListener
         {
             if (this.ctrl.getNbRessource() != 0 && this.ddlstRessource.getSelectedIndex() != 0)
             {
-                String nomNotion = JOptionPane.showInputDialog(this, "Entrez le nom de la notion :", "Ajouter Notion", JOptionPane.PLAIN_MESSAGE);
 
-                if (nomNotion == null)
+                JLabel     lblNotion = new JLabel("Nom notion:");
+                JTextField txtNotion = new JTextField(15);
+                JPanel     panelTemp = new JPanel();
+
+                String nomNotion;
+
+                lblNotion.setFont(this.fontGeneraleGras);
+                txtNotion.setFont(this.fontGenerale);
+
+                panelTemp.add(lblNotion);
+                panelTemp.add(txtNotion);
+                panelTemp.add(Box.createHorizontalStrut(15));
+
+
+                int resultat = JOptionPane.showConfirmDialog (null, panelTemp,
+                        "Ajouter Ressource", JOptionPane.OK_CANCEL_OPTION);
+
+                if (resultat == JOptionPane.CANCEL_OPTION || resultat == JOptionPane.CLOSED_OPTION)
                     return;
 
-                nomNotion = nomNotion.trim();
+
+                nomNotion = txtNotion.getText().trim();
 
                 Ressource ressource = this.ctrl.getRessource((String) this.ddlstRessource.getSelectedItem());
 

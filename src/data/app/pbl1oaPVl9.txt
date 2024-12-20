@@ -1,0 +1,16 @@
+{TEXTEQST}
+Une autre question difficile, mais ce coup ci c'est un QCM multiple\nAvec des retours à la ligne aussi
+{TEXTEEXPLICATION}
+Et la c'est l'explication
+{REPONSEQCM}
+1
+Ceci est une bonne réponse
+{REPONSEQCM}
+0
+Ceci est une mauvaise réponse
+{REPONSEQCM}
+0
+Ceci est une mauvaise réponse
+{REPONSEQCM}
+1
+Ceci est une bonne réponse

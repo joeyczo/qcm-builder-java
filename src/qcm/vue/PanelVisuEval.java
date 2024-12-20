@@ -19,6 +19,8 @@ public class PanelVisuEval extends JPanel implements ActionListener {
     private JButton         btnAnnuler;
     private JButton         btnConfirmer;
 
+    private Font            fontGeneralGras;
+
     public PanelVisuEval(FrameVisuEval frame, Controleur ctrl, Evalutation eval) {
 
         this.setLayout(new BorderLayout());
@@ -26,6 +28,8 @@ public class PanelVisuEval extends JPanel implements ActionListener {
         this.frameParent    = frame;
         this.ctrl           = ctrl;
         this.evalutation    = eval;
+
+        this.fontGeneralGras = new Font("Arial", Font.BOLD, 16);
 
         JPanel  panelButtons    = new JPanel();
 
@@ -57,6 +61,9 @@ public class PanelVisuEval extends JPanel implements ActionListener {
         this.add(labelInfos  , BorderLayout.NORTH);
         this.add(labelNbQst);
         this.add(panelButtons, BorderLayout.SOUTH);
+
+        this.btnAnnuler  .setFont(this.fontGeneralGras);
+        this.btnConfirmer.setFont(this.fontGeneralGras);
 
         this.btnAnnuler  .addActionListener(this);
         this.btnConfirmer.addActionListener(this);

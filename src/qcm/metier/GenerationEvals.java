@@ -4,14 +4,11 @@ package qcm.metier;
 import qcm.Controleur;
 import qcm.vue.FrameVisuEval;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.PrintWriter;
+import java.io.*;
 import java.lang.reflect.Array;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.file.*;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.*;
 
 public class GenerationEvals {
@@ -40,7 +37,6 @@ public class GenerationEvals {
      * @param ressource Nouvelle ressource
      */
     public void changerRessource ( Ressource ressource ) {
-        System.out.println("Nouvelle ressource : " + this.ressource.getNom());
         this.ressource = ressource;
     }
 
@@ -53,7 +49,7 @@ public class GenerationEvals {
 
         if (this.mapNotions.containsKey(n)) return false;
 
-        System.out.println("La notion " + n.getNom() + " a été ajouté");
+        //System.out.println("La notion " + n.getNom() + " a été ajouté");
 
         this.mapNotions.put(n, new HashMap<>());
 
@@ -70,7 +66,7 @@ public class GenerationEvals {
 
         if (!this.mapNotions.containsKey(n)) return false;
 
-        System.out.println("La notion " + n.getNom() + " a été supprimé !!!");
+        // System.out.println("La notion " + n.getNom() + " a été supprimé !!!");
 
         this.mapNotions.remove(n);
 
@@ -100,7 +96,7 @@ public class GenerationEvals {
 
         Map<DifficulteQuestion, Integer> mapNotion = this.mapNotions.get(n);
 
-        System.out.println(num + " >= " + n.getNbQuestions(diff));
+        //System.out.println(num + " >= " + n.getNbQuestions(diff));
 
         mapNotion.put(diff, num);
 
@@ -138,7 +134,7 @@ public class GenerationEvals {
 
             for (DifficulteQuestion d : ensDiff) {
                 nbQuestion += this.mapNotions.get(n).get(d);
-                System.out.println("Ajout de +" + this.mapNotions.get(n).get(d) + " pour : " + nbQuestion);
+                // System.out.println("Ajout de +" + this.mapNotions.get(n).get(d) + " pour : " + nbQuestion);
             }
 
 
@@ -154,6 +150,10 @@ public class GenerationEvals {
      * @param path Lien vers la destination
      */
     public void genererEvaluation ( boolean evalue, String path ) {
+
+        System.out.println(this.ressource);
+        System.out.println("NOM ::");
+        System.out.println(this.ressource.getNom());
 
         System.out.println("Génération en cours ...");
 
@@ -210,10 +210,13 @@ public class GenerationEvals {
      */
     public boolean exporterEvaluation( Evalutation e ) {
 
+        if (e == null) return false;
+
         Path cheminGeneration   = Paths.get(e.pathExp());
         Path cheminGenJS        = Paths.get(e.pathExp(), "script.js");
-
-        if (e == null) return false;
+        Path cheminGenHTML      = Paths.get(e.pathExp(), "index.html");
+        Path cheminGenCSS       = Paths.get(e.pathExp(), "style.css");
+        Path cheminGenImg       = Paths.get(e.pathExp(), "assets");
 
         try {
 
@@ -222,9 +225,11 @@ public class GenerationEvals {
 
             String sJs = "";
 
-            sJs += "const ressource = `" + e.ressource().getNom() + "`";
+            sJs += "const ressource = `" + e.ressource().getNom() + "`;\n";
 
-            sJs += "const questions = " + GenererJSON.genererJson(e);
+            sJs += "const exam      = " + e.evaluation() + ";\n";
+
+            sJs += "const questions = " + GenererJSON.genererJson(e) + ";\n";
 
             Scanner sc = new Scanner(new FileInputStream("src/data/web/script.js"), StandardCharsets.UTF_8);
 
@@ -239,6 +244,16 @@ public class GenerationEvals {
 
             pw.close();
 
+            // Copie des fichiers HTML et CSS
+
+            Files.copy(Paths.get("src","data", "web", "index.html"), cheminGenHTML, StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(Paths.get("src", "data", "web", "style.css"), cheminGenCSS, StandardCopyOption.REPLACE_EXISTING);
+
+            // Copie des assets
+
+            copyDir(Paths.get("src", "data", "web", "assets"), cheminGenImg);
+
+
             return true;
 
 
@@ -247,6 +262,24 @@ public class GenerationEvals {
             return false;
         }
 
+    }
+
+    public static void copyDir(Path source, Path target) throws IOException {
+        Files.walkFileTree(source, new SimpleFileVisitor<Path>() {
+
+            public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+                Path targetDir = target.resolve(source.relativize(dir));
+                if (!Files.exists(targetDir)) {
+                    Files.createDirectory(targetDir);
+                }
+                return FileVisitResult.CONTINUE;
+            }
+
+            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                Files.copy(file, target.resolve(source.relativize(file)), StandardCopyOption.REPLACE_EXISTING);
+                return FileVisitResult.CONTINUE;
+            }
+        });
     }
 
 }

@@ -8,7 +8,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class PanelQCMSolo extends JPanel implements ActionListener
 {
@@ -361,9 +360,9 @@ public class PanelQCMSolo extends JPanel implements ActionListener
 
         for ( int cpt = 0; cpt < qcmReponse.getNbReponse(); cpt ++)
         {
-            this.lstTxtReponses.get(cpt).setText( qcmReponse.getReponse(cpt).getTexte() );
+            this.lstTxtReponses.get(cpt).setText( qcmReponse.getReponseItem(cpt).getTexte() );
 
-            if ( qcmReponse.getReponse(cpt).isValide() )
+            if ( qcmReponse.getReponseItem(cpt).isValide() )
                 this.lstBtnValideReponse.get(cpt).setSelected(true);
 
         }

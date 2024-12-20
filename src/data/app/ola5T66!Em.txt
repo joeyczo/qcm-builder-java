@@ -1,0 +1,16 @@
+{TEXTEQST}
+Ceci est une question élimination.
+{TEXTEEXPLICATION}
+Ceci est le texte d'explication\nDONC CA VA MARCHER !
+{ELIMINIATION}
+0,0.0,0
+Cette option ne sera pas retiré
+{ELIMINIATION}
+2,-0.25,0
+Cette option sera retiré en n2\nEt va couter 0.25 points
+{ELIMINIATION}
+1,-0.5,0
+Cette option sera retiré en n1\nEt va couter 0.5 points
+{ELIMINIATION}
+0,0.0,1
+Cette option est la bonne réponse

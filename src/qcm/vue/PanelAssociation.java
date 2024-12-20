@@ -334,7 +334,7 @@ public class PanelAssociation extends JPanel implements ActionListener
 
         for(int i = 0 ; i < associationReponse.getNbReponses(); i++) {
             AssociationReponse a = (AssociationReponse) q.getReponse();
-            AssociationReponseItem ai = a.getReponse(i);
+            AssociationReponseItem ai = a.getReponseItem(i);
 
             if(i >= 2){
                 this.addDefinition(ai.getTexte());
