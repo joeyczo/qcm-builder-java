@@ -1,7 +1,5 @@
 
 
-//Instanciation des questions
-
 function transformSpecialCharsToHTML(text) {
     if (text === null || text === undefined) return "";
     return text
@@ -90,6 +88,7 @@ let selectedAnswerIndex = null;
 let selectedAnswersIndex = [];
 let totalPoints = 0;
 let tempsTotal = 0;
+let elimUseAmount = 0;
 
 //Calculer le total des points
 for (let i = 0; i < questions.length; i++) {
@@ -146,6 +145,7 @@ function loadQuestion() {
     explanationParagraph.id = "explanation";
     correctAnswerContainer.appendChild(explanationParagraph);
 
+    console.log(questionTitle);
 
     imgQuestionContainer.innerHTML = "";
 
@@ -389,11 +389,11 @@ function displayElimQuestion(question) {
     //Initiation du bouton elimButton
     //console.log(elimButton);
 	elimButton.classList.remove("hidden");
+    elimButton.classList.remove("hidden");
     question.answers.forEach((answer, index) => {
         if (elimUseAmount+1 == answer.ordre)
             elimButton.textContent = "Élimination ("+question.answers[index].points+")";
     });
-
 
     mettreAJourDifficulte(question);
 
@@ -1070,20 +1070,20 @@ function estCorrect() {
 
 function mettreAJourTypeQuestion() {
     if (questions[currentQuestion].type === liaison) {
-        texteTypeQuestion.textContent = "Question par liaison";
+        texteTypeQuestion.innerHtml = transformSpecialCharsToHTML("Question par liaison");
     }
     else if (questions[currentQuestion].type === elimination) {
-        texteTypeQuestion.textContent = "Question par élimination";
+        texteTypeQuestion.innerHTML = transformSpecialCharsToHTML("Question par élimination");
     }
     else if (questions[currentQuestion].reponse_multiple) {
-        texteTypeQuestion.textContent = "Question à choix multiples";
+        texteTypeQuestion.innerHTML = transformSpecialCharsToHTML("Question à choix multiples");
     } else {
-        texteTypeQuestion.textContent = "Question à choix unique";
+        texteTypeQuestion.innerHTML = transformSpecialCharsToHTML("Question à choix unique");
     }
 
     let nbPoitsn = questions[currentQuestion].points;
 
-    texteTypeQuestion.textContent = texteTypeQuestion.textContent + " (" + nbPoitsn + " point" + (nbPoitsn>1)?'s':'' + ")";
+    texteTypeQuestion.textContent += " (" + nbPoitsn + " point" + (nbPoitsn > 1 ? 's' : '') + ")";
 }
 
 function mettreAJourDifficulte(question) {
@@ -1120,16 +1120,15 @@ function Elimination () {
     let question = questions[currentQuestion];
     elimUseAmount++;
 
-    console.log("elimUseAmount : " + elimUseAmount);
-    console.log(question.answers.filter(answer => answer.ordre !== 0).length);
+    //console.log("elimUseAmount : " + elimUseAmount);
+    //console.log(question.answers.filter(answer => answer.ordre !== 0).length);
 
     if (elimUseAmount > question.answers.filter(answer => answer.ordre !== 0).length) return;
-
 
     const buttons = document.querySelectorAll(".answer");
     // Éliminer 2 mauvaises réponses
     question.answers.forEach((answer, index) => {
-        if (!answer.correct && elimUseAmount == answer.ordre) {
+        if (!answer.correct && elimUseAmount === answer.ordre) {
             ptsCetteQuestion[currentQuestion] += question.answers[index].points;
             buttons[index].disabled = true;
             buttons[index].classList.add("disabled");
@@ -1137,14 +1136,16 @@ function Elimination () {
     });
     
     question.answers.forEach((answer, index) => {
-        if(elimUseAmount + 1 == answer.ordre)
-            elimButton.textContent = "Élimination ("+question.answers[index].points+")";
+        if(elimUseAmount +1 === answer.ordre){
+            elimButton.textContent = "Élimination ("+answer.points+")";
+        }
     });
 
-    if (elimUseAmount = question.answers.filter(answer => answer.ordre !== 0).length) {
+    if (elimUseAmount === question.answers.filter(answer => answer.ordre !== 0).length) {
         elimButton.disabled = true;
         elimButton.textContent = "Élimination";
     }
+
     //Déselectionner le bouton s'il est désactivé
     if (selectedAnswerIndex !== null)
         if (buttons[selectedAnswerIndex].disabled)
