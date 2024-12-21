@@ -1,6 +1,7 @@
 package qcm.vue;
 
 import qcm.Controleur;
+import qcm.metier.DifficulteQuestion;
 import qcm.metier.Ressource;
 import qcm.vue.donnees.GrilleDonneesEval;
 
@@ -10,7 +11,6 @@ import java.awt.event.ActionEvent;
 import java.io.File;
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.TableCellRenderer;
 
 public class PanelGenererEval extends JPanel implements ActionListener {
     private JButton btnSubmit;
@@ -39,26 +39,9 @@ public class PanelGenererEval extends JPanel implements ActionListener {
         this.tblGrilleDonnees.setFillsViewportHeight(true);
         this.tblGrilleDonnees.setRowHeight(30);
         this.tblGrilleDonnees.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        /*this.tblGrilleDonnees.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
+        for (int i = 0; i < this.tblGrilleDonnees.getColumnModel().getColumnCount(); i++)
+            this.tblGrilleDonnees.getColumnModel().getColumn(i).setCellRenderer(new RenduCellule());
 
-            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int col) {
-
-                System.out.println(row + " : " + col);
-                Component lbl = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, col);
-
-                //System.out.println(row + " / " + (PanelGenererEval.this.tblGrilleDonnees.getRowCount() - 2));
-                //System.out.println(col);
-
-                lbl.setForeground(Color.BLUE);
-
-                *//*if (row == table.getRowCount() - 1)
-                    lbl.setBackground(Color.LIGHT_GRAY);*//*
-
-                return lbl;
-
-            }
-
-        });*/
 
 
         this.ddlstRessource.addItem("-- Sélectionnez une ressource --");
@@ -112,9 +95,19 @@ public class PanelGenererEval extends JPanel implements ActionListener {
             }
 
             Ressource ressource = this.ctrl.getRessource((String) this.ddlstRessource.getSelectedItem());
-            // TODO : Réparer les ressources qui ne fonctionnent pas
             this.ctrl.changerRessourceEval(ressource);
             this.tblGrilleDonnees.setModel(new GrilleDonneesEval(this.ctrl, ressource));
+            for (int i = 0; i < this.tblGrilleDonnees.getColumnModel().getColumnCount(); i++) {
+
+                Class<?> classe = this.tblGrilleDonnees.getColumnClass(i);
+
+                if (classe == Boolean.class)
+                    this.tblGrilleDonnees.getColumnModel().getColumn(i).setCellRenderer(this.tblGrilleDonnees.getDefaultRenderer(Boolean.class));
+                else
+                    this.tblGrilleDonnees.getColumnModel().getColumn(i).setCellRenderer(new RenduCellule());
+
+
+            }
             this.tblGrilleDonnees.revalidate();
             this.tblGrilleDonnees.repaint();
             this.ctrl.resetGenerationEvals();
@@ -179,6 +172,45 @@ public class PanelGenererEval extends JPanel implements ActionListener {
     private void afficherMessageErreur(String message) {
 
         JOptionPane.showMessageDialog(this, message, "Erreur lors de la validation des données", JOptionPane.ERROR_MESSAGE);
+
+    }
+
+    private static class RenduCellule extends DefaultTableCellRenderer {
+
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int lig, int col) {
+
+            Component cell = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, lig, col);
+
+            cell.setBackground(Color.WHITE);
+
+            if (isSelected) {
+                cell.setBackground(table.getSelectionBackground());
+            }
+
+            if (lig == (table.getRowCount() -1 ) ) cell.setBackground(Color.LIGHT_GRAY);
+            else {
+
+                if ((boolean) table.getValueAt(lig, 1)) {
+
+                    if (col == 2)
+                        cell.setBackground(DifficulteQuestion.TRESFACILE.getCouleur());
+                    else if (col == 3)
+                        cell.setBackground(DifficulteQuestion.FACILE.getCouleur());
+                    else if (col == 4)
+                        cell.setBackground(DifficulteQuestion.MOYEN.getCouleur());
+                    else if (col == 5)
+                        cell.setBackground(DifficulteQuestion.DIFFICILE.getCouleur());
+
+                }
+
+                if (col >= 2 && col <= 6)
+                    ((DefaultTableCellRenderer) cell).setHorizontalAlignment(SwingConstants.RIGHT);
+
+            }
+
+
+            return cell;
+        }
 
     }
 

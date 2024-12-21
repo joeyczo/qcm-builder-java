@@ -135,6 +135,7 @@ main {
 .question-container h1 {
     font-size: 1.5em;
     margin-bottom: 30px;
+    text-align: left;
 }
 
 .question-container .question-subtitle {

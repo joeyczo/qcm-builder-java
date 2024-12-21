@@ -1,15 +1,22 @@
 
 
+//Instanciation des questions
+
+function transformSpecialCharsToHTML(text) {
+    if (text === null || text === undefined) return "";
+    return text
+        .replace(/\n/g, '<br>') // Remplace les retours à la ligne par des <br>
+        .replace(/\t/g, '&emsp;'); // Remplace les tabulations par des espaces insécables
+}
+
 const qcm = "qcm";
 const liaison = "liaison";
 const elimination = "elimination";
 
-const tresFacile = "très facile";
+const tresFacile = "tres-facile";
 const facile = "facile";
 const moyen = "moyen";
 const difficile = "difficile";
-
-shuffle(questions); //Appel d'une méthode qui mélange les questions entre elles à chaque redémarrage    
 
 
 
@@ -25,7 +32,7 @@ function convertTimeToSeconds(timeString) {
 function convertSecondsToTime(seconds) {
     let minutes = Math.floor(seconds / 60);
     let sec = seconds % 60;
-    return `${minutes}m${sec}s`;
+    return `${minutes}min${sec}`;
 }
 
 //Convertir tous les temps de questions en seconde à partir d'un string
@@ -71,7 +78,6 @@ const startQuestionnaire = document.getElementById("start-quest");
 const dureeNb = document.getElementById("infos");
 const titre = document.getElementById("title-accueil");
 const accueil = document.getElementsByClassName("accueil-card");
-const timerImg = document.getElementById("timer-img");
 
 //Instanciation d'éléments utilitaires
 let currentQuestion = 0;
@@ -110,7 +116,6 @@ function displayAccueil() {
     dureeNb.textContent = questions.length + " questions" + " - " + tempsTotal;
 }
 
-//
 document.addEventListener("DOMContentLoaded", () => {
     startQuestionnaire.addEventListener("click", demarrerQuestionnaire);
 });
@@ -145,7 +150,8 @@ function loadQuestion() {
     imgQuestionContainer.innerHTML = "";
 
 	timeMax = question.time;
-    questionTitle.textContent = question.title;
+    questionTitle.innerHTML = transformSpecialCharsToHTML(question.title);
+    console.log(question.title);
 
     clearInterval(timerInterval);
     progressBar.style.width = "100%";
@@ -185,11 +191,12 @@ function loadQuestion() {
         timerElement.textContent = "Ø";
     }
 
-    
-    timerImg.classList.add("hidden");
-    if (currentQuestion + 1 < questions.length && questions[currentQuestion + 1].time !== null && questions[currentQuestion + 1].time !== 0) {
-        timerImg.classList.remove("hidden");
+    if (currentQuestion === questions.length - 1) {
+        nextButton.textContent = "Terminer";
+    } else {
+        nextButton.textContent = "Suivant";
     }
+
 }
 
 /* ---------------------------- */
@@ -197,7 +204,7 @@ function loadQuestion() {
 /* ---------------------------- */
 
 function displayRegularQuestion(question) {
-    questionTitle.textContent = question.title;
+    questionTitle.innerHTML =  transformSpecialCharsToHTML(question.title);
 
     if (question.img != null) {
         const img = document.createElement("img");
@@ -224,7 +231,7 @@ function displayRegularQuestion(question) {
     question.answers.forEach((answer, index) => {
         const button = document.createElement("button");
         button.classList.add("answer");
-        button.textContent = "";
+        button.innerHTML = "";
         
         const boxButton = document.createElement("img");
 
@@ -248,7 +255,7 @@ function displayRegularQuestion(question) {
 
         if (answer.text != null) { 
             const text = document.createElement("p");
-            text.textContent = answer.text;
+            text.innerHTML = answer.text;
             text.classList.add("text-reponse");
             button.appendChild(text);
         }
@@ -311,7 +318,8 @@ function displayRegularQuestion(question) {
 
 function displayElimQuestion(question) {    
     // Afficher le titre de la question
-    questionTitle.textContent = question.title;
+    questionTitle.innerHTML =  transformSpecialCharsToHTML(question.title);
+
 
     // Effacer les réponses précédentes
     answersContainer.innerHTML = "";
@@ -362,7 +370,7 @@ function displayElimQuestion(question) {
         
         if (answer.text != null) { 
             const text = document.createElement("p");
-            text.textContent = answer.text;
+            text.innerHTML = transformSpecialCharsToHTML(answer.text);
             text.classList.add("text-reponse");
             button.appendChild(text);
         }
@@ -383,7 +391,7 @@ function displayElimQuestion(question) {
 	elimButton.classList.remove("hidden");
     question.answers.forEach((answer, index) => {
         if (elimUseAmount+1 == answer.ordre)
-            elimButton.textContent = "Élimination (-"+question.answers[index].points+")";
+            elimButton.textContent = "Élimination ("+question.answers[index].points+")";
     });
 
 
@@ -418,7 +426,8 @@ function displayLiaisonQuestion() {
     const shuffledRight = question.pairs.map(pair => pair.right).sort(() => Math.random() - 0.5);
 
     // Afficher le titre de la question
-    questionTitle.textContent = question.title;
+    questionTitle.innerHTML =  transformSpecialCharsToHTML(question.title);
+
 
     // Actualiser le nombre de colonnes
     answersContainer.style.gridTemplateColumns = "repeat(3, 1fr)";
@@ -434,7 +443,7 @@ function displayLiaisonQuestion() {
         leftButton.textContent = leftText;
 
         const spacer = document.createElement("span");
-        spacer.textContent = "";
+        spacer.innerHTML = "";
 
         const rightText = shuffledRight.pop(); // Prendre un élément de la colonne droite mélangée
         const rightButton = document.createElement("button");
@@ -493,7 +502,6 @@ function afficheResultat() {
         }
     } else {
         answerResult.textContent = "La bonne réponse était";
-        //console.log("Affichage du résultat 2");
 
         if (estCorrect()) {
             resultTitle.textContent = "Bonne réponse";
@@ -508,9 +516,9 @@ function afficheResultat() {
         }
     }
 
-    correctAnswerContainer.textContent = getCorrectAnswer();
+    correctAnswerContainer.textContent = transformSpecialCharsToHTML(getCorrectAnswer());
     
-    explanationElement.textContent = questions[currentQuestion].explanation;
+    explanationElement.innerHTML = transformSpecialCharsToHTML(questions[currentQuestion].explanation);
 
     resultSection.classList.remove("hidden");
     nextButton.disabled = false;
@@ -986,19 +994,19 @@ function handleTimeOut() {
     resultTitle.style.color = "red";
 
 	if(question.type !== liaison) 
-    	correctAnswerContainer.textContent = question.answers.find((a) => a.correct).text;
+    	correctAnswerContainer.innerHTML = transformSpecialCharsToHTML(question.answers.find((a) => a.correct).text);
 	else
 		handleLiaisonFin("timeOut");
 
-    explanationElement.textContent = question.explanation;
+        explanationElement.innerHTML = transformSpecialCharsToHTML(questions[currentQuestion].explanation);
 
-    resultSection.classList.remove("hidden");
+    resultSection.classList.remove("hidden");0
     affichagePoints.textContent = "+0 points";
     if (!exam) prevButton.disabled = currentQuestion === 0;
     
     
     //Sauvegarde de la réponse
-        if (question.type !== liaison) {
+        if (question.type !== liaison) { 
             registeredAnswers[currentQuestion] = null;
     } else {
         registeredAnswers[currentQuestion] = -1;
@@ -1072,30 +1080,34 @@ function mettreAJourTypeQuestion() {
     } else {
         texteTypeQuestion.textContent = "Question à choix unique";
     }
-    texteTypeQuestion.textContent = texteTypeQuestion.textContent + " (" + questions[currentQuestion].points + " points)";
+
+    let nbPoitsn = questions[currentQuestion].points;
+
+    texteTypeQuestion.textContent = texteTypeQuestion.textContent + " (" + nbPoitsn + " point" + (nbPoitsn>1)?'s':'' + ")";
 }
 
 function mettreAJourDifficulte(question) {
     switch (question.difficulte) {
         case tresFacile:
             difficulte.textContent = tresFacile;
-            indicDifficulte.style.backgroundColor = "green";
-            card[0].style.boxShadow = "0 0 20px 10px rgba(0, 255, 0, 0.2)";
+            indicDifficulte.style.backgroundColor = "rgb(130,206,132)";
+            card[0].style.boxShadow = "0 0 20px 10px rgba(130,206,132,0.2)";
+            
             break;
         case facile:
             difficulte.textContent = facile;
-            indicDifficulte.style.backgroundColor = "yellow";
-            card[0].style.boxShadow = "0 0 20px 10px rgba(255, 255, 0, 0.2)";
+            indicDifficulte.style.backgroundColor = "rgb(115,126,201)";
+            card[0].style.boxShadow = "0 0 20px 10px rgba(115,126,201,0.2)";
             break;
         case moyen:
             difficulte.textContent = moyen;
-            indicDifficulte.style.backgroundColor = "red";
-            card[0].style.boxShadow = "0 0 20px 10px rgba(255, 0, 0, 0.2)";
+            indicDifficulte.style.backgroundColor = "rgb(230,65,91)";
+            card[0].style.boxShadow = "0 0 20px 10px rgba(230,65,91,0.2)";
             break;
         case difficile:
             difficulte.textContent = difficile;
-            indicDifficulte.style.backgroundColor = "black";
-            card[0].style.boxShadow = "0 0 20px 10px rgba(255, 183, 183, 0.2)";
+            indicDifficulte.style.backgroundColor = "rgb(130,125,125)";
+            card[0].style.boxShadow = "0 0 20px 10px rgba(130,125,125,0.2)";
             break;
     }
 }
@@ -1108,13 +1120,17 @@ function Elimination () {
     let question = questions[currentQuestion];
     elimUseAmount++;
 
-    if (elimUseAmount > 2) return;
+    console.log("elimUseAmount : " + elimUseAmount);
+    console.log(question.answers.filter(answer => answer.ordre !== 0).length);
+
+    if (elimUseAmount > question.answers.filter(answer => answer.ordre !== 0).length) return;
+
 
     const buttons = document.querySelectorAll(".answer");
     // Éliminer 2 mauvaises réponses
     question.answers.forEach((answer, index) => {
         if (!answer.correct && elimUseAmount == answer.ordre) {
-            ptsCetteQuestion[currentQuestion] -= question.answers[index].points;
+            ptsCetteQuestion[currentQuestion] += question.answers[index].points;
             buttons[index].disabled = true;
             buttons[index].classList.add("disabled");
         }
@@ -1122,22 +1138,21 @@ function Elimination () {
     
     question.answers.forEach((answer, index) => {
         if(elimUseAmount + 1 == answer.ordre)
-            elimButton.textContent = "Élimination (-"+question.answers[index].points+")";
+            elimButton.textContent = "Élimination ("+question.answers[index].points+")";
     });
 
-    if (elimUseAmount >= 2)
-    {
+    if (elimUseAmount = question.answers.filter(answer => answer.ordre !== 0).length) {
         elimButton.disabled = true;
         elimButton.textContent = "Élimination";
     }
-
     //Déselectionner le bouton s'il est désactivé
-    if (buttons[selectedAnswerIndex].disabled)
-    {
-        buttons[selectedAnswerIndex].classList.remove("selected");
-        selectedAnswerIndex = null;
-        confirmButton.disabled = true;
-    }
+    if (selectedAnswerIndex !== null)
+        if (buttons[selectedAnswerIndex].disabled)
+        {
+            buttons[selectedAnswerIndex].classList.remove("selected");
+            selectedAnswerIndex = null;
+            confirmButton.disabled = true;
+        }
 
     
     buttons.forEach((button) => {
@@ -1160,9 +1175,18 @@ function updateProgressQuestionBar() {
     progressBarQuestion.style.width = `${((currentQuestion + 1) / questions.length) * 100}%`;
 }
 
-function shuffle(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
+
+function difficulteToString(difficulte) {
+    switch (difficulte) {
+        case tresFacile:
+            return "Très facile";
+        case facile:
+            return "Facile";
+        case moyen:
+            return "Moyen";
+        case difficile:
+            return "Difficile";
+        default:
+            return "Inconnu";
     }
 }
