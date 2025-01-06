@@ -63,8 +63,8 @@ public class PanelElim extends JPanel implements ActionListener, DocumentListene
         this.txtInfoSupp    = jTextAreaInfo;
         this.scrollPane     = new JScrollPane(this.txtQst, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         this.btnEnregistrer = new JButton    ("Enregistrer");
-        this.btnAdd         = new JButton    (new ImageIcon("src/data/img/add.png"));
-        this.btnInfoSupp    = new JButton    (new ImageIcon("src/data/img/edit.png"));
+        this.btnAdd         = new JButton    (new ImageIcon("data/img/add.png"));
+        this.btnInfoSupp    = new JButton    (new ImageIcon("data/img/edit.png"));
         this.btg            = new ButtonGroup();
 
         if(data.qst() == null){
@@ -74,7 +74,7 @@ public class PanelElim extends JPanel implements ActionListener, DocumentListene
 
                 this.lstBtnSupp         .add(new JButton());
                 this.lstTxtReponses     .add(jTextAreaRep);
-                this.lstScrollTexte     .add(new JScrollPane(this.lstTxtReponses.getLast(), JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED));
+                this.lstScrollTexte     .add(new JScrollPane(this.lstTxtReponses.get(this.lstTxtReponses.size()-1), JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED));
                 this.lstOrdrePrioQst    .add(new JTextField(3));
                 this.lstPointEnMoins    .add(new JTextField(3));
                 JRadioButton radioBouton = new JRadioButton();
@@ -109,16 +109,16 @@ public class PanelElim extends JPanel implements ActionListener, DocumentListene
 
             this.lstBtnSupp         .add(new JButton());
             this.lstTxtReponses     .add(jTextAreaRep);
-            this.lstScrollTexte     .add(new JScrollPane(this.lstTxtReponses.getLast(), JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED));
+            this.lstScrollTexte     .add(new JScrollPane(this.lstTxtReponses.get(this.lstTxtReponses.size()-1), JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED));
             this.lstOrdrePrioQst    .add(new JTextField(3));
             this.lstPointEnMoins    .add(new JTextField(3));
             JRadioButton radioBouton = new JRadioButton();
             this.lstBtnValideReponse.add(radioBouton);
             this.btg                .add(radioBouton);
 
-            this.lstOrdrePrioQst.getLast().getDocument().addDocumentListener(this);
-            this.lstPointEnMoins.getLast().getDocument().addDocumentListener(this);
-            this.lstBtnSupp     .getLast().addActionListener(this);
+            this.lstOrdrePrioQst.get(this.lstOrdrePrioQst.size()-1).getDocument().addDocumentListener(this);
+            this.lstPointEnMoins.get(this.lstPointEnMoins.size()-1).getDocument().addDocumentListener(this);
+            this.lstBtnSupp     .get(this.lstBtnSupp.size()-1).addActionListener(this);
 
             this.majIHM();
             return;
@@ -348,7 +348,7 @@ public class PanelElim extends JPanel implements ActionListener, DocumentListene
             this.lstBtnSupp.get(cpt).setContentAreaFilled(false);
             this.lstBtnSupp.get(cpt).setBorderPainted(false);
             this.lstBtnSupp.get(cpt).setCursor(new Cursor(Cursor.HAND_CURSOR));
-            this.lstBtnSupp.get(cpt).setIcon(new ImageIcon("src/data/img/delete.png"));
+            this.lstBtnSupp.get(cpt).setIcon(new ImageIcon("data/img/delete.png"));
             this.add(this.lstBtnSupp.get(cpt), gbc);
 
             gbc.gridx     = 1;
@@ -452,16 +452,16 @@ public class PanelElim extends JPanel implements ActionListener, DocumentListene
 
             this.lstBtnSupp         .add(new JButton());
             this.lstTxtReponses     .add(jTextAreaRep);
-            this.lstScrollTexte     .add(new JScrollPane(this.lstTxtReponses.getLast(), JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED));
+            this.lstScrollTexte     .add(new JScrollPane(this.lstTxtReponses.get(this.lstTxtReponses.size()-1), JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED));
             this.lstOrdrePrioQst    .add(new JTextField(3));
             this.lstPointEnMoins    .add(new JTextField(3));
             JRadioButton radioBouton = new JRadioButton();
             this.lstBtnValideReponse.add(radioBouton);
             this.btg                .add(radioBouton);
 
-            this.lstOrdrePrioQst.getLast().getDocument().addDocumentListener(this);
-            this.lstPointEnMoins.getLast().getDocument().addDocumentListener(this);
-            this.lstBtnSupp     .getLast().addActionListener(this);
+            this.lstOrdrePrioQst.get(this.lstOrdrePrioQst.size()-1).getDocument().addDocumentListener(this);
+            this.lstPointEnMoins.get(this.lstPointEnMoins.size()-1).getDocument().addDocumentListener(this);
+            this.lstBtnSupp     .get(this.lstBtnSupp.size()-1).addActionListener(this);
         }
     }
 

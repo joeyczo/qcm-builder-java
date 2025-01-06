@@ -72,7 +72,7 @@ public class PanelQCMMulti extends JPanel implements ActionListener
 
                 this.lstBtnSupp         .add(new JButton());
                 this.lstTxtReponses     .add(jTextAreaRep);
-                this.lstScrollTexte     .add(new JScrollPane(this.lstTxtReponses.getLast(), JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED));
+                this.lstScrollTexte     .add(new JScrollPane(this.lstTxtReponses.get(this.lstTxtReponses.size()-1), JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED));
                 this.lstBtnValideReponse.add(new JCheckBox());
             }
         else
@@ -105,10 +105,10 @@ public class PanelQCMMulti extends JPanel implements ActionListener
 
             this.lstBtnSupp         .add(new JButton());
             this.lstTxtReponses     .add(jTextAreaRep);
-            this.lstScrollTexte     .add(new JScrollPane(this.lstTxtReponses.getLast(), JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED));
+            this.lstScrollTexte     .add(new JScrollPane(this.lstTxtReponses.get(this.lstTxtReponses.size()-1), JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED));
             this.lstBtnValideReponse.add(new JCheckBox());
 
-            this.lstBtnSupp.getLast().addActionListener(this);
+            this.lstBtnSupp.get(this.lstBtnSupp.size()-1).addActionListener(this);
 
             this.majIHM();
             return;
@@ -276,7 +276,7 @@ public class PanelQCMMulti extends JPanel implements ActionListener
             this.lstBtnSupp.get(cpt).setOpaque(false);
             this.lstBtnSupp.get(cpt).setContentAreaFilled(false);
             this.lstBtnSupp.get(cpt).setBorderPainted(false);
-            this.lstBtnSupp.get(cpt).setIcon(new ImageIcon("src/data/img/delete.png"));
+            this.lstBtnSupp.get(cpt).setIcon(new ImageIcon("data/img/delete.png"));
             this.lstBtnSupp.get(cpt).setCursor(new Cursor(Cursor.HAND_CURSOR));
             this.add(this.lstBtnSupp.get(cpt), gbc);
 
@@ -301,7 +301,7 @@ public class PanelQCMMulti extends JPanel implements ActionListener
         this.btnAjouter.setContentAreaFilled(false);
         this.btnAjouter.setBorderPainted(false);
         this.btnAjouter.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        this.btnAjouter.setIcon(new ImageIcon("src/data/img/add.png"));
+        this.btnAjouter.setIcon(new ImageIcon("data/img/add.png"));
         this.add(this.btnAjouter, gbc);
 
 
@@ -310,7 +310,7 @@ public class PanelQCMMulti extends JPanel implements ActionListener
         this.btnInfoSupp.setContentAreaFilled(false);
         this.btnInfoSupp.setBorderPainted(false);
         this.btnInfoSupp.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        this.btnInfoSupp.setIcon(new ImageIcon("src/data/img/edit.png"));
+        this.btnInfoSupp.setIcon(new ImageIcon("data/img/edit.png"));
         this.add(this.btnInfoSupp, gbc);
 
         gbc.gridx = 2;
@@ -318,7 +318,7 @@ public class PanelQCMMulti extends JPanel implements ActionListener
         this.btnAjouterFichier.setContentAreaFilled(false);
         this.btnAjouterFichier.setBorderPainted(false);
         this.btnAjouterFichier.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        this.btnAjouterFichier.setIcon(new ImageIcon("src/data/img/file.png"));
+        this.btnAjouterFichier.setIcon(new ImageIcon("data/img/file.png"));
         this.add(this.btnAjouterFichier, gbc);
 
         gbc.gridx = 3;
@@ -347,10 +347,10 @@ public class PanelQCMMulti extends JPanel implements ActionListener
 
             this.lstBtnSupp         .add(new JButton());
             this.lstTxtReponses     .add(jTextAreaRep);
-            this.lstScrollTexte     .add(new JScrollPane(this.lstTxtReponses.getLast(), JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED));
+            this.lstScrollTexte     .add(new JScrollPane(this.lstTxtReponses.get(this.lstTxtReponses.size()-1), JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED));
             this.lstBtnValideReponse.add(new JCheckBox());
 
-            this.lstBtnSupp.getLast().addActionListener(this);
+            this.lstBtnSupp.get(this.lstBtnSupp.size()-1).addActionListener(this);
         }
     }
 

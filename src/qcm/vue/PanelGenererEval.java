@@ -61,7 +61,7 @@ public class PanelGenererEval extends JPanel implements ActionListener {
         JScrollPane spGrilleDonnees = new JScrollPane(this.tblGrilleDonnees);
 
         this.panelHaut.add(this.ddlstRessource);
-        this.panelHaut.add(new JLabel(new ImageIcon("src/data/img/time.png")));
+        this.panelHaut.add(new JLabel(new ImageIcon("data/img/time.png")));
         this.panelHaut.add(rbOui);
         this.panelHaut.add(rbNon);
 
@@ -145,7 +145,7 @@ public class PanelGenererEval extends JPanel implements ActionListener {
                 return;
             }
 
-            System.out.println("QST : " + nbQs);
+
 
             JFileChooser desti = new JFileChooser();
             int returnValue = desti.showSaveDialog(this);

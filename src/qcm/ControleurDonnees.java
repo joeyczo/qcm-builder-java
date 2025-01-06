@@ -2,11 +2,13 @@ package qcm;
 
 import qcm.metier.*;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.PrintWriter;
 import java.io.FileOutputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Scanner;
 
@@ -51,7 +53,7 @@ public class ControleurDonnees
 
         try {
 
-            PrintWriter pw = new PrintWriter(new FileOutputStream("src/data/DonneesRessource.csv"));
+            PrintWriter pw = new PrintWriter(new FileOutputStream("data/DonneesRessource.csv"));
             
             for ( int i = 0; i < this.ctrl.getNbRessource(); i++) {
                 
@@ -89,14 +91,14 @@ public class ControleurDonnees
 
         if (r.getNbNotion() == 0) return;
 
-        String  lienFichier = "src/data/DonneesNotions.csv";
+        String  lienFichier = "data/DonneesNotions.csv";
         String  sRet        = "";
         boolean modifie     = false;
 
         try {
 
-            if (!Files.exists(Paths.get("src", "data", "DonneesNotions.csv")))
-                Files.createFile(Paths.get("src", "data", "DonneesNotions.csv"));
+            if (!Files.exists(Paths.get( "data", "DonneesNotions.csv")))
+                Files.createFile(Paths.get( "data", "DonneesNotions.csv"));
 
             Scanner sc = new Scanner(new FileInputStream(lienFichier), StandardCharsets.UTF_8);
 
@@ -185,7 +187,7 @@ public class ControleurDonnees
         if (q == null) return false;
 
         String sRet                 = "";
-        String pathFichierDonnees   = Paths.get("src", "data", "app", "DonneesQuestions.csv").toString();
+        String pathFichierDonnees   = Paths.get( "data", "app", "DonneesQuestions.csv").toString();
 
         /*  ---------------------------------  */
         /*	  Lecture du fichier de données    */
@@ -355,7 +357,7 @@ public class ControleurDonnees
 
         try {
 
-            Scanner sc = new Scanner(new FileInputStream("src/data/app/DonneesQuestions.csv"), StandardCharsets.UTF_8);
+            Scanner sc = new Scanner(new FileInputStream("data/app/DonneesQuestions.csv"), StandardCharsets.UTF_8);
 
             while (sc.hasNextLine()) {
 
@@ -386,7 +388,7 @@ public class ControleurDonnees
 
             }
 
-            PrintWriter pw = new PrintWriter(new FileOutputStream("src/data/app/DonneesQuestions.csv"));
+            PrintWriter pw = new PrintWriter(new FileOutputStream("data/app/DonneesQuestions.csv"));
 
             pw.print(sRet);
 
@@ -410,7 +412,7 @@ public class ControleurDonnees
 
         try {
 
-            Scanner sc = new Scanner(new FileInputStream("src/data/app/DonneesQuestions.csv"), StandardCharsets.UTF_8);
+            Scanner sc = new Scanner(new FileInputStream("data/app/DonneesQuestions.csv"), StandardCharsets.UTF_8);
 
             while (sc.hasNextLine()) {
 
@@ -423,9 +425,9 @@ public class ControleurDonnees
 
             }
 
-            Files.delete(Paths.get("src", "data", "app", q.getUID()+".txt"));
+            Files.delete(Paths.get("data", "app", q.getUID()+".txt"));
 
-            PrintWriter pw = new PrintWriter(new FileOutputStream("src/data/app/DonneesQuestions.csv"));
+            PrintWriter pw = new PrintWriter(new FileOutputStream("data/app/DonneesQuestions.csv"));
 
             pw.print(sRet);
 
@@ -460,6 +462,35 @@ public class ControleurDonnees
      */
     public void chargerDonnees() {
 
+        // Création du dossier et des fichiers de données
+        try {
+
+            File dossierDonnes    = new File("data");
+            File dossierDonnesQst = new File("data", "app");
+            Path pathRessource = Paths.get("data", "DonneesRessource.csv");
+            Path pathNotions = Paths.get("data", "DonneesNotions.csv");
+            Path pathQuestions = Paths.get("data", "app", "DonneesQuestions.csv");
+
+            if (!dossierDonnes.exists())
+                dossierDonnes.mkdir();
+
+            if (!dossierDonnesQst.exists())
+                dossierDonnesQst.mkdir();
+
+            if (!Files.exists(pathRessource))
+                Files.createFile(pathRessource);
+
+            if (!Files.exists(pathNotions))
+                Files.createFile(pathNotions);
+
+            if (!Files.exists(pathQuestions))
+                Files.createFile(pathQuestions);
+
+
+        } catch (Exception e) {
+            System.out.println("Erreur création fichiers : " + e.getMessage());
+        }
+
         // Chargement des données (Ressource et Notion)
         this.chargerDonneesParametres();
 
@@ -475,7 +506,7 @@ public class ControleurDonnees
 
         try {
 
-            Scanner sc = new Scanner(new FileInputStream("src/data/DonneesRessource.csv"), StandardCharsets.UTF_8);
+            Scanner sc = new Scanner(new FileInputStream("data/DonneesRessource.csv"), StandardCharsets.UTF_8);
 
             while (sc.hasNextLine()) {
 
@@ -514,7 +545,7 @@ public class ControleurDonnees
 
         try {
 
-            Scanner sc = new Scanner(new FileInputStream("src/data/DonneesNotions.csv"), StandardCharsets.UTF_8);
+            Scanner sc = new Scanner(new FileInputStream("data/DonneesNotions.csv"), StandardCharsets.UTF_8);
 
             while (sc.hasNextLine()) {
 
@@ -549,7 +580,7 @@ public class ControleurDonnees
      */
     private void chargerDonneesQuestions() {
 
-        String pathFichierDonnees   = Paths.get("src", "data", "app", "DonneesQuestions.csv").toString();
+        String pathFichierDonnees   = Paths.get( "data", "app", "DonneesQuestions.csv").toString();
 
         try {
 
@@ -598,14 +629,6 @@ public class ControleurDonnees
 
                 Reponse rsp = this.getReponseFichier(uidQuestion, typeQuestion);
 
-                /*if (typeQuestion == TypeQuestion.ELIMINATION) {
-
-                    EliminationReponse eliminationReponse = (EliminationReponse) rsp;
-
-                    System.out.println(eliminationReponse.getNbReponse());
-
-                }*/
-
                 Question nouvelleQuestion = new Question(uidQuestion, txtQuestion, tempsRsp, nbPoints, typeQuestion, rsp, difficulteQuestion, notion);
 
                 notion.ajouterQuestion(nouvelleQuestion);
@@ -625,7 +648,7 @@ public class ControleurDonnees
      */
     private String getTexteQuestion (String uid) {
 
-        String  pathFichierQuestion = Paths.get("src", "data", "app", uid+".txt").toString();
+        String  pathFichierQuestion = Paths.get( "data", "app", uid+".txt").toString();
         String sRet                 = "";
 
         try {
@@ -663,7 +686,7 @@ public class ControleurDonnees
      */
     private Reponse getReponseFichier ( String uid, TypeQuestion typeQuestion ) {
 
-        String  pathFichierQuestion = Paths.get("src", "data", "app", uid+".txt").toString();
+        String  pathFichierQuestion = Paths.get("data", "app", uid+".txt").toString();
         QCMReponse          qcmReponse          = new QCMReponse();
         AssociationReponse  associationReponse  = new AssociationReponse();
         EliminationReponse  eliminationReponse  = new EliminationReponse();

@@ -58,14 +58,14 @@ public class PanelAssociation extends JPanel implements ActionListener
         this.btnAjouter.setContentAreaFilled(false);
         this.btnAjouter.setBorderPainted(false);
         this.btnAjouter.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        this.btnAjouter.setIcon(new ImageIcon("src/data/img/add.png"));
+        this.btnAjouter.setIcon(new ImageIcon("data/img/add.png"));
 
         this.btnExplication = new JButton();
         this.btnExplication.setOpaque(false);
         this.btnExplication.setContentAreaFilled(false);
         this.btnExplication.setBorderPainted(false);
         this.btnExplication.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        this.btnExplication.setIcon(new ImageIcon("src/data/img/edit.png"));
+        this.btnExplication.setIcon(new ImageIcon("data/img/edit.png"));
 
         this.btnEnregistrer = new JButton("Enregistrer");
 
@@ -227,7 +227,7 @@ public class PanelAssociation extends JPanel implements ActionListener
         btnSupprimerGauche.setContentAreaFilled(false);
         btnSupprimerGauche.setBorderPainted(false);
         btnSupprimerGauche.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        btnSupprimerGauche.setIcon(new ImageIcon("src/data/img/delete.png"));
+        btnSupprimerGauche.setIcon(new ImageIcon("data/img/delete.png"));
 
         btnSupprimerGauche.addActionListener(e -> {
             if (this.lstTxtDefinitions.size() > 2) {

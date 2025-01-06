@@ -75,6 +75,7 @@ const timeDiv = document.getElementsByClassName("time");
 const startQuestionnaire = document.getElementById("start-quest");
 const dureeNb = document.getElementById("infos");
 const titre = document.getElementById("title-accueil");
+const sousTitre = document.getElementById("subtitle-accueil");
 const accueil = document.getElementsByClassName("accueil-card");
 
 //Instanciation d'éléments utilitaires
@@ -112,6 +113,17 @@ function displayAccueil() {
     document.querySelector("footer").style.display = "none";
     
     titre.textContent   = ressource;
+    
+    let sousTitreText = "";
+    notions.forEach((notion, index) => {
+        if (index === notions.length - 1) {
+            sousTitreText += notion;
+        } else {
+            sousTitreText += notion + " - ";
+        }
+    });
+    sousTitre.textContent = sousTitreText;
+    
     dureeNb.textContent = questions.length + " questions" + " - " + tempsTotal;
 }
 
@@ -1070,20 +1082,21 @@ function estCorrect() {
 
 function mettreAJourTypeQuestion() {
     if (questions[currentQuestion].type === liaison) {
-        texteTypeQuestion.innerHtml = transformSpecialCharsToHTML("Question par liaison");
+        texteTypeQuestion.innerHTML = transformSpecialCharsToHTML("Question par liaison");
     }
     else if (questions[currentQuestion].type === elimination) {
         texteTypeQuestion.innerHTML = transformSpecialCharsToHTML("Question par élimination");
     }
-    else if (questions[currentQuestion].reponse_multiple) {
+    else if (questions[currentQuestion].type === qcm && questions[currentQuestion].reponse_multiple) {
         texteTypeQuestion.innerHTML = transformSpecialCharsToHTML("Question à choix multiples");
-    } else {
+    }
+    else if (questions[currentQuestion].type === qcm && !questions[currentQuestion].reponse_multiple) {
         texteTypeQuestion.innerHTML = transformSpecialCharsToHTML("Question à choix unique");
     }
 
-    let nbPoitsn = questions[currentQuestion].points;
+    let nbPoints = questions[currentQuestion].points;
 
-    texteTypeQuestion.textContent += " (" + nbPoitsn + " point" + (nbPoitsn > 1 ? 's' : '') + ")";
+    texteTypeQuestion.textContent += " (" + nbPoints + " point" + (nbPoints > 1 ? 's' : '') + ")";
 }
 
 function mettreAJourDifficulte(question) {

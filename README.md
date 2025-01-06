@@ -10,30 +10,21 @@ QCM Builder est une application Java permettant de créer, gérer et évaluer de
 - Exportation des résultats
 
 ## Prérequis
-- Java 11 ou supérieur
-- Maven
+- Java 17 ou supérieur
 
-## Installation
-1. Clonez le dépôt :
-   ```bash
-   git clone https://github.com/votre-utilisateur/qcm-builder-java.git
-   ```
-2. Accédez au répertoire du projet :
-   ```bash
-   cd qcm-builder-java
-   ```
-3. Compilez le projet avec Maven :
-   ```bash
-   mvn clean install
-   ```
+## Compilation
+Afin de compiler l'application, décompilez tous les fichiers de l'archive `QCMBuilder` dans un dossier. 
+Placez-vous dans ce dossier, et exécutez la commande suivante :
 
-## Utilisation
-Pour lancer l'application, exécutez la commande suivante :
 ```bash
-java -jar target/qcm-builder-java-1.0.jar
+javac @compile.list -d bin
 ```
 
-Ou effectuez un double-clic sur le fichier jar.
+## Utilisation
+Pour lancer l'application, exécutez la commande suivante, dans le dossier bin
+```bash
+java qcm.Controleur
+```
 
 ## Auteurs
 - [Jules Bouquet](https://github.com/mauviette)

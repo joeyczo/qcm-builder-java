@@ -220,6 +220,12 @@ public class GenerationEvals {
 
         try {
 
+            // Liste de toutes les notions
+
+            HashSet<Notion> ensNotion = new HashSet<>();
+
+            for (Question q : e.ensQuestion())
+                ensNotion.add(q.getNotion());
 
             // Génération du JavaScript
 
@@ -227,11 +233,23 @@ public class GenerationEvals {
 
             sJs += "const ressource = `" + e.ressource().getNom() + "`;\n";
 
+            sJs += "const notions = [";
+
+            int i = 0;
+
+            for (Notion n : ensNotion) {
+                i++;
+                sJs += "\"" + n.getNom() + "\"" + ((i<ensNotion.size()) ? "," : "") ;
+            }
+
+            sJs += "]\n";
+
             sJs += "const exam      = " + e.evaluation() + ";\n";
 
             sJs += "const questions = " + GenererJSON.genererJson(e) + ";\n";
 
-            Scanner sc = new Scanner(new FileInputStream("src/data/web/script.js"), StandardCharsets.UTF_8);
+
+            Scanner sc = new Scanner(new FileInputStream("data/web/script.js"), StandardCharsets.UTF_8);
 
             while (sc.hasNextLine())
                 sJs += sc.nextLine() + "\n";
@@ -253,7 +271,6 @@ public class GenerationEvals {
 
             copyDir(Paths.get("src", "data", "web", "assets"), cheminGenImg);
 
-
             return true;
 
 
@@ -265,21 +282,27 @@ public class GenerationEvals {
     }
 
     public static void copyDir(Path source, Path target) throws IOException {
+
         Files.walkFileTree(source, new SimpleFileVisitor<Path>() {
 
             public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+
                 Path targetDir = target.resolve(source.relativize(dir));
                 if (!Files.exists(targetDir)) {
                     Files.createDirectory(targetDir);
                 }
                 return FileVisitResult.CONTINUE;
+
             }
 
             public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+
                 Files.copy(file, target.resolve(source.relativize(file)), StandardCopyOption.REPLACE_EXISTING);
                 return FileVisitResult.CONTINUE;
+
             }
         });
+
     }
 
 }

@@ -14,7 +14,7 @@ public class GenererJSON {
 
         for (Question question : e.ensQuestion()) {
             sRet += GenererJSON.generateJSONQuestion(question);
-            if(e.ensQuestion().getLast() == question)
+            if(e.ensQuestion().get(e.ensQuestion().size()-1) == question)
                 sRet += "\t}\n]";
             else
                 sRet += "\t},";
@@ -46,10 +46,10 @@ public class GenererJSON {
 
         // Réponses/associations
         switch(question.getTypeQuestion()) {
-            case TypeQuestion.ASSOCIATION :
+            case ASSOCIATION :
                     sRet += GenererJSON.generateJSONAnswerAssociation(question);
                     break;
-            case TypeQuestion.ELIMINATION :
+            case ELIMINATION :
                     sRet += GenererJSON.generateJSONAnswerElim(question);
                     break;
             default :
