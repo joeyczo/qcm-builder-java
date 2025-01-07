@@ -1,6 +1,7 @@
 package qcm.metier;
 
 public record DonneesCreationQuestion(
+
         double              nbPoints,
         String              tempsReponse,
         Ressource           ressource,
@@ -8,5 +9,6 @@ public record DonneesCreationQuestion(
         DifficulteQuestion  diff,
         TypeQuestion        type,
         Question            qst
-) {
-}
+
+)
+{ }

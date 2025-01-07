@@ -24,6 +24,7 @@ public class PanelAssociation extends JPanel implements ActionListener
     private JButton   btnAjouter;
     private JButton   btnExplication;
     private JButton   btnEnregistrer;
+    private JButton   btnAjouterFichier;
     private JTextArea txtInfoSupp;
 
     private Font      fontGenerale;
@@ -67,6 +68,13 @@ public class PanelAssociation extends JPanel implements ActionListener
         this.btnExplication.setCursor(new Cursor(Cursor.HAND_CURSOR));
         this.btnExplication.setIcon(new ImageIcon("data/img/edit.png"));
 
+        this.btnAjouterFichier = new JButton();
+        this.btnAjouterFichier.setOpaque(false);
+        this.btnAjouterFichier.setContentAreaFilled(false);
+        this.btnAjouterFichier.setBorderPainted(false);
+        this.btnAjouterFichier.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        this.btnAjouterFichier.setIcon(new ImageIcon("data/img/files.png"));
+
         this.btnEnregistrer = new JButton("Enregistrer");
 
         this.addDefinition("");
@@ -76,9 +84,10 @@ public class PanelAssociation extends JPanel implements ActionListener
 
         this.setLayout(new GridBagLayout());
 
-        this.btnAjouter    .addActionListener(this);
-        this.btnExplication.addActionListener(this);
-        this.btnEnregistrer.addActionListener(this);
+        this.btnAjouter        .addActionListener(this);
+        this.btnExplication    .addActionListener(this);
+        this.btnAjouterFichier .addActionListener(this);
+        this.btnEnregistrer    .addActionListener(this);
 
         this.btnEnregistrer.setFont(this.fontGeneraleGras);
 
@@ -89,8 +98,8 @@ public class PanelAssociation extends JPanel implements ActionListener
 
     }
 
-    public void actionPerformed(ActionEvent e)
-    {
+    public void actionPerformed(ActionEvent e) {
+
         if (e.getSource() == this.btnAjouter) {
             this.addDefinition("");
             this.addReponse("");
@@ -152,7 +161,7 @@ public class PanelAssociation extends JPanel implements ActionListener
             // On ajoute la nouvelle question dans la base de données
             if (this.data.qst() == null) {
 
-                Question question = new Question(txtQuestion, this.data.tempsReponse(), this.data.nbPoints(), this.data.type(), associationReponse, this.data.diff(), this.data.notion());
+                Question question = new Question(txtQuestion, this.data.tempsReponse(), this.data.nbPoints(), this.data.type(), associationReponse, this.data.diff(), this.data.notion(), this.ctrl.getFichiersQuestion());
 
                 if (!this.ctrl.sauvegarderQuestion(question)) {
                     this.afficherMessageErreur("Impossible de sauvegarder la question dans la base de données !");
@@ -165,7 +174,7 @@ public class PanelAssociation extends JPanel implements ActionListener
 
             } else { // On modifie la question dans la base de données
 
-                Question question = new Question(this.data.qst().getUID(), txtQuestion, this.data.tempsReponse(), this.data.nbPoints(), this.data.type(), associationReponse, this.data.diff(), this.data.notion());
+                Question question = new Question(this.data.qst().getUID(), txtQuestion, this.data.tempsReponse(), this.data.nbPoints(), this.data.type(), associationReponse, this.data.diff(), this.data.notion(), this.ctrl.getFichiersQuestion());
 
                 if (!this.ctrl.modifierQuestion(question)) {
                     this.afficherMessageErreur("Impossible de modifier la question dans la base de données !");
@@ -182,6 +191,10 @@ public class PanelAssociation extends JPanel implements ActionListener
             this.frameParent.fermerFenetre();
 
         }
+
+        if (e.getSource() == this.btnAjouterFichier)
+            new FrameFichiers(this.ctrl, this.frameParent, this.data);
+
     }
 
     /**
@@ -317,9 +330,14 @@ public class PanelAssociation extends JPanel implements ActionListener
         gbc.weightx = 1.0; // Remplit l'espace restant
         gbc.fill = GridBagConstraints.HORIZONTAL; // Remplissage horizontal
         JPanel pnl = new JPanel();
+        JPanel pnl2 = new JPanel();
         pnl.setLayout(new BorderLayout());
-        pnl.add(this.btnExplication, BorderLayout.WEST);
+        pnl2.setLayout(new FlowLayout());
+        pnl2.add(this.btnExplication);
+        pnl2.add(this.btnAjouterFichier);
+        pnl.add(pnl2, BorderLayout.WEST);
         pnl.add(this.btnEnregistrer, BorderLayout.EAST);
+        //pnl.add(this.btnAjouterFichier);
         this.add(pnl, gbc);
 
         this.revalidate();

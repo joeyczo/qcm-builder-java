@@ -35,7 +35,7 @@ public class ControleurDonnees {
 
 
     /*  ----------------------------------------  */
-    /*	  SAUVEGARDE DES NOTIONS ET RESSOURCES    */
+    /*    SAUVEGARDE DES NOTIONS ET RESSOURCES    */
     /*  ----------------------------------------  */
 
     // Sauvegarde des Ressources et des Notions
@@ -173,7 +173,7 @@ public class ControleurDonnees {
             }
 
             /*  ----------------------------------  */
-            /*	      Sauvegarde des données        */
+            /*        Sauvegarde des données        */
             /*  ----------------------------------  */
 
             PrintWriter pw = new PrintWriter(new FileOutputStream(lienFichier));
@@ -194,7 +194,7 @@ public class ControleurDonnees {
 
 
     /*  ----------------------------  */
-    /*	  SAUVEGARDE DES QUESTIONS    */
+    /*    SAUVEGARDE DES QUESTIONS    */
     /*  ----------------------------  */
 
     /**
@@ -211,7 +211,7 @@ public class ControleurDonnees {
         String pathFichierDonnees   = Paths.get( "data", "app", "DonneesQuestions.csv").toString();
 
         /*  ---------------------------------  */
-        /*	  Lecture du fichier de données    */
+        /*    Lecture du fichier de données    */
         /*  ---------------------------------  */
 
         try {
@@ -255,7 +255,7 @@ public class ControleurDonnees {
                 q.getNbPoints();
 
         /*  ----------------------------------  */
-        /*	  Écriture du fichier de données    */
+        /*    Écriture du fichier de données    */
         /*  ----------------------------------  */
 
         try {
@@ -288,7 +288,7 @@ public class ControleurDonnees {
         try {
 
             /*  -----------------------------------------  */
-            /*	  Écriture de la question au format TXT    */
+            /*    Écriture de la question au format TXT    */
             /*  -----------------------------------------  */
 
             PrintWriter pwQuestion = new PrintWriter(new FileOutputStream(Paths.get("data", "app", q.getUID()+".txt").toString()));
@@ -321,7 +321,7 @@ public class ControleurDonnees {
 
 
             /*  ---------------------------------------------  */
-            /*	  Écriture des réponses dans le fichier TXT    */
+            /*    Écriture des réponses dans le fichier TXT    */
             /*  ---------------------------------------------  */
 
             if (q.getTypeQuestion() == TypeQuestion.QCMSOLO || q.getTypeQuestion() == TypeQuestion.QCMMULTI) {
@@ -484,7 +484,7 @@ public class ControleurDonnees {
 
     /*  --------------------------  */
     /*                              */
-    /*	  CHARGEMENT DES DONNEES    */
+    /*    CHARGEMENT DES DONNEES    */
     /*                              */
     /*  --------------------------  */
 
@@ -875,7 +875,7 @@ public class ControleurDonnees {
 
     /*  -------------------------------------------  */
     /*                                               */
-    /*	  GESTION DES FICHIERS DANS LES QUESTIONS    */
+    /*    GESTION DES FICHIERS DANS LES QUESTIONS    */
     /*                                               */
     /*  -------------------------------------------  */
 
@@ -988,7 +988,7 @@ public class ControleurDonnees {
     }
 
     /**
-     * Permet de chagrer les fichiers de la question
+     * Permet de charger les fichiers de la question
      * Intervient lorsqu'il y a une modification d'une question avec des fichiers déjà existant
      * @param ensFichiers Liste de l'ensemble des fichiers
      */

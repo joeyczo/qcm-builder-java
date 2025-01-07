@@ -10,7 +10,6 @@ src/qcm/metier/EliminationReponseItem.java
 src/qcm/metier/Evalutation.java
 src/qcm/metier/Fichier.java
 src/qcm/metier/GenerationEvals.java
-src/qcm/metier/GenerationPageQuestion.java
 src/qcm/metier/GenererJSON.java
 src/qcm/metier/GestionDonnees.java
 src/qcm/metier/Notion.java

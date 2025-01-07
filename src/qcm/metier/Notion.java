@@ -8,34 +8,36 @@ public class Notion
     private final int LIMITE = 30;
 
     private String          nom;
-    private List<Question>	alQuestions;
+    private List<Question>  alQuestions;
     private Ressource       ressource;
 
-    public Notion	(String nom, Ressource r) {
+    public Notion (String nom, Ressource r) {
+
         this.nom         = nom;
         this.ressource   = r;
         this.alQuestions = new ArrayList<>();
+
     }
 
-    public String getNom() {
-        return this.nom;
-    }
+    public String getNom() { return this.nom; }
 
     /**
      * Rétrecie le nom de la notion si il est trop long
      * @return Rétrecie le nom de la notion à 40 caractères si il est trop long
      */
-    public String getNomCourt()
-    {
+    public String getNomCourt() {
+
         String nom = this.nom;
 
-        if ( this.nom.length() >= LIMITE )
-        {
+        if ( this.nom.length() >= LIMITE ) {
+
             nom = nom.substring(0, LIMITE - 3);
             nom += "...";
+
         }
 
-        return nom ;
+        return nom;
+
     }
 
 
@@ -47,16 +49,14 @@ public class Notion
      * Récupérer la ressource parent
      * @return La ressource parent à la Notion
      */
-    public Ressource getRessource() {
-        return ressource;
-    }
+    public Ressource getRessource() { return ressource; }
 
     /**
      * Permets de récupérer le nombre de question d'une notion en fonction de sa difficulté
      * @param diff Difficulté à récupérer
      * @return Le nombre de questions
      */
-    public int getNbQuestions ( DifficulteQuestion diff ) {
+    public int getNbQuestions (DifficulteQuestion diff) {
 
         int nbQst = 0;
 
@@ -71,16 +71,14 @@ public class Notion
      * Permets de récupérer le nombre de questions pour la Notion
      * @return Le nombre de questions disponible
      */
-    public int getNbQuestions() {
-        return this.alQuestions.size();
-    }
+    public int getNbQuestions() { return this.alQuestions.size(); }
 
     /**
      * Récupérer la question à l'indice i si elle existe
      * @param i Indice
      * @return La question de la Notion à l'indice i
      */
-    public Question getQuestion ( int i ) {
+    public Question getQuestion (int i) {
 
         if (i < 0 || i >= this.getNbQuestions()) return null;
 
@@ -92,18 +90,14 @@ public class Notion
      * Ajouter une question à la Notion
      * @param q Nouvelle question
      */
-    public void ajouterQuestion ( Question q ) {
-
-        this.alQuestions.add(q);
-
-    }
+    public void ajouterQuestion (Question q) { this.alQuestions.add(q); }
 
     /**
      * Modifier une question. L'index sera le même dans la liste
      * @param q Nouvelles données pour la question
      * @return True si la question a été modifié, sinon false
      */
-    public boolean modifierQuestion ( Question q ) {
+    public boolean modifierQuestion (Question q) {
 
         int indice = -1;
 
@@ -112,14 +106,16 @@ public class Notion
             Question qst = this.alQuestions.get(i);
 
             if (qst.getUID().equals(q.getUID())) {
+
                 indice = i;
                 break;
+
             }
 
         }
 
         if (indice == -1)                               return false;
-        if (this.alQuestions.get(indice) == null)		return false;
+        if (this.alQuestions.get(indice) == null)       return false;
 
         this.alQuestions.remove(indice);
         this.alQuestions.add(indice , q);
@@ -135,8 +131,8 @@ public class Notion
      */
     public boolean supprimerQuestion ( int i ) {
 
-        if (i < 0 || i >= this.getNbQuestions()) 	return false;
-        if (this.alQuestions.get(i) == null)		return false;
+        if (i < 0 || i >= this.getNbQuestions()) return false;
+        if (this.alQuestions.get(i) == null)     return false;
 
         this.alQuestions.remove(i);
 
@@ -173,13 +169,13 @@ public class Notion
 
         for (int i = 0; i < this.alQuestions.size(); i++)
             if (this.alQuestions.get(i).equals(q)) {
+
                 indice = i;
                 break;
+
             }
 
         return indice;
 
-
     }
-
 }

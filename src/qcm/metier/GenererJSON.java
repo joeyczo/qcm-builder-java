@@ -13,27 +13,33 @@ public class GenererJSON {
         String sRet = "[";
 
         for (Question question : e.ensQuestion()) {
+
             sRet += GenererJSON.generateJSONQuestion(question);
+
             if(e.ensQuestion().get(e.ensQuestion().size()-1) == question)
                 sRet += "\t}\n]";
             else
                 sRet += "\t},";
+
         }
 
         return sRet;
+
     }
 
     public static String generateJSONQuestion(Question question) {
+
         String sRet = "\n{\t\n";
 
         //Type de question
         sRet += "\t\ttype: \"" +
                 switch (question.getTypeQuestion()) {
-                    case QCMSOLO -> "qcm";
-                    case QCMMULTI -> "qcm";
+                    case QCMSOLO     -> "qcm";
+                    case QCMMULTI    -> "qcm";
                     case ELIMINATION -> "elimination";
                     case ASSOCIATION -> "liaison";
                 }
+
                 + "\",\n";
 
         //Si QCM, réponse multiple?
@@ -46,6 +52,7 @@ public class GenererJSON {
 
         // Réponses/associations
         switch(question.getTypeQuestion()) {
+
             case ASSOCIATION :
                     sRet += GenererJSON.generateJSONAnswerAssociation(question);
                     break;
@@ -55,6 +62,7 @@ public class GenererJSON {
             default :
                     sRet += GenererJSON.generateJSONAnswerQCM(question);
                     break;
+
         }
 
 
@@ -72,52 +80,94 @@ public class GenererJSON {
         sRet += "\t\tdifficulte: \"" +
                 switch (question.getDifficulte()) {
                     case TRESFACILE -> "tres-facile";
-                    case FACILE -> "facile";
-                    case MOYEN -> "moyen";
-                    case DIFFICILE -> "difficile";
+                    case FACILE     -> "facile";
+                    case MOYEN      -> "moyen";
+                    case DIFFICILE  -> "difficile";
                 }
+
                 + "\",\n";
 
+        // Fichiers
+        if (!question.getEnsembleFichier().isEmpty()) {
+
+            sRet += "\t\tliens: [\n";
+
+            int i = 0;
+
+            for (Fichier f : question.getEnsembleFichier()) {
+
+                sRet += "\t\t\t{\n\t\t\t\tname:";
+                sRet += "\"" + f.nomFichier() + "\",\n";
+                sRet += "\t\t\t\tlien:";
+                sRet += "\"" + f.nomFichier() +"\"\n\t\t\t}";
+
+                i++;
+
+                if (i < question.getEnsembleFichier().size()) sRet += ",\n";
+
+            }
+
+            sRet += "]";
+
+        }
+
         return sRet;
+
     }
 
-    public static String generateJSONAnswerQCM(Question question){
-      String sRet ="\t\tanswers :[\n";
+    public static String generateJSONAnswerQCM(Question question) {
+
+      String sRet           = "\t\tanswers :[\n";
       QCMReponse qcmReponse = (QCMReponse) question.getReponse();
 
       for ( int i= 0; i < qcmReponse.getNbReponse(); i++) {
+
           QCMReponseItem qcmReponseItem = qcmReponse.getReponseItem(i);
 
           sRet += "\t\t\t{ text : \"" + formatTexte(qcmReponseItem.getTexte()) + "\", correct :" + qcmReponseItem.isValide() + " },\n";
+
       }
+
       sRet += "],\n";
+
       return sRet;
+
     }
 
-    public static String generateJSONAnswerAssociation(Question question){
-        String sRet = "\t\tpairs: [\n";
+    public static String generateJSONAnswerAssociation(Question question) {
+
+        String sRet                           = "\t\tpairs: [\n";
         AssociationReponse associationReponse = (AssociationReponse) question.getReponse();
 
         for ( int i = 0; i < associationReponse.getNbReponses(); i++) {
 
             AssociationReponseItem associationReponseItem = associationReponse.getReponseItem(i);
             sRet += "\t\t\t{ left : \"" + formatTexte(associationReponseItem.getTexte()) + "\", right :\"" + formatTexte(associationReponseItem.getReponse().getTexte()) + "\" },\n";
+
         }
+
         sRet += "],\n";
+
         return sRet;
+
     }
 
-    public static String generateJSONAnswerElim(Question question){
-        String sRet ="\t\tanswers :[\n";
+    public static String generateJSONAnswerElim(Question question) {
+
+        String sRet                           = "\t\tanswers :[\n";
         EliminationReponse eliminationReponse = (EliminationReponse) question.getReponse();
 
         for ( int i= 0; i < eliminationReponse.getNbReponse(); i++) {
 
             EliminationReponseItem eliminationReponseItem = eliminationReponse.getReponseItem(i);
             sRet += "\t\t\t{ text : \"" + formatTexte(eliminationReponseItem.getTexte()) + "\", correct :" + eliminationReponseItem.isBonneReponse() + ", ordre:" + eliminationReponseItem.getOrdreSuppression() + ", points:"+ eliminationReponseItem.getPtsSuppression()+"},\n";
+
         }
+
         sRet += "],\n";
+
         return sRet;
+
     }
 
     /**

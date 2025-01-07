@@ -53,7 +53,7 @@ public class PanelListeQst extends JPanel implements ActionListener
         this.ddlstNotion.addItem("-- Choisir une notion --");
 
         this.ddlstNotion.setEnabled(false);
-        this.tblGrilleDonnees = new JTable ( new GrilleDonneesQuestion(this.ctrl, null) );
+        this.tblGrilleDonnees = new JTable ( new GrilleDonneesQuestion(null) );
         this.tblGrilleDonnees.setFillsViewportHeight(true);
         this.tblGrilleDonnees.setRowHeight(30);
         this.tblGrilleDonnees.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -112,7 +112,7 @@ public class PanelListeQst extends JPanel implements ActionListener
             else {
                 this.ddlstNotion.addItem("-- Choisir une notion --");
                 this.ddlstNotion.setEnabled(false);
-                this.tblGrilleDonnees.setModel(new GrilleDonneesQuestion(this.ctrl, null));
+                this.tblGrilleDonnees.setModel(new GrilleDonneesQuestion(null));
             }
         }
 
@@ -131,10 +131,10 @@ public class PanelListeQst extends JPanel implements ActionListener
                 if (not == null)
                     return;
 
-                this.tblGrilleDonnees.setModel(new GrilleDonneesQuestion(this.ctrl, not));
+                this.tblGrilleDonnees.setModel(new GrilleDonneesQuestion(not));
             }
             else
-                this.tblGrilleDonnees.setModel(new GrilleDonneesQuestion(this.ctrl, null));
+                this.tblGrilleDonnees.setModel(new GrilleDonneesQuestion(null));
 
 
         }
@@ -229,7 +229,7 @@ public class PanelListeQst extends JPanel implements ActionListener
         }
 
         this.ctrl.supprimerQuestion(notion, qst);
-        this.tblGrilleDonnees.setModel(new GrilleDonneesQuestion(this.ctrl, notion));
+        this.tblGrilleDonnees.setModel(new GrilleDonneesQuestion(notion));
 
     }
 

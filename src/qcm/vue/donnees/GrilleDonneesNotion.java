@@ -11,18 +11,15 @@ public class GrilleDonneesNotion extends AbstractTableModel {
 
     private String[]    tabEntete;
     private Object[][]  tabDonnees;
-
     private Controleur  ctrl;
-    private Ressource   ressource;
 
     public GrilleDonneesNotion(Controleur controleur, Ressource ressource) {
 
-        this.ctrl = controleur;
-
-        if (ressource == null) ressource = new Ressource("TEST", "R69.69");
-
+        this.ctrl       = controleur;
         this.tabEntete  = new String[] { "Notion", "Nb. Très facile", "Nb. Facile", "Nb. Moyen", "Nb. difficile"};
         this.tabDonnees = new Object[this.ctrl.getNbNotion(ressource)][this.tabEntete.length];
+
+        if (ressource == null) ressource = new Ressource("TEST", "R69.69");
 
         for (int i = 0; i < this.ctrl.getNbNotion(ressource); i++) {
 
@@ -39,18 +36,17 @@ public class GrilleDonneesNotion extends AbstractTableModel {
     }
 
     /* ------------ */
-    /*	 Getters 	*/
+    /*   Getters    */
     /* ------------ */
 
-    public int getRowCount()    {   return this.tabDonnees.length; }
-    public int getColumnCount() {   return this.tabEntete.length;  }
-
+    public int    getRowCount   ()                              { return this.tabDonnees.length;                   }
+    public int    getColumnCount()                              { return this.tabEntete.length;                    }
     public String getColumnName (int col)                       { return this.tabEntete[col];                      }
     public Object getValueAt    (int rowIndex, int columnIndex) { return this.tabDonnees[rowIndex][columnIndex];   }
     public Class  getColumnClass(int c)                         { return this.getValueAt(0, c).getClass(); }
 
     /* ------------ */
-    /*	 Setters 	*/
+    /*   Setters    */
     /* ------------ */
 
     public void setValueAt (Object value, int row, int col) {

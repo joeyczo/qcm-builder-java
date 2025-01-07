@@ -5,7 +5,6 @@ import qcm.Controleur;
 import qcm.vue.FrameVisuEval;
 
 import java.io.*;
-import java.lang.reflect.Array;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
@@ -13,9 +12,9 @@ import java.util.*;
 
 public class GenerationEvals {
 
-    private Map<Notion, Map<DifficulteQuestion, Integer>>   mapNotions;
-    private Controleur                                      ctrl;
-    private Ressource                                       ressource;
+    private Map<Notion, Map<DifficulteQuestion, Integer>> mapNotions;
+    private Controleur                                    ctrl;
+    private Ressource                                     ressource;
 
     public GenerationEvals(Controleur ctrl) {
 
@@ -36,9 +35,7 @@ public class GenerationEvals {
      * Modifier la ressource parent de l'évaluation
      * @param ressource Nouvelle ressource
      */
-    public void changerRessource ( Ressource ressource ) {
-        this.ressource = ressource;
-    }
+    public void changerRessource ( Ressource ressource ) { this.ressource = ressource; }
 
     /**
      * Ajouter une nouvelle notion à la liste de génération
@@ -48,8 +45,6 @@ public class GenerationEvals {
     public boolean ajouterNotion(Notion n) {
 
         if (this.mapNotions.containsKey(n)) return false;
-
-        //System.out.println("La notion " + n.getNom() + " a été ajouté");
 
         this.mapNotions.put(n, new HashMap<>());
 
@@ -66,8 +61,6 @@ public class GenerationEvals {
 
         if (!this.mapNotions.containsKey(n)) return false;
 
-        // System.out.println("La notion " + n.getNom() + " a été supprimé !!!");
-
         this.mapNotions.remove(n);
 
         return true;
@@ -83,8 +76,7 @@ public class GenerationEvals {
      */
     public Integer ajouterDifficulteQuestion (Notion n, DifficulteQuestion diff, Integer num) {
 
-        if (!this.mapNotions.containsKey(n))    return 0;
-
+        if (!this.mapNotions.containsKey(n)) return 0;
 
         if (n.getNbQuestions(diff) < num) {
 
@@ -96,13 +88,12 @@ public class GenerationEvals {
 
         Map<DifficulteQuestion, Integer> mapNotion = this.mapNotions.get(n);
 
-        //System.out.println(num + " >= " + n.getNbQuestions(diff));
-
         mapNotion.put(diff, num);
 
         this.mapNotions.put(n, mapNotion);
 
         return num;
+
     }
 
 
@@ -110,11 +101,7 @@ public class GenerationEvals {
      * Permets de connaître le nombre de notions sélectionnées dans le tableau
      * @return Le nombre de notions sélectionnées
      */
-    public int getNotionSelected () {
-
-        return this.mapNotions.size();
-
-    }
+    public int getNotionSelected () { return this.mapNotions.size(); }
 
     /**
      * Permets de connaître le nombre de questions qui seront générés
@@ -133,8 +120,9 @@ public class GenerationEvals {
             Set<DifficulteQuestion> ensDiff = this.mapNotions.get(n).keySet();
 
             for (DifficulteQuestion d : ensDiff) {
+
                 nbQuestion += this.mapNotions.get(n).get(d);
-                // System.out.println("Ajout de +" + this.mapNotions.get(n).get(d) + " pour : " + nbQuestion);
+
             }
 
 
@@ -150,12 +138,6 @@ public class GenerationEvals {
      * @param path Lien vers la destination
      */
     public void genererEvaluation ( boolean evalue, String path ) {
-
-        System.out.println(this.ressource);
-        System.out.println("NOM ::");
-        System.out.println(this.ressource.getNom());
-
-        System.out.println("Génération en cours ...");
 
         // Vérification du nombre de question
         if (this.getNbQuestions() < 0) return;
@@ -179,13 +161,13 @@ public class GenerationEvals {
                 int nbQuestionsDiff = this.mapNotions.get(n).get(diff);
                 int nbQuestionGen   = 0;
 
-                System.out.println(nbQuestionsDiff + " questions pour la diff " + diff + " et la notion " + n.getNom());
-
                 for ( Question q : ensQuestion) {
 
                     if (q.getDifficulte() == diff && nbQuestionGen < nbQuestionsDiff) {
+
                         alQuestion.add(q);
                         nbQuestionGen++;
+
                     }
 
                 }
@@ -217,6 +199,7 @@ public class GenerationEvals {
         Path cheminGenHTML      = Paths.get(e.pathExp(), "index.html");
         Path cheminGenCSS       = Paths.get(e.pathExp(), "style.css");
         Path cheminGenImg       = Paths.get(e.pathExp(), "assets");
+        Path cheminGenPj        = Paths.get(e.pathExp(), "links");
 
         try {
 
@@ -238,8 +221,10 @@ public class GenerationEvals {
             int i = 0;
 
             for (Notion n : ensNotion) {
+
                 i++;
                 sJs += "\"" + n.getNom() + "\"" + ((i<ensNotion.size()) ? "," : "") ;
+
             }
 
             sJs += "]\n";
@@ -265,7 +250,30 @@ public class GenerationEvals {
             // Copie des fichiers HTML et CSS
 
             Files.copy(Paths.get("data", "web", "index.html"), cheminGenHTML, StandardCopyOption.REPLACE_EXISTING);
-            Files.copy(Paths.get( "data", "web", "style.css"), cheminGenCSS, StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(Paths.get( "data", "web", "style.css"), cheminGenCSS , StandardCopyOption.REPLACE_EXISTING);
+
+            // Copie des fichiers pièces jointes
+
+            File dossierPj = new File(cheminGenPj.toString());
+
+            dossierPj.mkdir();
+
+            for ( Question q : e.ensQuestion()) {
+
+                if (!q.getEnsembleFichier().isEmpty()) {
+
+                    for (Fichier f : q.getEnsembleFichier()) {
+
+                        Path lienFichier = Paths.get(f.lienFic());
+                        Path lienDestPj  = Paths.get(cheminGenPj.toString(), f.nomFichier());
+
+                        Files.copy(lienFichier, lienDestPj, StandardCopyOption.REPLACE_EXISTING);
+
+                    }
+
+                }
+
+            }
 
             // Copie des assets
 
@@ -275,8 +283,10 @@ public class GenerationEvals {
 
 
         } catch (Exception ex) {
+
             System.out.println("Erreur génération des fichiers de l'évaluation" + ex.getMessage());
             return false;
+
         }
 
     }

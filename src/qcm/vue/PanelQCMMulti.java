@@ -85,9 +85,10 @@ public class PanelQCMMulti extends JPanel implements ActionListener
 
         this.majIHM();
 
-        this.btnAjouter    .addActionListener(this);
-        this.btnInfoSupp   .addActionListener(this);
-        this.btnEnregistrer.addActionListener(this);
+        this.btnAjouter        .addActionListener(this);
+        this.btnInfoSupp       .addActionListener(this);
+        this.btnEnregistrer    .addActionListener(this);
+        this.btnAjouterFichier .addActionListener(this);
 
         for ( int cpt = 0; cpt < this.lstBtnSupp.size(); cpt ++)
             this.lstBtnSupp.get(cpt).addActionListener(this);
@@ -194,7 +195,7 @@ public class PanelQCMMulti extends JPanel implements ActionListener
             // Ajout de la nouvelle question dans la base de données
             if ( this.data.qst() == null ) {
 
-                Question nouvelleQst = new Question(txtQuestion, this.data.tempsReponse(), this.data.nbPoints(), this.data.type(), qcmReponse, this.data.diff(), this.data.notion());
+                Question nouvelleQst = new Question(txtQuestion, this.data.tempsReponse(), this.data.nbPoints(), this.data.type(), qcmReponse, this.data.diff(), this.data.notion(), this.ctrl.getFichiersQuestion());
 
                 if (!this.ctrl.sauvegarderQuestion(nouvelleQst)) {
                     this.afficherMessageErreur("Erreur lors de la sauvegarde de la question dans la base de données");
@@ -207,7 +208,7 @@ public class PanelQCMMulti extends JPanel implements ActionListener
 
             } else { // Modification de la question dans la base de données
 
-                Question nouvelleQst = new Question(this.data.qst().getUID(), txtQuestion, this.data.tempsReponse(), this.data.nbPoints(), this.data.type(), qcmReponse, this.data.diff(), this.data.notion());
+                Question nouvelleQst = new Question(this.data.qst().getUID(), txtQuestion, this.data.tempsReponse(), this.data.nbPoints(), this.data.type(), qcmReponse, this.data.diff(), this.data.notion(), this.ctrl.getFichiersQuestion());
 
                 if (!this.ctrl.modifierQuestion(nouvelleQst)) {
                     this.afficherMessageErreur("Erreur lors de la modification de la question dans la base de données");
@@ -223,6 +224,9 @@ public class PanelQCMMulti extends JPanel implements ActionListener
             this.frameParent.fermerFenetre();
 
         }
+
+        if (e.getSource() == this.btnAjouterFichier)
+            new FrameFichiers(this.ctrl, this.frameParent, this.data);
 
 
     }

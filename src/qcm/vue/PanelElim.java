@@ -25,7 +25,7 @@ public class PanelElim extends JPanel implements ActionListener, DocumentListene
     private ArrayList<JTextField>   lstOrdrePrioQst;
     private ArrayList<JTextField>   lstPointEnMoins;
 
-    private JButton           btnEnregistrer, btnAdd,btnInfoSupp;
+    private JButton           btnEnregistrer, btnAdd,btnInfoSupp, btnAjouterFichier;
     private JTextArea         txtQst, txtInfoSupp;
     private JScrollPane       scrollPane;
     private ButtonGroup       btg;
@@ -36,7 +36,6 @@ public class PanelElim extends JPanel implements ActionListener, DocumentListene
 
     public PanelElim( DonneesCreationQuestion data, FrameInfosQuestion parent, Controleur ctrl )
     {
-
         this.data        = data;
         this.frameParent = parent;
         this.ctrl        = ctrl;
@@ -59,13 +58,14 @@ public class PanelElim extends JPanel implements ActionListener, DocumentListene
         jTextAreaInfo.setFont(this.fontGenerale);
 
 
-        this.txtQst         = jTextAreaQst;
-        this.txtInfoSupp    = jTextAreaInfo;
-        this.scrollPane     = new JScrollPane(this.txtQst, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        this.btnEnregistrer = new JButton    ("Enregistrer");
-        this.btnAdd         = new JButton    (new ImageIcon("data/img/add.png"));
-        this.btnInfoSupp    = new JButton    (new ImageIcon("data/img/edit.png"));
-        this.btg            = new ButtonGroup();
+        this.txtQst            = jTextAreaQst;
+        this.txtInfoSupp       = jTextAreaInfo;
+        this.scrollPane        = new JScrollPane(this.txtQst, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        this.btnEnregistrer    = new JButton    ("Enregistrer");
+        this.btnAdd            = new JButton    (new ImageIcon("data/img/add.png"));
+        this.btnInfoSupp       = new JButton    (new ImageIcon("data/img/edit.png"));
+        this.btnAjouterFichier = new JButton    (new ImageIcon("data/img/files.png"));
+        this.btg               = new ButtonGroup();
 
         if(data.qst() == null){
             for( int cpt = 0; cpt < 2; cpt ++) {
@@ -93,9 +93,10 @@ public class PanelElim extends JPanel implements ActionListener, DocumentListene
 
         this.majIHM();
 
-        this.btnEnregistrer.addActionListener(this);
-        this.btnAdd        .addActionListener(this);
-        this.btnInfoSupp   .addActionListener(this);
+        this.btnEnregistrer   .addActionListener(this);
+        this.btnAdd           .addActionListener(this);
+        this.btnInfoSupp      .addActionListener(this);
+        this.btnAjouterFichier.addActionListener(this);
 
         for ( int cpt = 0; cpt < this.lstBtnSupp.size(); cpt ++)
             this.lstBtnSupp.get(cpt).addActionListener(this);
@@ -143,7 +144,6 @@ public class PanelElim extends JPanel implements ActionListener, DocumentListene
             }
 
         if(e.getSource() == this.btnInfoSupp){
-            System.out.println("CLIQUE SUR LE BOUTON");
 
             JScrollPane scrollPane = new JScrollPane(this.txtInfoSupp);
 
@@ -266,7 +266,7 @@ public class PanelElim extends JPanel implements ActionListener, DocumentListene
             // On ajoute la nouvelle question dans la base de données
             if (this.data.qst() == null){
 
-                Question question = new Question(txtQuestion, this.data.tempsReponse(), this.data.nbPoints(), this.data.type(), eliminationReponse, this.data.diff(), this.data.notion());
+                Question question = new Question(txtQuestion, this.data.tempsReponse(), this.data.nbPoints(), this.data.type(), eliminationReponse, this.data.diff(), this.data.notion(), this.ctrl.getFichiersQuestion());
 
                 if (!this.ctrl.sauvegarderQuestion(question)) {
                     this.afficherMessageErreur("Impossible de sauvegarder la réponse dans la base de données");
@@ -279,7 +279,7 @@ public class PanelElim extends JPanel implements ActionListener, DocumentListene
 
             } else { // On modifie la question dans la base de données
 
-                Question question = new Question(this.data.qst().getUID(), txtQuestion, this.data.tempsReponse(), this.data.nbPoints(), this.data.type(), eliminationReponse, this.data.diff(), this.data.notion());
+                Question question = new Question(this.data.qst().getUID(), txtQuestion, this.data.tempsReponse(), this.data.nbPoints(), this.data.type(), eliminationReponse, this.data.diff(), this.data.notion(), this.ctrl.getFichiersQuestion());
 
                 if (!this.ctrl.modifierQuestion(question)) {
                     this.afficherMessageErreur("Impossible de modifier la réponse dans la base de données");
@@ -292,6 +292,10 @@ public class PanelElim extends JPanel implements ActionListener, DocumentListene
             }
             this.frameParent.fermerFenetre();
         }
+
+        if (e.getSource() == this.btnAjouterFichier)
+            new FrameFichiers(this.ctrl, this.frameParent, this.data);
+
     }
 
     /**
@@ -386,13 +390,24 @@ public class PanelElim extends JPanel implements ActionListener, DocumentListene
         this.add(btnInfoSupp, gbc);
 
         gbc.gridx = 1;
+        this.btnAjouterFichier.setOpaque(false);
+        this.btnAjouterFichier.setContentAreaFilled(false);
+        this.btnAjouterFichier.setBorderPainted(false);
+        this.btnAjouterFichier.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        this.add(btnAjouterFichier, gbc);
+
+        gbc.gridx = 1;
         gbc.gridy = 2 + ( this.lstTxtReponses.size() * 2 );;
         gbc.gridwidth = 3; // Étendre sur 3 colonnes
         gbc.weightx = 1.0; // Remplit l'espace restant
         gbc.fill = GridBagConstraints.HORIZONTAL; // Remplissage horizontal
         JPanel pnl = new JPanel();
+        JPanel pnl2 = new JPanel();
         pnl.setLayout(new BorderLayout());
-        pnl.add(this.btnInfoSupp, BorderLayout.WEST);
+        pnl2.setLayout(new FlowLayout());
+        pnl2.add(this.btnInfoSupp);
+        pnl2.add(this.btnAjouterFichier);
+        pnl.add(pnl2, BorderLayout.WEST);
         pnl.add(this.btnEnregistrer, BorderLayout.EAST);
         this.add(pnl, gbc);
 

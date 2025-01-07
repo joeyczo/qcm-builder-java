@@ -2,60 +2,44 @@ package qcm.metier;
 
 public class EliminationReponseItem {
 	
-	private String 	texte;
-	private int 	ordreSuppression;
-	private float 	ptsSuppression;
-	private	boolean	bonneReponse;
+	private String  texte;
+	private int     ordreSuppression;
+	private float   ptsSuppression;
+	private	boolean bonneReponse;
 
 	/*  --------------------------  */
 	/*         CONSTRUCTEUR         */
 	/*  --------------------------  */
 
 	public EliminationReponseItem(String texte, int ordreSuppression, float ptsSuppression, boolean bonneReponse) {
-		this.texte 				= texte;
-		this.ordreSuppression 	= ordreSuppression;
-		this.ptsSuppression 	= ptsSuppression;
-		this.bonneReponse		= bonneReponse;
+
+		this.texte             = texte;
+		this.ordreSuppression  = ordreSuppression;
+		this.ptsSuppression    = ptsSuppression;
+		this.bonneReponse      = bonneReponse;
+
 	}
 
 	/*  --------------------------  */
 	/*           GETTERS            */
 	/*  --------------------------  */
 
-	public String getTexte() {
-		return texte;
-	}
-
-	public int getOrdreSuppression() {
-		return ordreSuppression;
-	}
-
-	public float getPtsSuppression() {
-		return ptsSuppression;
-	}
-
-	public boolean isBonneReponse() {
-		return this.bonneReponse;
-	}
+	public String getTexte           () { return this.texte;            }
+	public int    getOrdreSuppression() { return this.ordreSuppression; }
+	public float  getPtsSuppression  () { return this.ptsSuppression;   }
 
 
 	/*  --------------------------  */
 	/*           SETTERS            */
 	/*  --------------------------  */
 
-	public void setOrdreSuppression(int ordreSuppression) {
-		this.ordreSuppression = ordreSuppression;
-	}
+	public void setTexte(String texte) { this.texte = texte; }
 
-	public void setPtsSuppression(float ptsSuppression) {
-		this.ptsSuppression = ptsSuppression;
-	}
 
-	public void setBonneReponse ( boolean bonneReponse ) {
-		this.bonneReponse = bonneReponse;
-	}
+	/*  --------------------------  */
+	/*        AUTRE METHODE         */
+	/*  --------------------------  */
 
-	public void setTexte(String texte) {
-		this.texte = texte;
-	}
+	public boolean isBonneReponse() { return this.bonneReponse; }
+
 }

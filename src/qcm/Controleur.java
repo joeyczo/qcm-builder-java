@@ -8,24 +8,24 @@ import java.util.ArrayList;
 
 public class Controleur {
 
-	private Accueil			    accueil;
-	private GestionDonnees	    gestionDonnees;
+    private Accueil             accueil;
+    private GestionDonnees      gestionDonnees;
     private ControleurDonnees   ctrlDonnees;
     private GenerationEvals     generationEvals;
 
-	public Controleur() {
+    public Controleur() {
 
-		this.accueil		 = new Accueil          (this);
-		this.gestionDonnees  = new GestionDonnees   (this);
+        this.accueil         = new Accueil          (this);
+        this.gestionDonnees  = new GestionDonnees   ();
         this.ctrlDonnees     = new ControleurDonnees(this);
         this.generationEvals = new GenerationEvals  (this);
 
         this.ctrlDonnees.chargerDonnees();
 
-	}
+    }
 
     /*  -----------------------------  */
-    /*	 Méthodes gestion paramètres   */
+    /*   Méthodes gestion paramètres   */
     /*  -----------------------------  */
 
     public int       getNbRessource()                      { return this.gestionDonnees.getNbRessource();}
@@ -62,7 +62,7 @@ public class Controleur {
     }
 
     /*  ---------------------------  */
-    /*	 Méthodes génération évals   */
+    /*   Méthodes génération évals   */
     /*  ---------------------------  */
 
     public int     getNotionsSelected       ()                                          { return this.generationEvals.getNotionSelected(); }
@@ -78,7 +78,7 @@ public class Controleur {
     public void    changerRessourceEval     (Ressource r)                               {        this.generationEvals.changerRessource(r);                }
 
     /*  ---------------------------------  */
-    /*	 Méthodes gestions des questions   */
+    /*   Méthodes gestions des questions   */
     /*  ---------------------------------  */
 
     public ArrayList<Fichier> getFichiersQuestion     ()                                                 { return this.ctrlDonnees.getFichiersQuestion();                     }
@@ -103,7 +103,7 @@ public class Controleur {
 
 
     /*  --------------------------  */
-    /*	  Lancement du programme    */
+    /*    Lancement du programme    */
     /*  --------------------------  */
 
     /**
@@ -111,5 +111,5 @@ public class Controleur {
      * @param data Données de la question
      */
     public        void ouvrirCreerQuestion(DonneesCreationQuestion data) { new FrameCreerQst(this.accueil, this, data); }
-	public static void main               (String[] args)                { new Controleur(); }
+    public static void main               (String[] args)                { new Controleur(); }
 }

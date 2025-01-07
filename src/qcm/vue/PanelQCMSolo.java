@@ -219,11 +219,11 @@ public class PanelQCMSolo extends JPanel implements ActionListener
 
         }
 
-        if (e.getSource() == this.btnAjouterFichier) {
-
+        if (e.getSource() == this.btnAjouterFichier)
             new FrameFichiers(this.ctrl, this.frameParent, this.data);
 
-        }
+
+
 
     }
 

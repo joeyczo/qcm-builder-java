@@ -1,6 +1,5 @@
 package qcm.metier;
 
-import qcm.Controleur;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,14 +8,10 @@ public class GestionDonnees {
 
     private List<Ressource> lstRessource;
 
-    public GestionDonnees(Controleur ctrl) {
-
-        this.lstRessource = new ArrayList<Ressource>();
-
-    }
+    public GestionDonnees() { this.lstRessource = new ArrayList<Ressource>(); }
 
     /*  --------------------------  */
-    /*	  Gestion des ressources    */
+    /*    Gestion des ressources    */
     /*  --------------------------  */
 
     /**
@@ -30,8 +25,10 @@ public class GestionDonnees {
 
         for (Ressource r : this.lstRessource)
             if (r.getNom().equals(ressource.getNom())) {
+
                 trouve = true;
                 break;
+
             }
 
         if (trouve) return false;
@@ -46,9 +43,7 @@ public class GestionDonnees {
      * Récupérer le nombre de ressources présente dans la liste
      * @return Nombre de ressources
      */
-    public int getNbRessource () {
-        return this.lstRessource.size();
-    }
+    public int getNbRessource () { return this.lstRessource.size(); }
 
     /**
      * Récupérer la ressource à l'index i de la liste des ressources
@@ -74,8 +69,10 @@ public class GestionDonnees {
 
         for (Ressource r : this.lstRessource)
             if (r.getNom().equals(nom) || r.getNomCourt().equals(nom)) {
+
                 trouves = r;
                 break;
+
             }
 
         return trouves;
@@ -83,7 +80,7 @@ public class GestionDonnees {
     }
 
     /*  --------------------------  */
-    /*	    Gestion des notions     */
+    /*      Gestion des notions     */
     /*  --------------------------  */
 
     /**
@@ -110,13 +107,15 @@ public class GestionDonnees {
         if (ressource == null)  return false;
         if (notion    == null)  return false;
 
-        boolean trouves = false;
+        boolean trouves         = false;
         List<Notion> lstNotions = ressource.getAlNotion();
 
         for (Notion n : lstNotions)
             if (n.getNom().equals(notion.getNom())) {
+
                 trouves = true;
                 break;
+
             }
 
         if (trouves) return false;
@@ -160,8 +159,10 @@ public class GestionDonnees {
 
         for (Notion n : lstNotions)
             if (n.getNom().equals(nom) || n.getNomCourt().equals(nom)) {
+
                 trouve = n;
                 break;
+
             }
 
         return trouve;
@@ -186,8 +187,10 @@ public class GestionDonnees {
             Question qst = notion.getQuestion(i);
 
             if (qst.getUID().equals(uid)) {
+
                 resultat = qst;
                 break;
+
             }
 
         }
@@ -201,10 +204,6 @@ public class GestionDonnees {
      * @param n Notion parent de la question
      * @param q Question à supprimer
      */
-    public boolean supprimerQuestion( Notion n, Question q ) {
-
-        return n.supprimerQuestion(q);
-
-    }
+    public boolean supprimerQuestion( Notion n, Question q ) { return n.supprimerQuestion(q); }
 
 }

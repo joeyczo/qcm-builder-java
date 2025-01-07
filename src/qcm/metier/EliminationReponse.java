@@ -5,39 +5,28 @@ import java.util.List;
 
 public class EliminationReponse implements Reponse {
 
-	private List<EliminationReponseItem> 		alReponses;
-	private String								txtExplication;
+	private List<EliminationReponseItem> alReponses;
+	private String                       txtExplication;
 
 	public EliminationReponse() {
+
 		this.txtExplication = null;
-		this.alReponses 	= new ArrayList<>();
+		this.alReponses     = new ArrayList<>();
+
 	}
 
-
-	/**
-	 * Ajouter un nouvel item de réponse à la liste des réponses
-	 * @param e L'objet à ajouter
-	 */
-	public void ajouterReponseItem (EliminationReponseItem e) {
-		this.alReponses.add(e);
-	}
-	
 
 	/**
 	 * Récupérer le nombre d'item présent dans la liste
 	 * @return Le nombre de réponses disponibles
 	 */
-	public int getNbReponse () {
-		return this.alReponses.size();
-	}
+	public int getNbReponse () { return this.alReponses.size(); }
 
 	/**
 	 * Récuérer la liste entière des items de réponses
 	 * @return La liste complète avec toutes les réponses
 	 */
-	public List<EliminationReponseItem> getReponsesItems() {
-		return this.alReponses;
-	}
+	public List<EliminationReponseItem> getReponsesItems() { return this.alReponses; }
 
 	/**
 	 * Récupérer un item de réponse à l'idnice i
@@ -52,11 +41,14 @@ public class EliminationReponse implements Reponse {
 
 	}
 
-	public void ajouterTexteExplication(String s) {
-		this.txtExplication = s;
-	}
+	public String getTexteExplication() { return this.txtExplication; }
 
-	public String getTexteExplication() {
-		return this.txtExplication;
-	}
+
+	/**
+	 * Ajouter un nouvel item de réponse à la liste des réponses
+	 * @param e L'objet à ajouter
+	 */
+	public void ajouterReponseItem     (EliminationReponseItem e) { this.alReponses.add(e);  }
+	public void ajouterTexteExplication(String s)                 { this.txtExplication = s; }
+
 }
