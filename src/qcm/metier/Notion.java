@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Notion
 {
-    private final int LIMITE = 35;
+    private final int LIMITE = 30;
 
     private String          nom;
     private List<Question>	alQuestions;

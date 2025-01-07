@@ -10,15 +10,20 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
 import java.util.Scanner;
 
-public class ControleurDonnees
-{
-    private Controleur ctrl;
+public class ControleurDonnees {
 
-    public ControleurDonnees(Controleur ctrl)
-    {
-        this.ctrl = ctrl;
+    private Controleur          ctrl;
+    private ArrayList<Fichier>  ensFichiers;
+
+    public ControleurDonnees(Controleur ctrl) {
+
+        this.ctrl           = ctrl;
+        this.ensFichiers    = new ArrayList<>();
+
     }
 
 
@@ -28,23 +33,17 @@ public class ControleurDonnees
     /*                              */
     /*  --------------------------  */
 
-    // TODO : Modifier les tables de données (Une pour ressource et une pour notion)
-    // TODO : Sauvegarder code des ressources
-
 
     /*  ----------------------------------------  */
     /*	  SAUVEGARDE DES NOTIONS ET RESSOURCES    */
     /*  ----------------------------------------  */
 
-    public boolean sauvegarder() {
-
-        // Sauvegarde des Ressources et des Notions
-        return this.sauvegarderRessources();
-
-    }
+    // Sauvegarde des Ressources et des Notions
+    public boolean sauvegarder() { return this.sauvegarderRessources(); }
 
     /**
      * Nouvelle méthode permettant de sauvegarder les ressources et les notions
+     * Permets également de créer un dossier avec le nom de la ressource dans les fichiers de l'application
      * (Deux tables séparées)
      */
     private boolean sauvegarderRessources () {
@@ -59,14 +58,20 @@ public class ControleurDonnees
                 
                 Ressource rsc = this.ctrl.getRessource(i);
 
-                String  code    = (rsc.getCode() != null)        ? rsc.getCode().replaceAll(",", "|") : "";
+                String  code    = (rsc.getCode() != null)        ? rsc.getCode()       .replaceAll(",", "|") : "";
                 String  nom     = (rsc.getNomSansCode() != null) ? rsc.getNomSansCode().replaceAll(",", "|") : "";
                 
                 sRet += rsc.getUID() + "," + code + "," + nom;
                 
                 if (i < this.ctrl.getNbRessource() -1) sRet += "\n";
 
+                // Création du dossier de données parents
+                File dossierRsc = new File("data/app/rsc/" + code.replaceAll("/", "."));
+
+                if (!dossierRsc.exists()) dossierRsc.mkdirs();
+
                 this.sauvegarderNotions(rsc);
+
             }
 
             pw.println(sRet);
@@ -76,8 +81,10 @@ public class ControleurDonnees
             return true;
 
         } catch (Exception e) {
+
             System.out.println("Erreur sauvegarde fichier de données Ressource : " + e.getMessage());
             return false;
+
         }
 
     }
@@ -85,6 +92,7 @@ public class ControleurDonnees
     /**
      * Permets de sauvegarder les notions dans la base de données
      * Les notions sont associés à la ressource par son UID (De la ressource)
+     * Permets également de créer l'ensemble des données
      * @param r Ressource parent
      */
     private void sauvegarderNotions ( Ressource r ) {
@@ -124,14 +132,26 @@ public class ControleurDonnees
 
                         sRet += not.getNom().replaceAll(",", "|") + ((i<r.getNbNotion()-1) ? "," : "");
 
+                        // Création du dossier de données
+
+                        String  nomRscParent = r.getCode() .replaceAll("/", ".");
+                        String  nomNot       = not.getNom().replaceAll("/", ".");
+
+                        File fichierNot = new File("data/app/rsc/" + nomRscParent + "/" + nomNot);
+
+                        if (!fichierNot.exists()) fichierNot.mkdir();
+
                     }
 
                     sRet += "\n";
 
                     modifie = true;
 
-                } else {
+                }
+                else {
+
                     sRet += ligne + "\n";
+
                 }
 
             }
@@ -165,6 +185,7 @@ public class ControleurDonnees
 
         }
         catch (Exception e) {
+
             System.out.println("Erreur fichier de sauvegarde des données notions : " + e.getMessage());
 
         }
@@ -206,7 +227,9 @@ public class ControleurDonnees
             sc.close();
 
         } catch (Exception e) {
+
             System.out.println("Erreur lecture fichier : " + e.getMessage());
+
         }
 
         /*
@@ -221,7 +244,7 @@ public class ControleurDonnees
          */
 
         String nomRessource = q.getNotion().getRessource().getNom().replaceAll(",", "|");
-        String nomNotion    = q.getNotion().getNom().replaceAll(",", "|");
+        String nomNotion    = q.getNotion()               .getNom().replaceAll(",", "|");
 
         sRet += q.getUID()                  + "," +
                 q.getDifficulte()           + "," +
@@ -246,8 +269,10 @@ public class ControleurDonnees
             return this.sauvegarderDonneesQuestion(q);
 
         } catch (Exception e) {
+
             System.out.println("Erreur de fichier : " + e.getMessage());
             return false;
+
         }
 
     }
@@ -266,16 +291,32 @@ public class ControleurDonnees
             /*	  Écriture de la question au format TXT    */
             /*  -----------------------------------------  */
 
-            PrintWriter pwQuestion = new PrintWriter(new FileOutputStream(Paths.get("src", "data", "app", q.getUID()+".txt").toString()));
-
-            String questionEnTxt = "{TEXTEQST}\n";
+            PrintWriter pwQuestion = new PrintWriter(new FileOutputStream(Paths.get("data", "app", q.getUID()+".txt").toString()));
+            String questionEnTxt   = "{TEXTEQST}\n";
 
             questionEnTxt += q.getTexteQuestion();
 
             if (q.getReponse().getTexteExplication() != null) {
-                questionEnTxt += "\n{TEXTEEXPLICATION}\n";
 
+                questionEnTxt += "\n{TEXTEEXPLICATION}\n";
                 questionEnTxt += q.getReponse().getTexteExplication();
+
+            }
+
+            // Écriture des fichiers utilisés dans la question
+            if (!q.getEnsembleFichier().isEmpty()) {
+
+                questionEnTxt += "\n{FICHIERS}\n";
+
+                for ( int i = 0; i < q.getEnsembleFichier().size(); i++) {
+
+                    Fichier f = q.getFichier(i);
+
+                    questionEnTxt += f.nomFichier() + "," + f.lienFic() + ((i < (q.getEnsembleFichier().size()-1)) ? "\n" : "");
+
+                }
+
+
             }
 
 
@@ -290,9 +331,7 @@ public class ControleurDonnees
                 for (QCMReponseItem item : reponse.getReponsesItem()) {
 
                     questionEnTxt += "\n{REPONSEQCM}\n";
-
                     questionEnTxt += item.isValide() ? "1\n" : "0\n"; // 1 si la réponse est valide. Sinon 0
-
                     questionEnTxt += item.getTexte();
 
                 }
@@ -305,11 +344,8 @@ public class ControleurDonnees
                 for (AssociationReponseItem item : reponse.getReponsesItem()) {
 
                     questionEnTxt += "\n{ASSOCIATION}\n";
-
                     questionEnTxt += item.getTexte();
-
                     questionEnTxt += "\n{REPONSE}\n";
-
                     questionEnTxt += item.getReponse().getTexte();
 
                 }
@@ -321,12 +357,9 @@ public class ControleurDonnees
                 for (EliminationReponseItem item : reponse.getReponsesItems()) {
 
                     questionEnTxt += "\n{ELIMINIATION}\n";
-
                     // Structure : ordre suppression, pts suppression, bonne réponse (1, sinon 0)
                     questionEnTxt += item.getOrdreSuppression() + "," + item.getPtsSuppression() + "," + (item.isBonneReponse() ? "1" : "0");
-
                     questionEnTxt += "\n";
-
                     questionEnTxt += item.getTexte();
 
                 }
@@ -340,8 +373,10 @@ public class ControleurDonnees
             return true;
 
         } catch (Exception e) {
-            System.out.println("Erreur");
+
+            System.out.println("Erreur" + e.getMessage());
             return false;
+
         }
 
     }
@@ -394,13 +429,13 @@ public class ControleurDonnees
 
             pw.close();
 
-            System.out.println("MODIFICATION QUESTION " + q.getUID());
-
             return this.sauvegarderDonneesQuestion(q);
 
         } catch (Exception e) {
+
             System.out.println("Erreur modification fichier question : " + e.getMessage());
             return false;
+
         }
 
     }
@@ -436,8 +471,10 @@ public class ControleurDonnees
             return true;
 
         } catch (Exception e) {
+
             System.out.println("Erreur suppression Question : " +e.getMessage());
             return false;
+
         }
 
     }
@@ -453,8 +490,6 @@ public class ControleurDonnees
 
 
 
-
-
     /**
      * Méthode permettant de charger les données dans la base de données
      * - Paramètres (Ressources et Notions)
@@ -465,11 +500,11 @@ public class ControleurDonnees
         // Création du dossier et des fichiers de données
         try {
 
-            File dossierDonnes    = new File("data");
-            File dossierDonnesQst = new File("data", "app");
-            Path pathRessource = Paths.get("data", "DonneesRessource.csv");
-            Path pathNotions = Paths.get("data", "DonneesNotions.csv");
-            Path pathQuestions = Paths.get("data", "app", "DonneesQuestions.csv");
+            File dossierDonnes    = new File ("data");
+            File dossierDonnesQst = new File ("data", "app");
+            Path pathRessource    = Paths.get("data", "DonneesRessource.csv");
+            Path pathNotions      = Paths.get("data", "DonneesNotions.csv");
+            Path pathQuestions    = Paths.get("data", "app", "DonneesQuestions.csv");
 
             if (!dossierDonnes.exists())
                 dossierDonnes.mkdir();
@@ -488,7 +523,9 @@ public class ControleurDonnees
 
 
         } catch (Exception e) {
+
             System.out.println("Erreur création fichiers : " + e.getMessage());
+
         }
 
         // Chargement des données (Ressource et Notion)
@@ -510,24 +547,20 @@ public class ControleurDonnees
 
             while (sc.hasNextLine()) {
 
-                String ligne = sc.nextLine();
-
+                String  ligne   = sc.nextLine();
                 Scanner scLigne = new Scanner(ligne).useDelimiter(",");
 
-                String  uidRessource    = scLigne.next();
-                String  codeRessource   = scLigne.next().replaceAll("[|]", ",");
-                String  nomRessource    = scLigne.next().replaceAll("[|]", ",");
+                String  uidRessource  = scLigne.next();
+                String  codeRessource = scLigne.next().replaceAll("[|]", ",");
+                String  nomRessource  = scLigne.next().replaceAll("[|]", ",");
 
                 Ressource rsc = new Ressource(nomRessource, codeRessource, uidRessource);
-                
-                System.out.println(rsc.getCode());
 
                 this.chargerNotionsRessource(rsc);
 
                 this.ctrl.ajouterRessource(rsc);
 
             }
-
 
         } catch (Exception e) {
 
@@ -558,8 +591,7 @@ public class ControleurDonnees
                     while (scLigne.hasNext()) {
 
                         String nomNotion = scLigne.next().replaceAll("[|]", ",");
-
-                        Notion not = new Notion(nomNotion, rsc);
+                        Notion not       = new Notion(nomNotion, rsc);
 
                         rsc.ajouterNotion(not);
 
@@ -569,7 +601,9 @@ public class ControleurDonnees
 
             }
         } catch (Exception e) {
+
             System.out.println("Erreur lecture fichier notions (Récupération) : " + e.getMessage());
+
         }
 
 
@@ -627,16 +661,19 @@ public class ControleurDonnees
                 if (notion == null)
                     return;
 
-                Reponse rsp = this.getReponseFichier(uidQuestion, typeQuestion);
+                Reponse             rsp         = this.getReponseFichier(uidQuestion, typeQuestion);
+                ArrayList<Fichier>  ensFichier  = this.getFichiersTexte(uidQuestion);
 
-                Question nouvelleQuestion = new Question(uidQuestion, txtQuestion, tempsRsp, nbPoints, typeQuestion, rsp, difficulteQuestion, notion);
+                Question nouvelleQuestion = new Question(uidQuestion, txtQuestion, tempsRsp, nbPoints, typeQuestion, rsp, difficulteQuestion, notion, ensFichier);
 
                 notion.ajouterQuestion(nouvelleQuestion);
 
             }
 
         } catch (Exception e) {
+
             System.out.println("Erreur lors de l'ouverture du fichier des questions : " + e.getMessage());
+
         }
 
     }
@@ -663,7 +700,6 @@ public class ControleurDonnees
                 if (ligne.equals("{TEXTEQST}")) {
 
                     sRet = sc.nextLine();
-
                     sRet = sRet.replaceAll("\\\\n", "\n").replaceAll("\\\\t", "\t");
 
                 }
@@ -671,10 +707,62 @@ public class ControleurDonnees
             }
 
         } catch (Exception e) {
+
             System.out.println("Erreur lecture fichier données de la question : " + e.getMessage());
+            
         }
 
         return sRet;
+
+    }
+
+    /**
+     * Récupérer la liste avec l'ensemble des fichiers utilisés pour la question
+     * @param uid UID de la question pour récupérer les données dans le fichier TXT
+     * @return L'ensemble des fichiers
+     */
+    private ArrayList<Fichier> getFichiersTexte ( String uid ) {
+
+        String              pathFichierQuestion = Paths.get( "data", "app", uid+".txt").toString();
+        ArrayList<Fichier>  ensFichier = new ArrayList<>();
+        boolean             lectureFichier = false;
+
+        try {
+
+            Scanner sc = new Scanner(new FileInputStream(pathFichierQuestion));
+            
+            while (sc.hasNextLine()) {
+                
+                String ligne = sc.nextLine();
+                
+                if (ligne.equals("{FICHIERS}")) {
+                    lectureFichier = true;
+                    continue;
+                }
+
+                if (ligne.startsWith("{"))
+                    lectureFichier = false;
+                
+                if (lectureFichier) {
+                    
+                    Scanner scLigne = new Scanner(ligne).useDelimiter(",");
+
+                    String nomFichier  = scLigne.next();
+                    String lienFichier = scLigne.next();
+
+                    Fichier fichier = new Fichier(lienFichier, nomFichier);
+                    ensFichier.add(fichier);
+                    
+                }
+            }
+
+            return ensFichier;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Erreur lecture fichiers de données question : " + e.getMessage());
+            return ensFichier;
+        }
 
     }
 
@@ -686,7 +774,7 @@ public class ControleurDonnees
      */
     private Reponse getReponseFichier ( String uid, TypeQuestion typeQuestion ) {
 
-        String  pathFichierQuestion = Paths.get("data", "app", uid+".txt").toString();
+        String              pathFichierQuestion = Paths.get("data", "app", uid+".txt").toString();
         QCMReponse          qcmReponse          = new QCMReponse();
         AssociationReponse  associationReponse  = new AssociationReponse();
         EliminationReponse  eliminationReponse  = new EliminationReponse();
@@ -709,7 +797,6 @@ public class ControleurDonnees
 
                         boolean estValide   = sc.nextLine().equals("1");
                         String txtQuestion  = sc.nextLine().replaceAll("\\\\n", "\n").replaceAll("\\\\t", "\t");
-
                         QCMReponseItem item = new QCMReponseItem(txtQuestion, estValide);
 
                         qcmReponse.ajouterItem(item);
@@ -729,16 +816,16 @@ public class ControleurDonnees
 
                         if (sc.hasNextLine() && sc.nextLine().equals("{REPONSE}")) {
 
-                            String txtReponse = sc.nextLine().replaceAll("\\\\n", "\n").replaceAll("\\\\t", "\t");
-
+                            String txtReponse              = sc.nextLine().replaceAll("\\\\n", "\n").replaceAll("\\\\t", "\t");
                             AssociationReponseItem reponse = new AssociationReponseItem(txtReponse);
 
-                            definition.setReponse(reponse);
-
+                            definition        .setReponse(reponse);
                             associationReponse.ajouterDefinition(definition);
 
                         } else {
+                            
                             System.out.println("Erreur lors de la lecture des associations !");
+                            
                         }
 
                     }
@@ -750,13 +837,11 @@ public class ControleurDonnees
 
                     if (ligne.equals("{ELIMINIATION}")) {
 
-                        Scanner donneesElimination = new Scanner(sc.nextLine()).useDelimiter(",");
-
+                        Scanner donneesElimination  = new Scanner(sc.nextLine()).useDelimiter(",");
                         int     ordreSuppression    = Integer.parseInt(donneesElimination.next());
                         float   ptsSuppression      = Float.parseFloat(donneesElimination.next());
                         boolean reponse             = donneesElimination.next().equals("1");
                         String  txtQuestion         = sc.nextLine().replaceAll("\\\\n", "\n").replaceAll("\\\\t", "\t");
-
                         EliminationReponseItem item = new EliminationReponseItem(txtQuestion, ordreSuppression, ptsSuppression, reponse);
 
                         eliminationReponse.ajouterReponseItem(item);
@@ -764,8 +849,7 @@ public class ControleurDonnees
                     }
 
                 }
-
-
+                
             }
 
             if (typeQuestion == TypeQuestion.QCMSOLO || typeQuestion == TypeQuestion.QCMMULTI)
@@ -778,11 +862,137 @@ public class ControleurDonnees
                 return null;
 
         } catch (Exception e) {
+            
             System.out.println("Erreur de lecture du fichier de données de la réponse : " + e.getMessage());
             return null;
+            
         }
 
     }
+
+
+
+
+    /*  -------------------------------------------  */
+    /*                                               */
+    /*	  GESTION DES FICHIERS DANS LES QUESTIONS    */
+    /*                                               */
+    /*  -------------------------------------------  */
+
+    /**
+     * Permets de remettre la liste des fichiers pour la question à vide
+     */
+    public void nouvelleQuestionFichier () { this.ensFichiers = new ArrayList<>(); }
+
+    /**
+     * Ajouter un nouveau fichier à la question en cours d'édition
+     * @param lienFichier Lien du fichier ouvert
+     * @param data Données de la question (Ressource et Notion)
+     * @return True si le fichier a été ajoutée à l'appliation et à la liste
+     */
+    public boolean ajouterFichierQuestion (String lienFichier, DonneesCreationQuestion data) {
+
+        try {
+
+            Path fichierOrig         = Paths.get(lienFichier);
+            String nomRessource      = data.ressource().getCode().replaceAll("/", ".");
+            String nomNot            = data.notion()   .getNom() .replaceAll("/", ".");
+            File dossierDesti        = new File("data/app/rsc/" + nomRessource + "/" + nomNot);
+            int nbFichiers           = dossierDesti.listFiles().length;
+            String nouveauNomFichier = "fic" + String.format("%05d", nbFichiers) + this.getFileExtension(lienFichier);
+            Path fichierDesti        = Paths.get("data", "app", "rsc", nomRessource, nomNot, nouveauNomFichier);
+
+            // Copie du fichier
+            Files.copy(fichierOrig, fichierDesti, StandardCopyOption.REPLACE_EXISTING);
+
+            Fichier nouveauFichier = new Fichier(fichierDesti.toString(), fichierOrig.getFileName().toString());
+
+            this.ensFichiers.add(nouveauFichier);
+
+            return true;
+
+        } catch( Exception e ) {
+
+            System.out.println("Impossible d'ajouter le fichier : " + e.getMessage());
+            return false;
+
+        }
+
+    }
+
+    /**
+     * Récupérer l'extension du fichier
+     * @param nom Nom du fichier complet (Avec le chemin)
+     * @return Le nom de l'extension (png, pdf,...)
+     */
+    private String getFileExtension(String nom) {
+
+        int lastIndexOf = nom.lastIndexOf(".");
+
+        if (lastIndexOf == -1)
+            return "";
+
+        return nom.substring(lastIndexOf);
+    }
+
+    /**
+     * Récupérer tous les fichiers ajoutées pour la question
+     * @return L'ensemble des fichiers
+     */
+    public ArrayList<Fichier> getFichiersQuestion() { return this.ensFichiers; }
+
+    /**
+     * Récupérer le fichier (de java) en fonction de son nom
+     * @param nbIndex Index dans la liste
+     * @return Le fichier, sinon null
+     */
+    public File getFichierQuestion(int nbIndex) {
+
+        if (nbIndex < 0 || nbIndex >= this.ensFichiers.size()) return null;
+
+        return new File(this.ensFichiers.get(nbIndex).lienFic());
+
+    }
+
+    /**
+     * Supprimer un fichier dans la question en cours de modification, et dans le système de fichier
+     * @param nbIndex Index dans la liste
+     * @return True si le fichier a été supprimée, sinon false
+     */
+    public boolean supprimerFichierQuestion (int nbIndex) {
+
+        if (nbIndex < 0 || nbIndex >= this.ensFichiers.size()) return false;
+
+        if (this.ensFichiers.get(nbIndex) == null) return false;
+
+        try {
+
+            // Suppression du fichier
+
+            File fichier = new File(this.ensFichiers.get(nbIndex).lienFic());
+
+            if (!fichier.exists()) return false;
+
+            Files.delete(Paths.get(this.ensFichiers.get(nbIndex).lienFic()));
+            this.ensFichiers.remove(nbIndex);
+
+            return true;
+
+        } catch (Exception e) {
+
+            System.out.println("Erreur de suppression du fichier : " + e.getMessage());
+            return false;
+
+        }
+
+    }
+
+    /**
+     * Permet de chagrer les fichiers de la question
+     * Intervient lorsqu'il y a une modification d'une question avec des fichiers déjà existant
+     * @param ensFichiers Liste de l'ensemble des fichiers
+     */
+    public void chargerFichiersQuestion (ArrayList<Fichier> ensFichiers) { this.ensFichiers = ensFichiers; }
 
 
 }

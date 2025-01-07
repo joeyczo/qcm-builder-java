@@ -165,7 +165,7 @@ public class PanelQCMMulti extends JPanel implements ActionListener
 
             for (JTextArea lstTxtReponse : this.lstTxtReponses)
                 if (lstTxtReponse.getText().isEmpty() || lstTxtReponse.getText().trim().isEmpty()) {
-                    this.afficherMessageErreur("Erreur : Aucun texte n'est entré pour l'une des réponse");
+                    this.afficherMessageErreur("Erreur : Aucun texte n'est entré pour l'une des réponses");
                     return;
                 }
 

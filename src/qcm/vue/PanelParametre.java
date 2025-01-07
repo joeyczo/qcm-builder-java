@@ -138,7 +138,7 @@ public class PanelParametre extends JPanel implements ActionListener
             }
 
             this.ctrl          .ajouterRessource(ressource);
-            this.ddlstRessource.addItem(ressource.getNom());
+            this.ddlstRessource.addItem(ressource.getNomCourt());
 
             System.out.println("Ressource ajoutée : " + nomRessource);
         }

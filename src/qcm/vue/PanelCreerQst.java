@@ -319,6 +319,9 @@ public class PanelCreerQst extends JPanel implements ActionListener
                     System.out.println("MODIFICATION");
                     dataQuestions = new DonneesCreationQuestion(nbPoints, tempsCorrect, rsc, not, difficulte, type, this.data.qst());
                 }
+
+
+                this.ctrl.nouvelleQuestionFichier();
                 new FrameInfosQuestion(this.ctrl, dataQuestions);
                 this.frameParent.fermerFenetre();
 

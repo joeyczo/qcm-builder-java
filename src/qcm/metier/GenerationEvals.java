@@ -264,12 +264,12 @@ public class GenerationEvals {
 
             // Copie des fichiers HTML et CSS
 
-            Files.copy(Paths.get("src","data", "web", "index.html"), cheminGenHTML, StandardCopyOption.REPLACE_EXISTING);
-            Files.copy(Paths.get("src", "data", "web", "style.css"), cheminGenCSS, StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(Paths.get("data", "web", "index.html"), cheminGenHTML, StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(Paths.get( "data", "web", "style.css"), cheminGenCSS, StandardCopyOption.REPLACE_EXISTING);
 
             // Copie des assets
 
-            copyDir(Paths.get("src", "data", "web", "assets"), cheminGenImg);
+            copyDir(Paths.get( "data", "web", "assets"), cheminGenImg);
 
             return true;
 

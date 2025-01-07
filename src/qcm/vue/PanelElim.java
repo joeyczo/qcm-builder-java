@@ -178,7 +178,7 @@ public class PanelElim extends JPanel implements ActionListener, DocumentListene
 
             for (JTextArea lstTxtReponse : this.lstTxtReponses)
                 if (lstTxtReponse.getText().isEmpty() || lstTxtReponse.getText().trim().isEmpty()){
-                    this.afficherMessageErreur("Erreur : Aucun texte n'est entré pour l'une des réponse");
+                    this.afficherMessageErreur("Erreur : Aucun texte n'est entré pour l'une des réponses");
                     return;
                 }
 
@@ -186,10 +186,6 @@ public class PanelElim extends JPanel implements ActionListener, DocumentListene
             for (JRadioButton jRadioButton : this.lstBtnValideReponse)
                 if (jRadioButton.isSelected()){
                     cptBoutonValide++;
-                    for (int i = 0; i < this.lstBtnValideReponse.toArray().length; i++) {
-                        this.lstOrdrePrioQst.get(i).setEnabled(false);
-                        this.lstPointEnMoins.get(i).setEnabled(false);
-                    }
                 }
 
             if ( cptBoutonValide == 0 ){

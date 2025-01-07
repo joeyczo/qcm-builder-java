@@ -1,3 +1,3 @@
 package qcm.metier;
 
-public record Fichier(String lienFic, String typefic){};
+public record Fichier(String lienFic, String nomFichier){}

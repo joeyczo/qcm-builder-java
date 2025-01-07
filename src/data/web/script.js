@@ -1,5 +1,6 @@
 
 
+
 function transformSpecialCharsToHTML(text) {
     if (text === null || text === undefined) return "";
     return text
@@ -44,6 +45,7 @@ questions.forEach(question => {
 
 //Relier avec les élements de la page html
 const questionTitle = document.getElementById("question-title");
+const questionLiens = document.getElementById("links");
 const answersContainer = document.getElementById("answers");
 const progressBar = document.getElementById("progress-bar");
 const timerElement = document.getElementById("timer");
@@ -156,14 +158,15 @@ function loadQuestion() {
     const explanationParagraph = document.createElement("p");
     explanationParagraph.id = "explanation";
     correctAnswerContainer.appendChild(explanationParagraph);
+    questionLiens.innerHTML = "";
 
-    console.log(questionTitle);
+    //console.log(questionTitle);
 
     imgQuestionContainer.innerHTML = "";
 
 	timeMax = question.time;
     questionTitle.innerHTML = transformSpecialCharsToHTML(question.title);
-    console.log(question.title);
+    //console.log(question.title);
 
     clearInterval(timerInterval);
     progressBar.style.width = "100%";
@@ -209,6 +212,21 @@ function loadQuestion() {
         nextButton.textContent = "Suivant";
     }
 
+    // Ajouter les liens
+    question.liens.forEach(lien => {
+        const button = document.createElement("button");
+        button.classList.add("link-button");
+        button.textContent = lien.name;
+        button.addEventListener("click", () => {
+            window.open("links/" + lien.lien, "_blank");
+        });
+        const img = document.createElement("img");
+        img.src = "assets/attachment.png";
+        img.alt = "Icon";
+        img.classList.add("button-icon");
+        button.insertBefore(img, button.firstChild);
+        questionLiens.appendChild(button);
+    });
 }
 
 /* ---------------------------- */
@@ -475,7 +493,7 @@ function displayLiaisonQuestion() {
     if (numQuestionMax > currentQuestion) {
         //console.log("Réponse chargée");
 
-        console.log(registeredAnswers[currentQuestion]);
+        //console.log(registeredAnswers[currentQuestion]);
         if (registeredAnswers[currentQuestion] == -1) {
             handleLiaisonFin("timeOut");
         } else {
@@ -515,6 +533,7 @@ function afficheResultat() {
     } else {
         answerResult.textContent = "La bonne réponse était";
 
+
         if (estCorrect()) {
             resultTitle.textContent = "Bonne réponse";
             resultTitle.style.color = "green";
@@ -529,7 +548,8 @@ function afficheResultat() {
     }
 
     correctAnswerContainer.textContent = transformSpecialCharsToHTML(getCorrectAnswer());
-    
+    //console.log("Bonne réponse : " + getCorrectAnswer());
+
     explanationElement.innerHTML = transformSpecialCharsToHTML(questions[currentQuestion].explanation);
 
     resultSection.classList.remove("hidden");
@@ -928,6 +948,12 @@ function showEndPage() {
 }
 
 function restartQuiz() {
+
+    for (let i = 0; i < questions.length; i++) {
+        registeredAnswers[i] = null;
+        ptsCetteQuestion[i] = 0.0;
+    }
+
     currentQuestion = 0;
     score = 0;
     numQuestionMax=0;
@@ -979,16 +1005,24 @@ function startTimer() {
 /* -------------- */
 
 function handleTimeOut() {
+    if (estCorrect()) {
+        handleAnswerValidation();
+        return;
+    }
+
+    elimButton.disabled = true;
+
     clearInterval(timerInterval);
 
     const question = questions[currentQuestion];
     const answerButtons = document.querySelectorAll(".answer"); 
 
     answerButtons.forEach((button) => {
-        button.disabled = true; 
-        if(question.type !== liaison) 
+        button.disabled = true;
+        if (question.type !== liaison) {
 			answer = question.answers.find((a) => a.text === button.textContent);
-		else
+        }
+        else
         {
 			handleLiaisonFin("timeOut");
             return;
@@ -1046,13 +1080,17 @@ function getCorrectAnswer() {
             }
         }
     } else {
-        correctAnswer = questions[currentQuestion].text;
+        correctAnswer = questions[currentQuestion].answers.find(answer => answer.correct).text;
     }
 
     return correctAnswer;
 }
 
 function estCorrect() {
+
+    if (selectedAnswerIndex === null && selectedAnswersIndex.length === 0) {
+        return false;
+    }
 
     let correct = true;
     const question = questions[currentQuestion];

@@ -386,3 +386,26 @@ footer button:disabled {
         margin-bottom: -10px;
     }
 }
+
+.link-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin: 5px;
+    margin-bottom: 25px;
+}
+
+.link-button:hover {
+    background-color: #0056b3;
+}
+
+.link-button img {
+    max-width: 20px;
+    margin-right: 10px;
+    vertical-align: middle;
+}

@@ -17,7 +17,7 @@ public class Question
 	private DifficulteQuestion 	difficulte;
 	private Notion				notion;
 
-	private List<Fichier> 		fichiers;
+	private ArrayList<Fichier> 		fichiers;
 	
 	public Question(String texteQuestion, String tempsReponse, double nbPoints, TypeQuestion typeQuestion, Reponse reponse, DifficulteQuestion difficulte, Notion notion) {
 
@@ -43,6 +43,34 @@ public class Question
 		this.reponse 		= reponse;
 		this.difficulte 	= difficulte;
 		this.fichiers 		= new ArrayList<Fichier>();
+		this.notion			= notion;
+
+	}
+
+	public Question(String texteQuestion, String tempsReponse, double nbPoints, TypeQuestion typeQuestion, Reponse reponse, DifficulteQuestion difficulte, Notion notion, ArrayList<Fichier> ensFichier) {
+
+		this.UID			= Uid.generateUid(10);
+		this.texteQuestion 	= texteQuestion;
+		this.nbPoints		= nbPoints;
+		this.tempsReponse 	= tempsReponse;
+		this.typeQuestion 	= typeQuestion;
+		this.reponse 		= reponse;
+		this.difficulte 	= difficulte;
+		this.fichiers 		= ensFichier;
+		this.notion			= notion;
+
+	}
+
+	public Question(String uid, String texteQuestion, String tempsReponse, double nbPoints, TypeQuestion typeQuestion, Reponse reponse, DifficulteQuestion difficulte, Notion notion, ArrayList<Fichier> ensFichier) {
+
+		this.UID			= uid;
+		this.texteQuestion 	= texteQuestion;
+		this.nbPoints		= nbPoints;
+		this.tempsReponse 	= tempsReponse;
+		this.typeQuestion 	= typeQuestion;
+		this.reponse 		= reponse;
+		this.difficulte 	= difficulte;
+		this.fichiers 		= ensFichier;
 		this.notion			= notion;
 
 	}
@@ -83,6 +111,10 @@ public class Question
 
 	public double getNbPoints() {
 		return nbPoints;
+	}
+
+	public ArrayList<Fichier> getEnsembleFichier() {
+		return this.fichiers;
 	}
 
 	/* ------------ */

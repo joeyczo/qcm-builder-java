@@ -77,6 +77,7 @@ public class PanelQCMSolo extends JPanel implements ActionListener
         {
             this.ajoutTextePourModif();
             this.ajoutElementModifier();
+            this.ctrl.chargerFichiersQuestion(this.data.qst().getEnsembleFichier());
         }
 
         this.btnEnregistrer.setFont(this.fontGeneraleGras);
@@ -149,8 +150,7 @@ public class PanelQCMSolo extends JPanel implements ActionListener
             return;
         }
 
-        if ( e.getSource() == this.btnEnregistrer )
-        {
+        if ( e.getSource() == this.btnEnregistrer ) {
 
             if ( this.txtQst.getText().isEmpty() || this.txtQst.getText().trim().isEmpty() )
             {
@@ -160,7 +160,7 @@ public class PanelQCMSolo extends JPanel implements ActionListener
 
             for (JTextArea lstTxtRepons : this.lstTxtReponses)
                 if (lstTxtRepons.getText().isEmpty() || lstTxtRepons.getText().trim().isEmpty()) {
-                    this.afficherMessageErreur("Erreur : Aucun texte n'est entré pour l'une des réponse");
+                    this.afficherMessageErreur("Erreur : Aucun texte n'est entré pour l'une des réponses");
                     return;
                 }
 
@@ -189,7 +189,7 @@ public class PanelQCMSolo extends JPanel implements ActionListener
             // Ici, on ajoute la question dans la base de données
             if ( this.data.qst() == null )
             {
-                Question nouvelleQst = new Question(txtQuestion, this.data.tempsReponse(), this.data.nbPoints(), this.data.type(), qcmReponse, this.data.diff(), this.data.notion());
+                Question nouvelleQst = new Question(txtQuestion, this.data.tempsReponse(), this.data.nbPoints(), this.data.type(), qcmReponse, this.data.diff(), this.data.notion(), this.ctrl.getFichiersQuestion());
 
                 if (!this.ctrl.sauvegarderQuestion(nouvelleQst)) {
                     this.afficherMessageErreur("Erreur lors de la sauvegarde de la question dans la base de données");
@@ -202,7 +202,7 @@ public class PanelQCMSolo extends JPanel implements ActionListener
 
             } else { // Ici on modifie la question dans la base de données
 
-                Question nouvelleQst = new Question(this.data.qst().getUID(), txtQuestion, this.data.tempsReponse(), this.data.nbPoints(), this.data.type(), qcmReponse, this.data.diff(), this.data.notion());
+                Question nouvelleQst = new Question(this.data.qst().getUID(), txtQuestion, this.data.tempsReponse(), this.data.nbPoints(), this.data.type(), qcmReponse, this.data.diff(), this.data.notion(), this.ctrl.getFichiersQuestion());
 
                 if (!this.ctrl.modifierQuestion(nouvelleQst)) {
                     this.afficherMessageErreur("Erreur lors de la modification de la question dans la base de données");
@@ -221,7 +221,7 @@ public class PanelQCMSolo extends JPanel implements ActionListener
 
         if (e.getSource() == this.btnAjouterFichier) {
 
-            new FrameFichiers(this.ctrl, this.frameParent);
+            new FrameFichiers(this.ctrl, this.frameParent, this.data);
 
         }
 
