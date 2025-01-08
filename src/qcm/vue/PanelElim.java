@@ -12,8 +12,8 @@ import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
-public class PanelElim extends JPanel implements ActionListener, DocumentListener
-{
+public class PanelElim extends JPanel implements ActionListener, DocumentListener {
+
     private FrameInfosQuestion      frameParent;
     private Controleur              ctrl;
     private DonneesCreationQuestion data;
@@ -25,17 +25,21 @@ public class PanelElim extends JPanel implements ActionListener, DocumentListene
     private ArrayList<JTextField>   lstOrdrePrioQst;
     private ArrayList<JTextField>   lstPointEnMoins;
 
-    private JButton           btnEnregistrer, btnAdd,btnInfoSupp, btnAjouterFichier;
-    private JTextArea         txtQst, txtInfoSupp;
-    private JScrollPane       scrollPane;
-    private ButtonGroup       btg;
+    private JButton     btnEnregistrer, btnAdd,btnInfoSupp, btnAjouterFichier;
+    private JTextArea   txtQst        , txtInfoSupp;
+    private JScrollPane scrollPane;
+    private ButtonGroup btg;
+    private JLabel      labelPts;
 
-    private Font              fontGenerale;
-    private Font              fontGeneraleGras;
+    private Double      pointsRestantSuppression;
 
 
-    public PanelElim( DonneesCreationQuestion data, FrameInfosQuestion parent, Controleur ctrl )
-    {
+    private Font fontGenerale;
+    private Font fontGeneraleGras;
+
+
+    public PanelElim( DonneesCreationQuestion data, FrameInfosQuestion parent, Controleur ctrl ) {
+
         this.data        = data;
         this.frameParent = parent;
         this.ctrl        = ctrl;
@@ -50,25 +54,30 @@ public class PanelElim extends JPanel implements ActionListener, DocumentListene
         this.fontGenerale        = new Font("Arial", Font.PLAIN, 16);
         this.fontGeneraleGras    = new Font("Arial", Font.BOLD , 16);
 
+        this.btnEnregistrer      = new JButton    ("Enregistrer");
+        this.btnAdd              = new JButton    (new ImageIcon("../data/img/add.png"));
+        this.btnInfoSupp         = new JButton    (new ImageIcon("../data/img/edit.png"));
+        this.btnAjouterFichier   = new JButton    (new ImageIcon("../data/img/files.png"));
+        this.btg                 = new ButtonGroup();
 
-        JTextArea jTextAreaQst = new JTextArea (4, 1);
-        jTextAreaQst.setFont(this.fontGenerale);
+        JTextArea jTextAreaQst   = new JTextArea (4, 1);
+        JTextArea jTextAreaInfo  = new JTextArea (10, 10);
 
-        JTextArea jTextAreaInfo = new JTextArea (10, 10);
+        jTextAreaQst .setFont(this.fontGenerale);
         jTextAreaInfo.setFont(this.fontGenerale);
-
 
         this.txtQst            = jTextAreaQst;
         this.txtInfoSupp       = jTextAreaInfo;
-        this.scrollPane        = new JScrollPane(this.txtQst, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        this.btnEnregistrer    = new JButton    ("Enregistrer");
-        this.btnAdd            = new JButton    (new ImageIcon("data/img/add.png"));
-        this.btnInfoSupp       = new JButton    (new ImageIcon("data/img/edit.png"));
-        this.btnAjouterFichier = new JButton    (new ImageIcon("data/img/files.png"));
-        this.btg               = new ButtonGroup();
 
-        if(data.qst() == null){
+        this.scrollPane        = new JScrollPane(this.txtQst, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+
+        this.pointsRestantSuppression = 0.0;
+
+
+        if(data.qst() == null) {
+
             for( int cpt = 0; cpt < 2; cpt ++) {
+
                 JTextArea jTextAreaRep = new JTextArea (3, 1);
                 jTextAreaRep.setFont(this.fontGenerale);
 
@@ -77,16 +86,23 @@ public class PanelElim extends JPanel implements ActionListener, DocumentListene
                 this.lstScrollTexte     .add(new JScrollPane(this.lstTxtReponses.get(this.lstTxtReponses.size()-1), JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED));
                 this.lstOrdrePrioQst    .add(new JTextField(3));
                 this.lstPointEnMoins    .add(new JTextField(3));
+
                 JRadioButton radioBouton = new JRadioButton();
+
                 this.lstBtnValideReponse.add(radioBouton);
+
                 this.btg.add(radioBouton);
 
                 this.lstOrdrePrioQst.get(cpt).getDocument().addDocumentListener(this);
                 this.lstPointEnMoins.get(cpt).getDocument().addDocumentListener(this);
+
             }
+
         }else{
+
             this.ajoutTextePourModif();
             this.ajoutElementModifier();
+
         }
 
         this.btnEnregistrer.setFont(this.fontGeneraleGras);
@@ -100,11 +116,13 @@ public class PanelElim extends JPanel implements ActionListener, DocumentListene
 
         for ( int cpt = 0; cpt < this.lstBtnSupp.size(); cpt ++)
             this.lstBtnSupp.get(cpt).addActionListener(this);
+
     }
 
-    public void actionPerformed(ActionEvent e)
-    {
-        if (e.getSource() == this.btnAdd){
+    public void actionPerformed(ActionEvent e) {
+
+        if (e.getSource() == this.btnAdd) {
+
             JTextArea jTextAreaRep = new JTextArea (3, 1);
             jTextAreaRep.setFont(this.fontGenerale);
 
@@ -195,7 +213,7 @@ public class PanelElim extends JPanel implements ActionListener, DocumentListene
 
             List<Integer> ordreSuppressionMauvaiseRep = new ArrayList<Integer>();
             Double        pointSoustrait;
-            Double        sommePointSoustrait         = 0.0;
+            Double      sommePointSoustrait = 0.0;
 
             for (int cpt = 0; cpt < this.lstOrdrePrioQst.size(); cpt ++){
                 try{
@@ -329,6 +347,14 @@ public class PanelElim extends JPanel implements ActionListener, DocumentListene
         labelQst.setFont(this.fontGeneraleGras);
         this.add(labelQst, gbc);
 
+
+        Double pts = this.data.nbPoints();
+        gbc.gridx = 3;
+        gbc.gridy = 0;
+        this.labelPts = new JLabel("Points restant après suppression : " + String.format("%2.2f",(pts + this.pointsRestantSuppression)) + " points");
+        labelPts.setFont(this.fontGeneraleGras);
+        this.add(labelPts, gbc);
+
         gbc.gridy     = 1;
         gbc.gridwidth = 6;
         gbc.ipadx     = 600;
@@ -348,7 +374,7 @@ public class PanelElim extends JPanel implements ActionListener, DocumentListene
             this.lstBtnSupp.get(cpt).setContentAreaFilled(false);
             this.lstBtnSupp.get(cpt).setBorderPainted(false);
             this.lstBtnSupp.get(cpt).setCursor(new Cursor(Cursor.HAND_CURSOR));
-            this.lstBtnSupp.get(cpt).setIcon(new ImageIcon("data/img/delete.png"));
+            this.lstBtnSupp.get(cpt).setIcon(new ImageIcon("../data/img/delete.png"));
             this.add(this.lstBtnSupp.get(cpt), gbc);
 
             gbc.gridx     = 1;
@@ -418,6 +444,33 @@ public class PanelElim extends JPanel implements ActionListener, DocumentListene
     @Override
     public void insertUpdate(DocumentEvent e)
     {
+        double ptsSuppr = 0.0;
+        if (!this.lstPointEnMoins.isEmpty()) {
+            for (int i = 0; i < this.lstPointEnMoins.size(); i++) {
+
+                String text = this.lstPointEnMoins.get(i).getText();
+
+                if (!text.isEmpty()) {
+                    try {
+                        double value = Double.parseDouble(text);
+                        if( value < 0 )
+                            ptsSuppr += value;
+                    }
+                    catch ( Exception subuisbuodfhuosdf) {
+                        System.out.println("Erreur " + subuisbuodfhuosdf.getMessage());
+                    }
+                }
+            }
+        }
+
+        this.pointsRestantSuppression += ptsSuppr;
+
+        double pts = this.data.nbPoints() + ptsSuppr;
+        if(pts<0)
+            System.out.println("Erreur résultat négatif : " + pts);
+        else
+            this.labelPts.setText("Points restant après suppression : " + String.format("%2.2f",pts) + " points");
+
         for ( int cpt = 0; cpt < this.lstOrdrePrioQst.size(); cpt ++)
         {
             if (!this.lstOrdrePrioQst.get(cpt).getText().trim().isEmpty() || !this.lstPointEnMoins.get(cpt).getText().trim().isEmpty() )
@@ -431,9 +484,38 @@ public class PanelElim extends JPanel implements ActionListener, DocumentListene
         }
     }
 
+    // TODO quand maj retour valeur initiale
+
     @Override
     public void removeUpdate(DocumentEvent e)
     {
+        double ptsSuppr = 0.0;
+        if (!this.lstPointEnMoins.isEmpty()) {
+            for (int i = 0; i < this.lstPointEnMoins.size(); i++) {
+
+                String text = this.lstPointEnMoins.get(i).getText();
+
+                if (!text.isEmpty()) {
+                    try {
+                        double value = Double.parseDouble(text);
+                        if(value<0)
+                            ptsSuppr += value;
+                    } catch ( Exception subuisbuodfhuosdf) {
+                        System.out.println("Erreur " + subuisbuodfhuosdf.getMessage());
+                    }
+
+                }
+            }
+        }
+        this.pointsRestantSuppression += ptsSuppr;
+
+
+        double pts = this.data.nbPoints() + ptsSuppr;
+        if(pts<0)
+            System.out.println("Erreur résultat négatif : " + pts);
+        else
+            this.labelPts.setText("Points restant après suppression : " + String.format("%2.2f",pts) + " points");
+
         for ( int cpt = 0; cpt < this.lstOrdrePrioQst.size(); cpt ++)
         {
             if (!this.lstOrdrePrioQst.get(cpt).getText().trim().isEmpty() || !this.lstPointEnMoins.get(cpt).getText().trim().isEmpty() )

@@ -27,7 +27,6 @@ src/qcm/vue/donnees/GrilleDonneesNotion.java
 src/qcm/vue/donnees/GrilleDonneesQuestion.java
 
 src/qcm/vue/Accueil.java
-src/qcm/vue/DialogCreerRessource.java
 src/qcm/vue/FrameCreerQst.java
 src/qcm/vue/FrameFichiers.java
 src/qcm/vue/FrameGenererEval.java

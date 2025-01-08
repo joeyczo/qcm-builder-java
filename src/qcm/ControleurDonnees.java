@@ -52,7 +52,7 @@ public class ControleurDonnees {
 
         try {
 
-            PrintWriter pw = new PrintWriter(new FileOutputStream("data/DonneesRessource.csv"));
+            PrintWriter pw = new PrintWriter(new FileOutputStream("../data/DonneesRessource.csv"));
             
             for ( int i = 0; i < this.ctrl.getNbRessource(); i++) {
                 
@@ -66,7 +66,7 @@ public class ControleurDonnees {
                 if (i < this.ctrl.getNbRessource() -1) sRet += "\n";
 
                 // Création du dossier de données parents
-                File dossierRsc = new File("data/app/rsc/" + code.replaceAll("/", "."));
+                File dossierRsc = new File("../data/app/rsc/" + code.replaceAll("/", "."));
 
                 if (!dossierRsc.exists()) dossierRsc.mkdirs();
 
@@ -99,14 +99,14 @@ public class ControleurDonnees {
 
         if (r.getNbNotion() == 0) return;
 
-        String  lienFichier = "data/DonneesNotions.csv";
+        String  lienFichier = "../data/DonneesNotions.csv";
         String  sRet        = "";
         boolean modifie     = false;
 
         try {
 
-            if (!Files.exists(Paths.get( "data", "DonneesNotions.csv")))
-                Files.createFile(Paths.get( "data", "DonneesNotions.csv"));
+            if (!Files.exists(Paths.get( "..", "data", "DonneesNotions.csv")))
+                Files.createFile(Paths.get( "..", "data", "DonneesNotions.csv"));
 
             Scanner sc = new Scanner(new FileInputStream(lienFichier), StandardCharsets.UTF_8);
 
@@ -137,7 +137,7 @@ public class ControleurDonnees {
                         String  nomRscParent = r.getCode() .replaceAll("/", ".");
                         String  nomNot       = not.getNom().replaceAll("/", ".");
 
-                        File fichierNot = new File("data/app/rsc/" + nomRscParent + "/" + nomNot);
+                        File fichierNot = new File("../data/app/rsc/" + nomRscParent + "/" + nomNot);
 
                         if (!fichierNot.exists()) fichierNot.mkdir();
 
@@ -208,7 +208,7 @@ public class ControleurDonnees {
         if (q == null) return false;
 
         String sRet                 = "";
-        String pathFichierDonnees   = Paths.get( "data", "app", "DonneesQuestions.csv").toString();
+        String pathFichierDonnees   = Paths.get( "..", "data", "app", "DonneesQuestions.csv").toString();
 
         /*  ---------------------------------  */
         /*    Lecture du fichier de données    */
@@ -291,7 +291,7 @@ public class ControleurDonnees {
             /*    Écriture de la question au format TXT    */
             /*  -----------------------------------------  */
 
-            PrintWriter pwQuestion = new PrintWriter(new FileOutputStream(Paths.get("data", "app", q.getUID()+".txt").toString()));
+            PrintWriter pwQuestion = new PrintWriter(new FileOutputStream(Paths.get("..", "data", "app", q.getUID()+".txt").toString()));
             String questionEnTxt   = "{TEXTEQST}\n";
 
             questionEnTxt += q.getTexteQuestion();
@@ -392,7 +392,7 @@ public class ControleurDonnees {
 
         try {
 
-            Scanner sc = new Scanner(new FileInputStream("data/app/DonneesQuestions.csv"), StandardCharsets.UTF_8);
+            Scanner sc = new Scanner(new FileInputStream("../data/app/DonneesQuestions.csv"), StandardCharsets.UTF_8);
 
             while (sc.hasNextLine()) {
 
@@ -423,7 +423,7 @@ public class ControleurDonnees {
 
             }
 
-            PrintWriter pw = new PrintWriter(new FileOutputStream("data/app/DonneesQuestions.csv"));
+            PrintWriter pw = new PrintWriter(new FileOutputStream("../data/app/DonneesQuestions.csv"));
 
             pw.print(sRet);
 
@@ -447,7 +447,7 @@ public class ControleurDonnees {
 
         try {
 
-            Scanner sc = new Scanner(new FileInputStream("data/app/DonneesQuestions.csv"), StandardCharsets.UTF_8);
+            Scanner sc = new Scanner(new FileInputStream("../data/app/DonneesQuestions.csv"), StandardCharsets.UTF_8);
 
             while (sc.hasNextLine()) {
 
@@ -460,9 +460,9 @@ public class ControleurDonnees {
 
             }
 
-            Files.delete(Paths.get("data", "app", q.getUID()+".txt"));
+            Files.delete(Paths.get("..", "data", "app", q.getUID()+".txt"));
 
-            PrintWriter pw = new PrintWriter(new FileOutputStream("data/app/DonneesQuestions.csv"));
+            PrintWriter pw = new PrintWriter(new FileOutputStream("../data/app/DonneesQuestions.csv"));
 
             pw.print(sRet);
 
@@ -500,11 +500,11 @@ public class ControleurDonnees {
         // Création du dossier et des fichiers de données
         try {
 
-            File dossierDonnes    = new File ("data");
-            File dossierDonnesQst = new File ("data", "app");
-            Path pathRessource    = Paths.get("data", "DonneesRessource.csv");
-            Path pathNotions      = Paths.get("data", "DonneesNotions.csv");
-            Path pathQuestions    = Paths.get("data", "app", "DonneesQuestions.csv");
+            File dossierDonnes    = new File ("../data");
+            File dossierDonnesQst = new File ("../data", "app");
+            Path pathRessource    = Paths.get("..", "data", "DonneesRessource.csv");
+            Path pathNotions      = Paths.get("..", "data", "DonneesNotions.csv");
+            Path pathQuestions    = Paths.get("..", "data", "app", "DonneesQuestions.csv");
 
             if (!dossierDonnes.exists())
                 dossierDonnes.mkdir();
@@ -543,7 +543,7 @@ public class ControleurDonnees {
 
         try {
 
-            Scanner sc = new Scanner(new FileInputStream("data/DonneesRessource.csv"), StandardCharsets.UTF_8);
+            Scanner sc = new Scanner(new FileInputStream("../data/DonneesRessource.csv"), StandardCharsets.UTF_8);
 
             while (sc.hasNextLine()) {
 
@@ -578,7 +578,7 @@ public class ControleurDonnees {
 
         try {
 
-            Scanner sc = new Scanner(new FileInputStream("data/DonneesNotions.csv"), StandardCharsets.UTF_8);
+            Scanner sc = new Scanner(new FileInputStream("../data/DonneesNotions.csv"), StandardCharsets.UTF_8);
 
             while (sc.hasNextLine()) {
 
@@ -614,7 +614,7 @@ public class ControleurDonnees {
      */
     private void chargerDonneesQuestions() {
 
-        String pathFichierDonnees   = Paths.get( "data", "app", "DonneesQuestions.csv").toString();
+        String pathFichierDonnees   = Paths.get( "..", "data", "app", "DonneesQuestions.csv").toString();
 
         try {
 
@@ -685,7 +685,7 @@ public class ControleurDonnees {
      */
     private String getTexteQuestion (String uid) {
 
-        String  pathFichierQuestion = Paths.get( "data", "app", uid+".txt").toString();
+        String  pathFichierQuestion = Paths.get( "..", "data", "app", uid+".txt").toString();
         String sRet                 = "";
 
         try {
@@ -723,7 +723,7 @@ public class ControleurDonnees {
      */
     private ArrayList<Fichier> getFichiersTexte ( String uid ) {
 
-        String              pathFichierQuestion = Paths.get( "data", "app", uid+".txt").toString();
+        String              pathFichierQuestion = Paths.get( "..", "data", "app", uid+".txt").toString();
         ArrayList<Fichier>  ensFichier = new ArrayList<>();
         boolean             lectureFichier = false;
 
@@ -774,7 +774,7 @@ public class ControleurDonnees {
      */
     private Reponse getReponseFichier ( String uid, TypeQuestion typeQuestion ) {
 
-        String              pathFichierQuestion = Paths.get("data", "app", uid+".txt").toString();
+        String              pathFichierQuestion = Paths.get("..", "data", "app", uid+".txt").toString();
         QCMReponse          qcmReponse          = new QCMReponse();
         AssociationReponse  associationReponse  = new AssociationReponse();
         EliminationReponse  eliminationReponse  = new EliminationReponse();
@@ -897,17 +897,19 @@ public class ControleurDonnees {
             Path fichierOrig         = Paths.get(lienFichier);
             String nomRessource      = data.ressource().getCode().replaceAll("/", ".");
             String nomNot            = data.notion()   .getNom() .replaceAll("/", ".");
-            File dossierDesti        = new File("data/app/rsc/" + nomRessource + "/" + nomNot);
-            int nbFichiers           = dossierDesti.listFiles().length;
-            String nouveauNomFichier = "fic" + String.format("%05d", nbFichiers) + this.getFileExtension(lienFichier);
-            Path fichierDesti        = Paths.get("data", "app", "rsc", nomRessource, nomNot, nouveauNomFichier);
+            File dossierDesti        = new File("../data/app/rsc/" + nomRessource + "/" + nomNot);
+
+            String nouveauNomFichier      = this.nouveauNomFichier(dossierDesti) + this.getFileExtension(lienFichier);
+            System.out.println("NOUVEAU NOM FICHIER : " + nouveauNomFichier);
+
+            /*Path fichierDesti        = Paths.get("..", "data", "app", "rsc", nomRessource, nomNot, nouveauNomFichier);
 
             // Copie du fichier
             Files.copy(fichierOrig, fichierDesti, StandardCopyOption.REPLACE_EXISTING);
 
             Fichier nouveauFichier = new Fichier(fichierDesti.toString(), fichierOrig.getFileName().toString());
 
-            this.ensFichiers.add(nouveauFichier);
+            this.ensFichiers.add(nouveauFichier);*/
 
             return true;
 
@@ -920,10 +922,50 @@ public class ControleurDonnees {
 
     }
 
+
+    private String nouveauNomFichier ( File fichierDesti ) {
+
+        File[] ensFichierDossier = fichierDesti.listFiles();
+
+        if (ensFichierDossier == null) return "";
+
+        String nouveauNomFichier = "fic" + String.format("%05d", 0);
+
+        for (int i = 0; i < ensFichierDossier.length; i++) {
+
+            nouveauNomFichier = "fic" + String.format("%05d", i);
+            int nbFichier = 0;
+
+            // TODO : Gérer le doublon de fichier
+
+            /*for (File f : ensFichierDossier) {
+
+                String nomFichier   = f.getName();
+                String nomExt       = this.getFileExtension(nomFichier);
+
+                nomFichier          = nomFichier.replaceAll(nomExt, "");
+                
+                if (nomFichier.equals(nouveauNomFichier)) {
+                    System.out.println(nomFichier + " == " + nouveauNomFichier);
+                    break;
+                }
+                
+                nbFichier++;
+                nouveauNomFichier = "fic" + String.format("%05d", nbFichier);
+
+
+            }*/
+
+        }
+
+        return nouveauNomFichier;
+
+    }
+
     /**
      * Récupérer l'extension du fichier
      * @param nom Nom du fichier complet (Avec le chemin)
-     * @return Le nom de l'extension (png, pdf,...)
+     * @return Le nom de l'extension (.png, .pdf,...)
      */
     private String getFileExtension(String nom) {
 

@@ -6,8 +6,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-public class Accueil extends JFrame implements ActionListener
-{
+public class Accueil extends JFrame implements ActionListener {
+
     private JPanel  pnlBtns;
 
     private JButton btnCreerQuestion;
@@ -24,20 +24,21 @@ public class Accueil extends JFrame implements ActionListener
 
     private Font             fontGenerale;
 
-
     private Controleur      ctrl;
 
 
-    public Accueil(Controleur ctrl)
-    {
+    public Accueil(Controleur ctrl) {
 
-        this.ctrl             = ctrl;
-        this.fontGenerale     = new Font("Arial", Font.BOLD, 16);
+        this.ctrl          = ctrl;
+        this.fontGenerale  = new Font("Arial", Font.BOLD, 16);
+
+        ImageIcon img = new ImageIcon("../data/img/icon.png");
 
         this.setTitle("Accueil");
         this.setSize(800, 600);
         this.setLocationRelativeTo(null);
         this.setResizable(false);
+        this.setIconImage(img.getImage());
 
         this.pnlBtns           = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
@@ -70,25 +71,20 @@ public class Accueil extends JFrame implements ActionListener
         this.btnParametres   .addActionListener(this);
         this.btnListeQst     .addActionListener(this);
 
-        this.pnlBtns.add(lblTitre);
-        this.pnlBtns.add(btnCreerQuestion, gbc);
-        this.pnlBtns.add(btnCreerEval    , gbc);
-        this.pnlBtns.add(btnListeQst     , gbc);
-        this.pnlBtns.add(btnParametres   , gbc);
+        this.pnlBtns.add(this.lblTitre);
+        this.pnlBtns.add(this.btnCreerQuestion, gbc);
+        this.pnlBtns.add(this.btnCreerEval    , gbc);
+        this.pnlBtns.add(this.btnListeQst     , gbc);
+        this.pnlBtns.add(this.btnParametres   , gbc);
 
-        this.add(pnlBtns);
+        this.add(this.pnlBtns);
 
         this.setVisible(true);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
+    public void actionPerformed(ActionEvent e) {
 
-    /*  -----------------  */
-    /*	 Autres méthodes   */
-    /*  -----------------  */
-
-    public void actionPerformed(ActionEvent e)
-    {
         if(e.getSource() == this.btnParametres)
             this.frameParametres = new FrameParametres(this, this.ctrl);
 

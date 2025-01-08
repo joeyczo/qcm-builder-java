@@ -15,7 +15,10 @@ public class GrilleDonneesNotion extends AbstractTableModel {
 
     public GrilleDonneesNotion(Controleur controleur, Ressource ressource) {
 
+
         this.ctrl       = controleur;
+        System.out.println("RESSOURCE :");
+        System.out.println(ressource.getNom());
         this.tabEntete  = new String[] { "Notion", "Nb. Très facile", "Nb. Facile", "Nb. Moyen", "Nb. difficile"};
         this.tabDonnees = new Object[this.ctrl.getNbNotion(ressource)][this.tabEntete.length];
 

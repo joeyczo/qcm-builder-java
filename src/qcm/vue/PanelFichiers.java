@@ -29,9 +29,9 @@ public class PanelFichiers extends JPanel implements ActionListener, ItemListene
 
     public PanelFichiers(Controleur ctrl, FrameFichiers frameParent, DonneesCreationQuestion data) {
 
-        this.ctrl           = ctrl;
-        this.data           = data;
-        this.frameParent    = frameParent;
+        this.ctrl        = ctrl;
+        this.data        = data;
+        this.frameParent = frameParent;
 
         this.setLayout(new BorderLayout());
 
@@ -40,11 +40,11 @@ public class PanelFichiers extends JPanel implements ActionListener, ItemListene
         this.btnAjouterFichier   = new JButton("Ajouter un fichier"  );
         this.btnSupprimerFichier = new JButton("Supprimer le fichier");
         this.btnOuvrirInfos      = new JButton("?");
-        this.btnSupprimerFichier.setEnabled(false);
-
         this.btnFermer           = new JButton("Fermer");
 
         this.lstFichiers         = new List();
+
+        this.btnSupprimerFichier.setEnabled(false);
 
         // Chargement des fichiers déjà présent
         ArrayList<Fichier> ensFichiers = this.ctrl.getFichiersQuestion();
@@ -57,9 +57,9 @@ public class PanelFichiers extends JPanel implements ActionListener, ItemListene
         panelButtons.add(btnSupprimerFichier);
         panelButtons.add(this.btnOuvrirInfos);
 
-        this.add(panelButtons       , BorderLayout.NORTH );
-        this.add(this.lstFichiers   , BorderLayout.CENTER);
-        this.add(this.btnFermer     , BorderLayout.SOUTH );
+        this.add(panelButtons     , BorderLayout.NORTH );
+        this.add(this.lstFichiers , BorderLayout.CENTER);
+        this.add(this.btnFermer   , BorderLayout.SOUTH );
 
         this.btnFermer          .addActionListener(this);
         this.btnAjouterFichier  .addActionListener(this);
@@ -67,7 +67,7 @@ public class PanelFichiers extends JPanel implements ActionListener, ItemListene
         this.btnOuvrirInfos     .addActionListener(this);
         this.lstFichiers        .addActionListener(this);
 
-        this.lstFichiers.addItemListener(this);
+        this.lstFichiers        .addItemListener(this);
 
     }
 
@@ -78,17 +78,18 @@ public class PanelFichiers extends JPanel implements ActionListener, ItemListene
 
         if (e.getSource() == this.btnAjouterFichier) {
 
-            JFileChooser desti = new JFileChooser();
-            int returnValue = desti.showOpenDialog(this);
+            JFileChooser desti       = new JFileChooser();
+            int          returnValue = desti.showOpenDialog(this);
+
             if (returnValue == JFileChooser.APPROVE_OPTION) {
 
                 File selectedFile = desti.getSelectedFile();
+
                 this.lstFichiers.add(selectedFile.getName());
 
                 // Ajout du fichier dans l'application
                 if (!this.ctrl.ajouterFichierQuestion(selectedFile.getPath(), this.data))
                     JOptionPane.showMessageDialog(this, "Une erreur vient de se produire lors de l'ajout de la pièce jointe !", "Impossible d'ajouter le fichier", JOptionPane.ERROR_MESSAGE);
-
 
             }
 
@@ -97,12 +98,18 @@ public class PanelFichiers extends JPanel implements ActionListener, ItemListene
         if (e.getSource() == this.btnSupprimerFichier) {
 
             if (this.lstFichiers.getSelectedIndex() != -1) {
+
                 if (!this.ctrl.supprimerFichierQuestion(this.lstFichiers.getSelectedIndex())) {
+
                     JOptionPane.showMessageDialog(this, "Une erreur est survenue lors de la suppression du fichier", "Impossible de supprimer le fichier", JOptionPane.ERROR_MESSAGE);
                     return;
+
                 }
+
                 this.lstFichiers.remove(this.lstFichiers.getSelectedIndex());
+
                 this.btnSupprimerFichier.setEnabled(false);
+
             }
 
         }
@@ -112,11 +119,14 @@ public class PanelFichiers extends JPanel implements ActionListener, ItemListene
 
         if (e.getSource() == this.lstFichiers) {
 
-            System.out.println(this.lstFichiers.getSelectedItem());
             try {
+
                 Desktop.getDesktop().open(this.ctrl.getFichierQuestion(this.lstFichiers.getSelectedIndex()));
+
             } catch (Exception ex) {
+
                 System.out.println("Erreur ouverture fichier : " + ex.getMessage());
+
             }
 
         }
@@ -135,4 +145,5 @@ public class PanelFichiers extends JPanel implements ActionListener, ItemListene
         }
 
     }
+
 }

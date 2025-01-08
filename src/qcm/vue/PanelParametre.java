@@ -9,10 +9,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-public class PanelParametre extends JPanel implements ActionListener
-{
-
-    private FrameParametres     frameParent;
+public class PanelParametre extends JPanel implements ActionListener {
 
     private JPanel              panelHaut;
 
@@ -26,10 +23,9 @@ public class PanelParametre extends JPanel implements ActionListener
 
     private Controleur          ctrl;
 
-    public PanelParametre(FrameParametres parent, Controleur ctrl)
-    {
-        this.frameParent = parent;
-        this.ctrl        = ctrl;
+    public PanelParametre(Controleur ctrl) {
+
+        this.ctrl             = ctrl;
 
         this.fontGenerale     = new Font("Arial",Font.PLAIN,16);
         this.fontGeneraleGras = new Font("Arial",Font.BOLD ,16);
@@ -39,6 +35,7 @@ public class PanelParametre extends JPanel implements ActionListener
         String[] tabRessource = new String[this.ctrl.getNbRessource()+1];
 
         tabRessource[0] = "-- Choisir une ressource --";
+
         for (int i = 1; i <= this.ctrl.getNbRessource(); i++)
             tabRessource[i] = this.ctrl.getRessource(i-1).getNomCourt();
 
@@ -47,7 +44,8 @@ public class PanelParametre extends JPanel implements ActionListener
         this.panelHaut        = new JPanel();
 
         this.ddlstRessource   = new JComboBox<>(tabRessource);
-        this.tblGrilleDonnees = new JTable ( new GrilleDonneesNotion(this.ctrl, null) );
+        this.tblGrilleDonnees = new JTable ( new GrilleDonneesNotion(this.ctrl, new Ressource("", "")) );
+
         this.tblGrilleDonnees.setFillsViewportHeight(true);
         this.tblGrilleDonnees.setRowHeight(30);
         this.tblGrilleDonnees.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -63,29 +61,29 @@ public class PanelParametre extends JPanel implements ActionListener
         this.panelHaut.add(this.btnAjouterRessource);
         this.panelHaut.add(this.btnAjouterNotion);
 
-        this.add(this.panelHaut  , BorderLayout.NORTH);
-        this.add(spGrilleDonnees , BorderLayout.CENTER);
+        this.add(this.panelHaut , BorderLayout.NORTH);
+        this.add(spGrilleDonnees, BorderLayout.CENTER);
 
         this.btnAjouterNotion   .addActionListener(this);
         this.btnAjouterRessource.addActionListener(this);
         this.ddlstRessource     .addActionListener(this);
 
-        this.tblGrilleDonnees   .getTableHeader().setFont(this.fontGeneraleGras);
-        this.tblGrilleDonnees   .setFont(this.fontGenerale);
-        this.ddlstRessource     .setFont(this.fontGeneraleGras);
-        this.btnAjouterNotion   .setFont(this.fontGeneraleGras);
-        this.btnAjouterRessource.setFont(this.fontGeneraleGras);
+        this.tblGrilleDonnees.getTableHeader().setFont(this.fontGeneraleGras);
+        this.tblGrilleDonnees                 .setFont(this.fontGenerale);
+        this.ddlstRessource                   .setFont(this.fontGeneraleGras);
+        this.btnAjouterNotion                 .setFont(this.fontGeneraleGras);
+        this.btnAjouterRessource              .setFont(this.fontGeneraleGras);
+
     }
 
     /*  ------------------  */
-    /*	 Méthode d'action   */
+    /*   Méthode d'action   */
     /*  ------------------  */
 
-    public void actionPerformed(ActionEvent e)
-    {
+    public void actionPerformed(ActionEvent e) {
 
-        if (e.getSource() == this.btnAjouterRessource)
-        {
+        if (e.getSource() == this.btnAjouterRessource) {
+
             JTextField txtCode      = new JTextField(5);
             JTextField txtRessource = new JTextField(15);
             JLabel     lblCode      = new JLabel("Code:");
@@ -113,16 +111,18 @@ public class PanelParametre extends JPanel implements ActionListener
                 return;
 
 
-            if ( txtCode.getText().isEmpty() || txtCode.getText().trim().isEmpty() )
-            {
+            if ( txtCode.getText().isEmpty() || txtCode.getText().trim().isEmpty() ) {
+
                 JOptionPane.showMessageDialog(this,  "Erreur : Nom de code vide", "Erreur lors de l'ajout de la ressource", JOptionPane.ERROR_MESSAGE);
                 return;
+
             }
 
-            if ( txtRessource.getText().isEmpty() || txtRessource.getText().trim().isEmpty() )
-            {
+            if ( txtRessource.getText().isEmpty() || txtRessource.getText().trim().isEmpty() ) {
+
                 JOptionPane.showMessageDialog(this,  "Erreur : Nom de ressource vide", "Erreur lors de l'ajout de la ressource", JOptionPane.ERROR_MESSAGE);
                 return;
+
             }
 
             code         = txtCode     .getText().trim();
@@ -133,20 +133,20 @@ public class PanelParametre extends JPanel implements ActionListener
 
             // On vérifie si le nom n'existe pas dans la base de données des ressources
             if (this.ctrl.getRessource(ressource.getNom()) != null) {
+
                 JOptionPane.showMessageDialog(this,  "Erreur : nom de ressource existant", "Erreur lors de l'ajout de la ressource", JOptionPane.ERROR_MESSAGE);
                 return;
+
             }
 
             this.ctrl          .ajouterRessource(ressource);
             this.ddlstRessource.addItem(ressource.getNomCourt());
 
-            System.out.println("Ressource ajoutée : " + nomRessource);
         }
 
-        if (e.getSource() == this.btnAjouterNotion)
-        {
-            if (this.ctrl.getNbRessource() != 0 && this.ddlstRessource.getSelectedIndex() != 0)
-            {
+        if (e.getSource() == this.btnAjouterNotion) {
+
+            if (this.ctrl.getNbRessource() != 0 && this.ddlstRessource.getSelectedIndex() != 0) {
 
                 JLabel     lblNotion = new JLabel("Nom notion:");
                 JTextField txtNotion = new JTextField(15);
@@ -168,31 +168,34 @@ public class PanelParametre extends JPanel implements ActionListener
                 if (resultat == JOptionPane.CANCEL_OPTION || resultat == JOptionPane.CLOSED_OPTION)
                     return;
 
-
-                nomNotion = txtNotion.getText().trim();
-
+                          nomNotion = txtNotion.getText().trim();
                 Ressource ressource = this.ctrl.getRessource((String) this.ddlstRessource.getSelectedItem());
 
                 if (ressource == null) {
+
                     JOptionPane.showMessageDialog(this,  "Erreur : Impossible de récupérer la ressource !", "Erreur lors de l'ajout de la notion", JOptionPane.ERROR_MESSAGE);
                     return;
+
                 }
 
-                Notion    notion    = new Notion(nomNotion, ressource);
+                Notion notion = new Notion(nomNotion, ressource);
 
                 // On vérifie si le nom n'existe pas dans la base de données des notions pour la ressource sélectionnée
                 if (this.ctrl.getNotion(ressource, notion.getNom()) != null) {
+
                     JOptionPane.showMessageDialog(this,  "Erreur : nom de notion existant", "Erreur lors de l'ajout de la notion", JOptionPane.ERROR_MESSAGE);
                     return;
+
                 }
 
                 if ( nomNotion.isEmpty() || nomNotion.trim().isEmpty() ) {
+
                     JOptionPane.showMessageDialog(this,  "Erreur : Nom de notion vide", "Erreur lors de l'ajout de la notion", JOptionPane.ERROR_MESSAGE);
                     return;
+
                 }
 
-                this.ctrl.ajouterNotion(ressource, notion);
-                System.out.println("Notion ajoutée : " + nomNotion);
+                this.ctrl            .ajouterNotion(ressource, notion);
                 this.tblGrilleDonnees.setModel(new GrilleDonneesNotion(this.ctrl, ressource));
 
             }
@@ -215,6 +218,4 @@ public class PanelParametre extends JPanel implements ActionListener
     }
 }
 
-// TODO relier les données (tf, f, m, d) avec les paramètres
 // TODO mettre que les stats sont à titre indicatif et juste des stats
-// TODO vérifier si les commentaires erreur n'ont pas de faute

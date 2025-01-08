@@ -15,15 +15,14 @@ public class FrameVisuEval extends JFrame {
         this.setResizable(false);
 
         PanelVisuEval panelVisuEval = new PanelVisuEval(this, ctrl, eval);
-        JScrollPane jspPanelVisu = new JScrollPane(panelVisuEval);
+        JScrollPane   jspPanelVisu  = new JScrollPane(panelVisuEval);
+
         this.add(jspPanelVisu);
 
         this.setVisible(true);
 
     }
 
-    public void fermerFenetre() {
-        this.dispose();
-    }
+    public void fermerFenetre() { this.dispose(); }
 
 }

@@ -29,24 +29,25 @@ public class PanelVisuEval extends JPanel implements ActionListener {
         this.ctrl           = ctrl;
         this.evalutation    = eval;
 
-        this.fontGeneralGras = new Font("Arial", Font.BOLD, 16);
+        this.fontGeneralGras    = new Font("Arial", Font.BOLD, 16);
 
         JPanel  panelButtons    = new JPanel();
 
         this.btnAnnuler         = new JButton("Annuler");
         this.btnConfirmer       = new JButton("Confirmer et exporter");
+
         JLabel  labelInfos      = new JLabel("<html><h1>Nouveau questionnaire</h1></html>");
         JLabel  labelNbQst      = new JLabel();
         
-        String estChrono = eval.evaluation() ? "Oui" : "Non";
-
+        String estChrono    = eval.evaluation() ? "Oui" : "Non";
         String txtQuestions = this.getTexteQuestions(eval.ensQuestion());
+        double nbPoints     = 0.0;
 
-        double nbPoints = 0.0;
 
         for (Question q : eval.ensQuestion())
             nbPoints += q.getNbPoints();
-        
+
+
         String txtLabel         =    "<html><ul style=\"font-size: 12px;\">"                        +
                                     "<li>Nombre de questions : " + eval.nbQuestions() + "</li>"     +
                                     "<li>Questionnaire chronométré : " + estChrono + "   </li>"     +
@@ -54,10 +55,12 @@ public class PanelVisuEval extends JPanel implements ActionListener {
                                     "<li>Ressource : " + eval.ressource().getNom() + "</li>"        +
                                     "</ul><br><hr style=\"width: 100vw;\"><ul style=\"font-size: 12px;\">" + txtQuestions + "</ul></html>";
 
+
         labelNbQst.setText(txtLabel);
 
         panelButtons.add(this.btnAnnuler);
         panelButtons.add(this.btnConfirmer);
+
         this.add(labelInfos  , BorderLayout.NORTH);
         this.add(labelNbQst);
         this.add(panelButtons, BorderLayout.SOUTH);
@@ -74,14 +77,20 @@ public class PanelVisuEval extends JPanel implements ActionListener {
     public void actionPerformed(ActionEvent e) {
 
         if (e.getSource() == this.btnAnnuler) {
+
             this.frameParent.fermerFenetre();
+
         }
 
         if (e.getSource() == this.btnConfirmer) {
+
             if (this.ctrl.exporterEval(this.evalutation)) {
+
                 JOptionPane.showMessageDialog(this, "L'évaluation a bien été exportée !", "Évaluation générée", JOptionPane.INFORMATION_MESSAGE);
                 this.frameParent.fermerFenetre();
+
             }
+
         }
 
     }

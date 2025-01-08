@@ -234,7 +234,7 @@ public class GenerationEvals {
             sJs += "const questions = " + GenererJSON.genererJson(e) + ";\n";
 
 
-            Scanner sc = new Scanner(new FileInputStream("data/web/script.js"), StandardCharsets.UTF_8);
+            Scanner sc = new Scanner(new FileInputStream("../data/web/script.js"), StandardCharsets.UTF_8);
 
             while (sc.hasNextLine())
                 sJs += sc.nextLine() + "\n";
@@ -249,8 +249,8 @@ public class GenerationEvals {
 
             // Copie des fichiers HTML et CSS
 
-            Files.copy(Paths.get("data", "web", "index.html"), cheminGenHTML, StandardCopyOption.REPLACE_EXISTING);
-            Files.copy(Paths.get( "data", "web", "style.css"), cheminGenCSS , StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(Paths.get("..", "data", "web", "index.html"), cheminGenHTML, StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(Paths.get( "..", "data", "web", "style.css"), cheminGenCSS , StandardCopyOption.REPLACE_EXISTING);
 
             // Copie des fichiers pièces jointes
 
@@ -277,7 +277,7 @@ public class GenerationEvals {
 
             // Copie des assets
 
-            copyDir(Paths.get( "data", "web", "assets"), cheminGenImg);
+            copyDir(Paths.get( "..", "data", "web", "assets"), cheminGenImg);
 
             return true;
 
