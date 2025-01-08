@@ -1,5 +1,7 @@
 package qcm.metier;
 
+import java.util.ArrayList;
+
 public class GenererJSON {
 
     /**
@@ -94,12 +96,27 @@ public class GenererJSON {
 
             int i = 0;
 
+            ArrayList<String> ensLienFichier = new ArrayList<>();
+
             for (Fichier f : question.getEnsembleFichier()) {
 
+                String nomFichier  = f.nomFichier().replaceAll(GenererJSON.getFileExtension(f.nomFichier()), "");
+                String lienFichier = f.nomFichier();
+
+                /*for (String s : ensLienFichier) {
+
+                    if (s.equals(lienFichier))
+                        lienFichier = lienFichier.replaceAll(GenererJSON.getFileExtension(lienFichier), "") + "1" + GenererJSON.getFileExtension(lienFichier);
+
+
+                }*/
+
+                ensLienFichier.add(lienFichier);
+
                 sRet += "\t\t\t{\n\t\t\t\tname:";
-                sRet += "\"" + f.nomFichier() + "\",\n";
+                sRet += "\"" + nomFichier + "\",\n";
                 sRet += "\t\t\t\tlien:";
-                sRet += "\"" + f.nomFichier() +"\"\n\t\t\t}";
+                sRet += "\"" + lienFichier +"\"\n\t\t\t}";
 
                 i++;
 
@@ -181,6 +198,21 @@ public class GenererJSON {
 
         return t.trim().replaceAll("\n", "\\\\n").replaceAll("\t", "\\\\t").replaceAll("\"", "\\\\\"");
 
+    }
+
+    /**
+     * Récupérer l'extension du fichier
+     * @param nom Nom du fichier complet (Avec le chemin)
+     * @return Le nom de l'extension (.png, .pdf,...)
+     */
+    private static String getFileExtension(String nom) {
+
+        int lastIndexOf = nom.lastIndexOf(".");
+
+        if (lastIndexOf == -1)
+            return "";
+
+        return nom.substring(lastIndexOf);
     }
 
 }

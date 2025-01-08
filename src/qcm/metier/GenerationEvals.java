@@ -291,6 +291,21 @@ public class GenerationEvals {
 
     }
 
+    /**
+     * Récupérer l'extension du fichier
+     * @param nom Nom du fichier complet (Avec le chemin)
+     * @return Le nom de l'extension (.png, .pdf,...)
+     */
+    private String getFileExtension(String nom) {
+
+        int lastIndexOf = nom.lastIndexOf(".");
+
+        if (lastIndexOf == -1)
+            return "";
+
+        return nom.substring(lastIndexOf);
+    }
+
     public static void copyDir(Path source, Path target) throws IOException {
 
         Files.walkFileTree(source, new SimpleFileVisitor<Path>() {

@@ -45,11 +45,6 @@ public class FrameInfosQuestion extends JFrame {
 
     }
 
-    public void fermerFenetre() {
-
-        this.dispose();
-
-        // TODO : Réouvrir CréerQuestion
-    }
+    public void fermerFenetre() { this.dispose(); }
 
 }

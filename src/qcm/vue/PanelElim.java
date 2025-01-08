@@ -66,10 +66,10 @@ public class PanelElim extends JPanel implements ActionListener, DocumentListene
         jTextAreaQst .setFont(this.fontGenerale);
         jTextAreaInfo.setFont(this.fontGenerale);
 
-        this.txtQst            = jTextAreaQst;
-        this.txtInfoSupp       = jTextAreaInfo;
+        this.txtQst      = jTextAreaQst;
+        this.txtInfoSupp = jTextAreaInfo;
 
-        this.scrollPane        = new JScrollPane(this.txtQst, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        this.scrollPane = new JScrollPane(this.txtQst, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
         this.pointsRestantSuppression = 0.0;
 
@@ -98,7 +98,7 @@ public class PanelElim extends JPanel implements ActionListener, DocumentListene
 
             }
 
-        }else{
+        } else {
 
             this.ajoutTextePourModif();
             this.ajoutElementModifier();
@@ -336,6 +336,28 @@ public class PanelElim extends JPanel implements ActionListener, DocumentListene
     {
         this.removeAll();
 
+        this.pointsRestantSuppression = 0.0;
+
+        if (!this.lstPointEnMoins.isEmpty()) {
+            for (int i = 0; i < this.lstPointEnMoins.size(); i++) {
+
+                String text = this.lstPointEnMoins.get(i).getText();
+
+                if (!text.isEmpty()) {
+                    try {
+                        double value = Double.parseDouble(text);
+                        if( value < 0 )
+                            this.pointsRestantSuppression += value;
+                    }
+                    catch ( Exception exception) {
+                        System.out.println("Erreur " + exception.getMessage());
+                    }
+                }
+            }
+        }
+
+        double ptsRestant = this.data.nbPoints() + this.pointsRestantSuppression;
+
         this.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets             = new Insets(5, 5, 5, 5);
@@ -348,10 +370,9 @@ public class PanelElim extends JPanel implements ActionListener, DocumentListene
         this.add(labelQst, gbc);
 
 
-        Double pts = this.data.nbPoints();
         gbc.gridx = 3;
         gbc.gridy = 0;
-        this.labelPts = new JLabel("Points restant après suppression : " + String.format("%2.2f",(pts + this.pointsRestantSuppression)) + " points");
+        this.labelPts = new JLabel("Points restant après suppression : " + String.format("%2.2f",ptsRestant) + " points");
         labelPts.setFont(this.fontGeneraleGras);
         this.add(labelPts, gbc);
 
@@ -444,7 +465,8 @@ public class PanelElim extends JPanel implements ActionListener, DocumentListene
     @Override
     public void insertUpdate(DocumentEvent e)
     {
-        double ptsSuppr = 0.0;
+        this.pointsRestantSuppression = 0.0;
+
         if (!this.lstPointEnMoins.isEmpty()) {
             for (int i = 0; i < this.lstPointEnMoins.size(); i++) {
 
@@ -454,22 +476,17 @@ public class PanelElim extends JPanel implements ActionListener, DocumentListene
                     try {
                         double value = Double.parseDouble(text);
                         if( value < 0 )
-                            ptsSuppr += value;
+                            this.pointsRestantSuppression += value;
                     }
-                    catch ( Exception subuisbuodfhuosdf) {
-                        System.out.println("Erreur " + subuisbuodfhuosdf.getMessage());
+                    catch ( Exception exception) {
+                        System.out.println("Erreur " + exception.getMessage());
                     }
                 }
             }
         }
 
-        this.pointsRestantSuppression += ptsSuppr;
-
-        double pts = this.data.nbPoints() + ptsSuppr;
-        if(pts<0)
-            System.out.println("Erreur résultat négatif : " + pts);
-        else
-            this.labelPts.setText("Points restant après suppression : " + String.format("%2.2f",pts) + " points");
+        double pts = this.data.nbPoints() + this.pointsRestantSuppression;
+        this.labelPts.setText("Points restant après suppression : " + String.format("%2.2f",pts) + " points");
 
         for ( int cpt = 0; cpt < this.lstOrdrePrioQst.size(); cpt ++)
         {
@@ -484,12 +501,12 @@ public class PanelElim extends JPanel implements ActionListener, DocumentListene
         }
     }
 
-    // TODO quand maj retour valeur initiale
 
     @Override
     public void removeUpdate(DocumentEvent e)
     {
-        double ptsSuppr = 0.0;
+        this.pointsRestantSuppression = 0.0;
+
         if (!this.lstPointEnMoins.isEmpty()) {
             for (int i = 0; i < this.lstPointEnMoins.size(); i++) {
 
@@ -498,23 +515,18 @@ public class PanelElim extends JPanel implements ActionListener, DocumentListene
                 if (!text.isEmpty()) {
                     try {
                         double value = Double.parseDouble(text);
-                        if(value<0)
-                            ptsSuppr += value;
-                    } catch ( Exception subuisbuodfhuosdf) {
-                        System.out.println("Erreur " + subuisbuodfhuosdf.getMessage());
+                        if( value < 0 )
+                            this.pointsRestantSuppression += value;
                     }
-
+                    catch ( Exception exception) {
+                        System.out.println("Erreur " + exception.getMessage());
+                    }
                 }
             }
         }
-        this.pointsRestantSuppression += ptsSuppr;
 
-
-        double pts = this.data.nbPoints() + ptsSuppr;
-        if(pts<0)
-            System.out.println("Erreur résultat négatif : " + pts);
-        else
-            this.labelPts.setText("Points restant après suppression : " + String.format("%2.2f",pts) + " points");
+        double pts = this.data.nbPoints() + this.pointsRestantSuppression;
+        this.labelPts.setText("Points restant après suppression : " + String.format("%2.2f",pts) + " points");
 
         for ( int cpt = 0; cpt < this.lstOrdrePrioQst.size(); cpt ++)
         {

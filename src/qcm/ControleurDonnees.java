@@ -1,6 +1,7 @@
 package qcm;
 
 import qcm.metier.*;
+import qcm.utils.Uid;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -11,8 +12,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
-import java.util.Scanner;
+import java.util.*;
 
 public class ControleurDonnees {
 
@@ -900,16 +900,22 @@ public class ControleurDonnees {
             File dossierDesti        = new File("../data/app/rsc/" + nomRessource + "/" + nomNot);
 
             String nouveauNomFichier      = this.nouveauNomFichier(dossierDesti) + this.getFileExtension(lienFichier);
-            System.out.println("NOUVEAU NOM FICHIER : " + nouveauNomFichier);
 
-            /*Path fichierDesti        = Paths.get("..", "data", "app", "rsc", nomRessource, nomNot, nouveauNomFichier);
+            Path fichierDesti        = Paths.get("..", "data", "app", "rsc", nomRessource, nomNot, nouveauNomFichier);
 
             // Copie du fichier
             Files.copy(fichierOrig, fichierDesti, StandardCopyOption.REPLACE_EXISTING);
 
-            Fichier nouveauFichier = new Fichier(fichierDesti.toString(), fichierOrig.getFileName().toString());
+            String nomFichier = fichierOrig.getFileName().toString();
 
-            this.ensFichiers.add(nouveauFichier);*/
+            // Gestion des doublons de nom de fichier
+            for (Fichier f : this.ensFichiers)
+                if (f.nomFichier().equals(nomFichier)) nomFichier = nomFichier.replaceAll(this.getFileExtension(nomFichier), "") + "-" + Uid.generateUid(4) + this.getFileExtension(nomFichier);
+
+
+            Fichier nouveauFichier = new Fichier(fichierDesti.toString(), nomFichier);
+
+            this.ensFichiers.add(nouveauFichier);
 
             return true;
 
@@ -925,40 +931,52 @@ public class ControleurDonnees {
 
     private String nouveauNomFichier ( File fichierDesti ) {
 
-        File[] ensFichierDossier = fichierDesti.listFiles();
+        File[]  ensFichierDossier = fichierDesti.listFiles();
+        boolean nomDispo          = false;
+        File    fichierPrec;
 
         if (ensFichierDossier == null) return "";
 
-        String nouveauNomFichier = "fic" + String.format("%05d", 0);
+        Arrays.sort(ensFichierDossier);
 
-        for (int i = 0; i < ensFichierDossier.length; i++) {
+        if ( ensFichierDossier.length > 0 )
+            fichierPrec = ensFichierDossier[0];
+        else
+            return "fic" + String.format("%05d", 0);
 
-            nouveauNomFichier = "fic" + String.format("%05d", i);
-            int nbFichier = 0;
 
-            // TODO : Gérer le doublon de fichier
+        while (!nomDispo) {
 
-            /*for (File f : ensFichierDossier) {
+            for (File f : ensFichierDossier) {
 
-                String nomFichier   = f.getName();
-                String nomExt       = this.getFileExtension(nomFichier);
+                String nomFilePrec = fichierPrec.getName().replaceAll(this.getFileExtension(fichierPrec.getName()), "");
+                String nomFile     = f          .getName().replaceAll(this.getFileExtension(f          .getName()), "");
 
-                nomFichier          = nomFichier.replaceAll(nomExt, "");
-                
-                if (nomFichier.equals(nouveauNomFichier)) {
-                    System.out.println(nomFichier + " == " + nouveauNomFichier);
-                    break;
+                int numeroPrec     = Integer.parseInt(nomFilePrec.substring(3));
+                int numero         = Integer.parseInt(nomFile    .substring(3));
+
+
+                // Pour ne pas que le premier élement ne se compare à lui même
+                if ( fichierPrec != f ) {
+
+                    if ( !((numeroPrec + 1) == numero) ) {
+                        return "fic" + String.format("%05d", (numeroPrec + 1));
+                    }
+
                 }
-                
-                nbFichier++;
-                nouveauNomFichier = "fic" + String.format("%05d", nbFichier);
 
+                fichierPrec = f;
 
-            }*/
+            }
+
+            nomDispo = true;
 
         }
 
-        return nouveauNomFichier;
+        String nomFilePrec = fichierPrec.getName().replaceAll(this.getFileExtension(fichierPrec.getName()), "");
+        int    numeroPrec  = Integer.parseInt(nomFilePrec.substring(3));
+
+        return "fic" + String.format("%05d", (numeroPrec + 1));
 
     }
 

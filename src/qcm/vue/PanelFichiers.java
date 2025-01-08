@@ -85,11 +85,18 @@ public class PanelFichiers extends JPanel implements ActionListener, ItemListene
 
                 File selectedFile = desti.getSelectedFile();
 
-                this.lstFichiers.add(selectedFile.getName());
+                //this.lstFichiers.add(selectedFile.getName());
 
                 // Ajout du fichier dans l'application
-                if (!this.ctrl.ajouterFichierQuestion(selectedFile.getPath(), this.data))
+                if (!this.ctrl.ajouterFichierQuestion(selectedFile.getPath(), this.data)) {
                     JOptionPane.showMessageDialog(this, "Une erreur vient de se produire lors de l'ajout de la pièce jointe !", "Impossible d'ajouter le fichier", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                this.lstFichiers.removeAll();
+
+                for (Fichier f : this.ctrl.getFichiersQuestion())
+                    this.lstFichiers.add(f.nomFichier());
 
             }
 
