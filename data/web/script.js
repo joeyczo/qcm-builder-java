@@ -213,20 +213,22 @@ function loadQuestion() {
     }
 
     // Ajouter les liens
-    question.liens.forEach(lien => {
-        const button = document.createElement("button");
-        button.classList.add("link-button");
-        button.textContent = lien.name;
-        button.addEventListener("click", () => {
-            window.open("links/" + lien.lien, "_blank");
+    if (question.liens !== undefined) {
+        question.liens.forEach(lien => {
+            const button = document.createElement("button");
+            button.classList.add("link-button");
+            button.textContent = lien.name;
+            button.addEventListener("click", () => {
+                window.open("links/" + lien.lien, "_blank");
+            });
+            const img = document.createElement("img");
+            img.src = "assets/attachment.png";
+            img.alt = "Icon";
+            img.classList.add("button-icon");
+            button.insertBefore(img, button.firstChild);
+            questionLiens.appendChild(button);
         });
-        const img = document.createElement("img");
-        img.src = "assets/attachment.png";
-        img.alt = "Icon";
-        img.classList.add("button-icon");
-        button.insertBefore(img, button.firstChild);
-        questionLiens.appendChild(button);
-    });
+    }
 }
 
 /* ---------------------------- */

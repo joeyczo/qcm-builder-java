@@ -51,6 +51,8 @@ public class PanelElim extends JPanel implements ActionListener, DocumentListene
         this.lstOrdrePrioQst     = new ArrayList<JTextField>();
         this.lstPointEnMoins     = new ArrayList<JTextField>();
 
+        this.labelPts            = new JLabel();
+
         this.fontGenerale        = new Font("Arial", Font.PLAIN, 16);
         this.fontGeneraleGras    = new Font("Arial", Font.BOLD , 16);
 

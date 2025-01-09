@@ -13,6 +13,8 @@ public class FrameInfosQuestion extends JFrame {
         this.setSize(800, 600);
         this.setLocationRelativeTo(null);
         this.setResizable(false);
+        ImageIcon img = new ImageIcon("../data/img/icon.png");
+        this.setIconImage(img.getImage());
 
         if (data.type() == TypeQuestion.QCMSOLO) {
 

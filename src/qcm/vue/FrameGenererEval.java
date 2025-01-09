@@ -14,6 +14,9 @@ public class FrameGenererEval extends JDialog {
         this.setLocationRelativeTo(null);
         this.setResizable(false);
 
+        ImageIcon img = new ImageIcon("../data/img/icon.png");
+        this.setIconImage(img.getImage());
+
         PanelGenererEval pnlEval = new PanelGenererEval(this,ctrl);
 
         this.add(pnlEval);

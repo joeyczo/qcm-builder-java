@@ -372,6 +372,7 @@ public class PanelCreerQst extends JPanel implements ActionListener {
 
                 this.afficherMessageErreur("Une erreur inconnu vient de se produire");
                 System.out.println("Autre erreur : " +ex.getMessage());
+                ex.printStackTrace();
 
             }
         }

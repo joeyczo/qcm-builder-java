@@ -32,12 +32,12 @@ public class Accueil extends JFrame implements ActionListener {
         this.ctrl          = ctrl;
         this.fontGenerale  = new Font("Arial", Font.BOLD, 16);
 
-        ImageIcon img = new ImageIcon("../data/img/icon.png");
 
         this.setTitle("Accueil");
         this.setSize(800, 600);
         this.setLocationRelativeTo(null);
         this.setResizable(false);
+        ImageIcon img = new ImageIcon("../data/img/icon.png");
         this.setIconImage(img.getImage());
 
         this.pnlBtns           = new JPanel(new GridBagLayout());

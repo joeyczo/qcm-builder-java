@@ -15,6 +15,9 @@ public class FrameFichiers extends JDialog {
         this.setLocationRelativeTo(null);
         this.setResizable(false);
 
+        ImageIcon img = new ImageIcon("../data/img/icon.png");
+        this.setIconImage(img.getImage());
+
         PanelFichiers panelFichiers = new PanelFichiers(ctrl, this, data);
 
         this.add(panelFichiers);

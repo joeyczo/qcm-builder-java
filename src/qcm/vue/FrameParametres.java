@@ -14,6 +14,8 @@ public class FrameParametres extends JDialog {
         this.setSize(1000, 600);
         this.setLocationRelativeTo(null);
         this.setResizable(false);
+        ImageIcon img = new ImageIcon("../data/img/icon.png");
+        this.setIconImage(img.getImage());
 
         this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 

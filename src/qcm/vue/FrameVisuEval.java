@@ -13,6 +13,8 @@ public class FrameVisuEval extends JFrame {
         this.setSize(900, 600);
         this.setLocationRelativeTo(null);
         this.setResizable(false);
+        ImageIcon img = new ImageIcon("../data/img/icon.png");
+        this.setIconImage(img.getImage());
 
         PanelVisuEval panelVisuEval = new PanelVisuEval(this, ctrl, eval);
         JScrollPane   jspPanelVisu  = new JScrollPane(panelVisuEval);

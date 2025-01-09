@@ -13,6 +13,8 @@ public class FrameListeQst extends JDialog {
         this.setSize(1000, 600);
         this.setLocationRelativeTo(null);
         this.setResizable(true);
+        ImageIcon img = new ImageIcon("../data/img/icon.png");
+        this.setIconImage(img.getImage());
 
         this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
